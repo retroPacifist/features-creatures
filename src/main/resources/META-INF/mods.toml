@@ -1,0 +1,15 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="CC-2.0"
+[[mods]]
+modId="featuresandcreatures"
+version="${file.jarVersion}"
+displayName="Features & Creatures"
+description=""
+
+[[dependencies.featuresandcreatures]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
