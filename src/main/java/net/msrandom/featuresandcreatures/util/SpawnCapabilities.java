@@ -13,7 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
-import net.msrandom.featuresandcreatures.core.FnAEntities;
+import net.msrandom.featuresandcreatures.core.FnCEntities;
 
 @Mod.EventBusSubscriber(modid = FeaturesAndCreatures.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class SpawnCapabilities {
@@ -39,7 +39,7 @@ public class SpawnCapabilities {
                                 // FIXME use appropriate mount based on biome
                                 HorseEntity horse = EntityType.HORSE.create(event.world);
                                 if (horse != null) {
-                                    Jockey jockey = FnAEntities.JOCKEY.create(event.world);
+                                    Jockey jockey = FnCEntities.JOCKEY.get().create(event.world);
                                     if (jockey != null) {
                                         horse.setBaby(true);
                                         Vector3d lookAngle = player.getLookAngle();

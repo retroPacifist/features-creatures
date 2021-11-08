@@ -1,6 +1,5 @@
 package net.msrandom.featuresandcreatures;
 
-import net.minecraft.client.renderer.entity.PigRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,6 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 import net.msrandom.featuresandcreatures.common.entities.boar.Boar;
 import net.msrandom.featuresandcreatures.common.entities.boar.BoarRenderer;
 import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
@@ -22,8 +22,9 @@ import net.msrandom.featuresandcreatures.common.entities.jackalope.JackalopeRend
 import net.msrandom.featuresandcreatures.common.entities.jockey.JockeyRenderer;
 import net.msrandom.featuresandcreatures.common.entities.sabertooth.Sabertooth;
 import net.msrandom.featuresandcreatures.common.entities.sabertooth.SabertoothRenderer;
-import net.msrandom.featuresandcreatures.core.FnAEntities;
+import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
+import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +41,8 @@ public class FeaturesAndCreatures {
         bus.addListener(this::clientSetup);
         bus.addListener(this::registerAttributes);
         MinecraftForge.EVENT_BUS.addGenericListener(World.class, FeaturesAndCreatures::attachCapabilities);
+        FnCEntities.REGISTRAR.register(bus);
+        FnCItems.REGISTRAR.register(bus);
         GeckoLib.initialize();
     }
 
@@ -52,33 +55,20 @@ public class FeaturesAndCreatures {
     }
 
     public void registerRenderers(){
-        RenderingRegistry.registerEntityRenderingHandler(FnAEntities.JOCKEY, JockeyRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnAEntities.BOAR, BoarRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnAEntities.JACKALOPE, JackalopeRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnAEntities.SABERTOOTH, SabertoothRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JOCKEY.get(), JockeyRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.BOAR.get(), BoarRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JACKALOPE.get(), JackalopeRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SABERTOOTH.get(), SabertoothRenderer::new);
     }
 
     private void registerAttributes(EntityAttributeCreationEvent event) {
-        event.put(FnAEntities.JOCKEY, Jockey.createJockeyAttributes().build());
-        event.put(FnAEntities.BOAR, Boar.createAttributes().build());
-        event.put(FnAEntities.JACKALOPE, Jackalope.createAttributes().build());
-        event.put(FnAEntities.SABERTOOTH, Sabertooth.createAttributes().build());
+        event.put(FnCEntities.JOCKEY.get(), Jockey.createJockeyAttributes().build());
+        event.put(FnCEntities.BOAR.get(), Boar.createAttributes().build());
+        event.put(FnCEntities.JACKALOPE.get(), Jackalope.createAttributes().build());
+        event.put(FnCEntities.SABERTOOTH.get(), Sabertooth.createAttributes().build());
     }
 
     private static void attachCapabilities(AttachCapabilitiesEvent<World> event) {
         event.addCapability(WorldJockeyCapability.ID, new WorldJockeyCapability());
-    }
-
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
-        @SubscribeEvent
-        public static void onEntityRegistry(final RegistryEvent.Register<EntityType<?>> event) {
-            LOGGER.info("HELLO from Register Entities");
-            FnAEntities.init();
-            FnAEntities.entities.forEach(entity -> event.getRegistry().register(entity));
-            FnAEntities.entities.clear();
-            FnAEntities.entities = null;
-            LOGGER.info("GOODBYE from Register Entities");
-        }
     }
 }

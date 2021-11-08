@@ -7,15 +7,12 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.monster.HoglinEntity;
-import net.minecraft.entity.monster.piglin.PiglinEntity;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.common.entities.boar.Boar;
 import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
-import net.msrandom.featuresandcreatures.core.FnAEntities;
 import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -93,7 +90,7 @@ public class Jockey extends AbstractVillagerEntity implements IAnimatable {
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        AnimationController controller = event.getController();
+        AnimationController<?> controller = event.getController();
         controller.transitionLengthTicks = 0;
         if (this.isOnGround() && event.isMoving()) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.jockey.walk", true));
@@ -108,7 +105,7 @@ public class Jockey extends AbstractVillagerEntity implements IAnimatable {
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
     }
 
     @Override

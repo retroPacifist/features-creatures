@@ -56,7 +56,7 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
 
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        AnimationController controller = event.getController();
+        AnimationController<?> controller = event.getController();
         controller.transitionLengthTicks = 0;
 
         if (this.isOnGround() && event.isMoving()) {
@@ -69,7 +69,7 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
 
     }
 

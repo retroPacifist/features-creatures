@@ -6,21 +6,20 @@ import net.msrandom.featuresandcreatures.common.entities.jackalope.JackalopeRend
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
-public class BoarModel<T extends IAnimatable> extends AnimatedGeoModel<T> {
+public class BoarModel extends AnimatedGeoModel<Boar> {
 
     @Override
-    public ResourceLocation getModelLocation(T object) {
+    public ResourceLocation getModelLocation(Boar object) {
         return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "geo/boar.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureLocation(T object) {
-        Boar boar = (Boar) object;
-        return BoarRenderer.TEXTURE;
+    public ResourceLocation getTextureLocation(Boar object) {
+        return BoarRenderer.texture(object);
     }
 
     @Override
-    public ResourceLocation getAnimationFileLocation(T animatable) {
+    public ResourceLocation getAnimationFileLocation(Boar animatable) {
         return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "animations/boar.animation.json");
 
     }

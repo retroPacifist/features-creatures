@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
-public class JackalopeRenderer<T extends Jackalope> extends GeoEntityRenderer<T> {
+public class JackalopeRenderer extends GeoEntityRenderer<Jackalope> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/jackalope.png");
 
     public JackalopeRenderer(EntityRendererManager dispatcher) {
@@ -16,12 +16,12 @@ public class JackalopeRenderer<T extends Jackalope> extends GeoEntityRenderer<T>
     }
 
     @Override
-    public ResourceLocation getTextureLocation(T instance) {
+    public ResourceLocation getTextureLocation(Jackalope instance) {
         return TEXTURE;
     }
 
     @Override
-    public void render(T entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(Jackalope entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
         if (entity.isBaby()){
             stack.scale(0.5f, 0.5f, 0.5f);
         }

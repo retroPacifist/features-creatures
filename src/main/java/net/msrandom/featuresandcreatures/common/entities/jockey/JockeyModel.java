@@ -6,20 +6,20 @@ import net.msrandom.featuresandcreatures.common.entities.jackalope.JackalopeRend
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
-public class JockeyModel<T extends IAnimatable> extends AnimatedGeoModel<T>{
+public class JockeyModel extends AnimatedGeoModel<Jockey>{
 
 	@Override
-	public ResourceLocation getModelLocation(T object) {
+	public ResourceLocation getModelLocation(Jockey object) {
 		return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "geo/jockey.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(T object) {
+	public ResourceLocation getTextureLocation(Jockey object) {
 		return JackalopeRenderer.TEXTURE;
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(T animatable) {
+	public ResourceLocation getAnimationFileLocation(Jockey animatable) {
 		return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "animations/jockey.animation.json");
 	}
 }

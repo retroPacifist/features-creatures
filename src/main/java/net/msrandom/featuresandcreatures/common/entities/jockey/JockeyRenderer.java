@@ -9,7 +9,7 @@ import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
-public class JockeyRenderer<T extends Jockey> extends GeoEntityRenderer<T> {
+public class JockeyRenderer extends GeoEntityRenderer<Jockey> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/jockey.png");
 
     public JockeyRenderer(EntityRendererManager dispatcher) {
@@ -23,7 +23,7 @@ public class JockeyRenderer<T extends Jockey> extends GeoEntityRenderer<T> {
     }
 
     @Override
-    public void render(T entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(Jockey entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
         if (entity.isBaby()){
             stack.scale(0.5f, 0.5f, 0.5f);
         }

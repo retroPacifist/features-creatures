@@ -5,20 +5,20 @@ import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
-public class SabertoothModel<T extends IAnimatable> extends AnimatedGeoModel<T> {
+public class SabertoothModel extends AnimatedGeoModel<Sabertooth> {
 
 	@Override
-	public ResourceLocation getModelLocation(T object) {
+	public ResourceLocation getModelLocation(Sabertooth object) {
 		return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "geo/sabertooth.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(T object) {
+	public ResourceLocation getTextureLocation(Sabertooth object) {
 		return SabertoothRenderer.TEXTURE;
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(T animatable) {
+	public ResourceLocation getAnimationFileLocation(Sabertooth animatable) {
 		return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "animations/sabertooth.animation.json");
 
 	}
