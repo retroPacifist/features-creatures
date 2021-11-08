@@ -1,0 +1,16 @@
+{
+  "entity.featuresandcreatures.boar": "Boar",
+  "entity.featuresandcreatures.jackalope": "Jackalope",
+  "entity.featuresandcreatures.jockey": "Jockey",
+  "entity.featuresandcreatures.sabertooth": "Sabertooth",
+  "entity.featuresandcreatures.spear": "Spear",
+  "item.featuresandcreatures.boar_spawn_egg": "Boar Spawn Egg",
+  "item.featuresandcreatures.jackalope_spawn_egg": "Jackalope Spawn Egg",
+  "item.featuresandcreatures.jockey_spawn_egg": "Jockey Spawn Egg",
+  "item.featuresandcreatures.sabertooth_spawn_egg": "Sabertooth Spawn Egg",
+  "itemGroup.featuresandcreatures": "Features & Creatures",
+  "item.featuresandcreatures.antler": "Antler",
+  "item.featuresandcreatures.antler_headdress": "Antler Headdress",
+  "item.featuresandcreatures.sabertooth_fang": "Sabertooth Fang",
+  "item.featuresandcreatures.spear_item": "Spear"
+}

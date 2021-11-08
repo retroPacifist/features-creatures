@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
@@ -17,4 +18,11 @@ public class FnCItems {
             return Items.ACACIA_BOAT.getDefaultInstance();
         }
     };
+
+
+    public static final RegistryObject<Item> ANTLER = REGISTRAR.register("antler", () -> new Item(new Item.Properties().tab(TAB)));
+    public static final RegistryObject<Item> ANTLER_HEADDRESS = REGISTRAR.register("antler_headdress", () -> new Item(new Item.Properties().tab(TAB)));
+    public static final RegistryObject<Item> SABERTOOTH_FANG = REGISTRAR.register("sabertooth_fang", () -> new Item(new Item.Properties().tab(TAB)));
+    public static final RegistryObject<Item> SPEAR_ITEM = REGISTRAR.register("spear_item", () -> new Item(new Item.Properties().tab(TAB)));
+
 }
