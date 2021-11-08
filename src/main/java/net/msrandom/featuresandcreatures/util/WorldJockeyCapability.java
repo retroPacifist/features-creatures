@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures;
+package net.msrandom.featuresandcreatures.util;
 
 import net.minecraft.nbt.ByteNBT;
 import net.minecraft.nbt.INBT;
@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
