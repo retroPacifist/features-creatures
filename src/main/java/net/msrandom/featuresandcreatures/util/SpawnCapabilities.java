@@ -12,6 +12,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
+import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
 import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 
@@ -37,7 +38,7 @@ public class SpawnCapabilities {
                             }
                             if (availableBlocks == 27) {
                                 // FIXME use appropriate mount based on biome
-                                HorseEntity horse = EntityType.HORSE.create(event.world);
+                                Jackalope horse = FnCEntities.JACKALOPE.get().create(event.world);
                                 if (horse != null) {
                                     Jockey jockey = FnCEntities.JOCKEY.get().create(event.world);
                                     if (jockey != null) {
