@@ -62,7 +62,7 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 11.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.2D)
-                .add(Attributes.ATTACK_DAMAGE, 2.0F);
+                .add(Attributes.ATTACK_DAMAGE, 8.0F);
     }
 
     protected void defineSynchedData() {
@@ -258,7 +258,7 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
         }
 
         protected double getAttackReachSqr(LivingEntity entity) {
-            return 4.0F + entity.getBbWidth();
+            return 3.0F + entity.getBbWidth();
         }
     }
 
