@@ -120,7 +120,6 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
         this.playSound(SoundEvents.PIG_HURT, 1.0F, this.getVoicePitch());
     }
 
-
     @Override
     public boolean canAttack(LivingEntity entity) {
         return true;
