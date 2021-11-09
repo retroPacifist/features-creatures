@@ -224,7 +224,7 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
     class MeleeAttackGoal extends net.minecraft.entity.ai.goal.MeleeAttackGoal {
 
         public MeleeAttackGoal() {
-            super(Boar.this, 1D, true);
+            super(Boar.this, 1.24D, true);
         }
 
 
@@ -243,6 +243,7 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
                 if (this.getTicksUntilNextAttack() <= 20) {
                     Boar.this.setStanding(true);
                     Boar.this.playWarningSound();
+                    Boar.this.setDeltaMovement(0, 0 ,0);
                 }
             } else {
                 this.resetAttackCooldown();
