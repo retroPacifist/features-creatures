@@ -18,7 +18,7 @@ public class BoarRenderer extends GeoEntityRenderer<Boar> {
     }
 
     public static ResourceLocation texture(Boar boar) {
-        return boar.getTarget() instanceof PlayerEntity ? MADTEXTURE : TEXTURE;
+        return boar.isAngry() ? MADTEXTURE : TEXTURE;
     }
 
     @Override

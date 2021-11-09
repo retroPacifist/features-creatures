@@ -20,6 +20,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
@@ -61,7 +62,7 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 11.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.2D)
-                .add(Attributes.ATTACK_DAMAGE, 1.0F);
+                .add(Attributes.ATTACK_DAMAGE, 2.0F);
     }
 
     protected void defineSynchedData() {
@@ -78,6 +79,14 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
     public void addAdditionalSaveData(CompoundNBT nbt) {
         super.addAdditionalSaveData(nbt);
         this.addPersistentAngerSaveData(nbt);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.warningSoundTicks > 0) {
+            --this.warningSoundTicks;
+        }
     }
 
     public void startPersistentAngerTimer() {
@@ -117,7 +126,10 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
     }
 
     protected void playWarningSound() {
-        this.playSound(SoundEvents.PIG_HURT, 1.0F, this.getVoicePitch());
+        if (this.warningSoundTicks <= 0) {
+            this.playSound(SoundEvents.PIG_HURT, 1.0F, this.getVoicePitch());
+            this.warningSoundTicks = 40;
+        }
     }
 
     @Override
@@ -135,7 +147,7 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         AnimationController<?> controller = event.getController();
         controller.transitionLengthTicks = 0;
-        if (this.isOnGround() && event.isMoving()) {
+        if (this.isOnGround() && event.isMoving() && controller.getName() != "animation.boar.attack") {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.boar.walk", true));
             return PlayState.CONTINUE;
         } else if (this.isStanding()) {
@@ -228,7 +240,7 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
                     this.resetAttackCooldown();
                 }
 
-                if (this.getTicksUntilNextAttack() <= 15) {
+                if (this.getTicksUntilNextAttack() <= 20) {
                     Boar.this.setStanding(true);
                     Boar.this.playWarningSound();
                 }
