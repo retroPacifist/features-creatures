@@ -15,7 +15,7 @@ public class FnCItems {
     public static final ItemGroup TAB = new ItemGroup(FeaturesAndCreatures.MOD_ID) {
         @Override
         public ItemStack makeIcon() {
-            return Items.ACACIA_BOAT.getDefaultInstance();
+            return FnCItems.SABERTOOTH_FANG.get().getDefaultInstance();
         }
     };
 
