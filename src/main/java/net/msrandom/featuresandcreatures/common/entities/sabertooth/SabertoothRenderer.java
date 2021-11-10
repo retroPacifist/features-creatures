@@ -22,7 +22,7 @@ public class SabertoothRenderer extends GeoEntityRenderer<Sabertooth> {
 
     @Override
     public void render(Sabertooth entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        if (entity.isBaby()){
+        if (entity.isBaby()) {
             stack.scale(0.5f, 0.5f, 0.5f);
         }
         stack.scale(1f, 1f, 1f);

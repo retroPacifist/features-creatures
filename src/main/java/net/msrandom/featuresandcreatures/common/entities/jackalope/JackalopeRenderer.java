@@ -22,7 +22,7 @@ public class JackalopeRenderer extends GeoEntityRenderer<Jackalope> {
 
     @Override
     public void render(Jackalope entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        if (entity.isBaby()){
+        if (entity.isBaby()) {
             stack.scale(0.5f, 0.5f, 0.5f);
         }
         stack.scale(1f, 1f, 1f);
