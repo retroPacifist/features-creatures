@@ -1,11 +1,6 @@
 package net.msrandom.featuresandcreatures.common.entities.jackalope;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-
-public class JackalopeSaddleLayer{//<T extends Jackalope> extends LayerRenderer<T, JackalopeModel<T>> {
+public class JackalopeSaddleLayer {//<T extends Jackalope> extends LayerRenderer<T, JackalopeModel<T>> {
 //    public JackalopeSaddleLayer(IEntityRenderer<T, JackalopeModel<T>> model) {
 //        super(model);
 //    }

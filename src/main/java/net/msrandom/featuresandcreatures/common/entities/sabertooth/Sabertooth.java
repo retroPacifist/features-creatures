@@ -6,7 +6,6 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.passive.FoxEntity;
 import net.minecraft.entity.passive.PolarBearEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.world.World;
@@ -28,17 +27,16 @@ public class Sabertooth extends PolarBearEntity implements IAnimatable {
         super(type, world);
     }
 
-    @Override
-    protected void registerGoals() {
-        super.registerGoals();
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 10, true, true, (Predicate<LivingEntity>)null));
-
-    }
-
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 12.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
-                .add(Attributes.ATTACK_DAMAGE, 2.0F);
+                .add(Attributes.ATTACK_DAMAGE, 4.0F);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 10, true, true, null));
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -65,4 +63,3 @@ public class Sabertooth extends PolarBearEntity implements IAnimatable {
         return this.factory;
     }
 }
-

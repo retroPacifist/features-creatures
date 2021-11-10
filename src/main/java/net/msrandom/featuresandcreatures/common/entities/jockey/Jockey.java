@@ -25,8 +25,8 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import javax.annotation.Nullable;
 
 public class Jockey extends AbstractVillagerEntity implements IAnimatable {
-    private int timeAlive = 0;
     private final AnimationFactory factory = new AnimationFactory(this);
+    private int timeAlive = 0;
 
     public Jockey(EntityType<? extends Jockey> p_i48575_1_, World p_i48575_2_) {
         super(p_i48575_1_, p_i48575_2_);
@@ -34,6 +34,11 @@ public class Jockey extends AbstractVillagerEntity implements IAnimatable {
 
     public static AttributeModifierMap.MutableAttribute createJockeyAttributes() {
         return createMobAttributes().add(Attributes.MAX_HEALTH, 12.0);
+    }
+
+    public static boolean isRiding(Jockey jockey) {
+        Entity entity = jockey.getVehicle();
+        return entity instanceof Jackalope || entity instanceof Boar;
     }
 
     @Override
@@ -82,11 +87,6 @@ public class Jockey extends AbstractVillagerEntity implements IAnimatable {
     public void readAdditionalSaveData(CompoundNBT p_70037_1_) {
         super.readAdditionalSaveData(p_70037_1_);
         timeAlive = p_70037_1_.getInt("TimeAlive");
-    }
-
-    public static boolean isRiding(Jockey jockey) {
-            Entity entity = jockey.getVehicle();
-            return entity instanceof Jackalope || entity instanceof Boar;
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {

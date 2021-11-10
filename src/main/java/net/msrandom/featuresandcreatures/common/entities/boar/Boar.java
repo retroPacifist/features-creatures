@@ -20,7 +20,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
@@ -33,14 +32,20 @@ import java.util.UUID;
 public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT, Items.POTATO, Items.BEETROOT);
     private static final DataParameter<Boolean> DATA_STANDING_ID = EntityDataManager.defineId(Boar.class, DataSerializers.BOOLEAN);
+    private static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
     private final AnimationFactory factory = new AnimationFactory(this);
     private int warningSoundTicks;
-    private static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
     private int remainingPersistentAngerTime;
     private UUID persistentAngerTarget;
 
     public Boar(EntityType<? extends Boar> type, World world) {
         super(type, world);
+    }
+
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 11.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.2D)
+                .add(Attributes.ATTACK_DAMAGE, 8.0F);
     }
 
     @Override
@@ -57,12 +62,6 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
         this.targetSelector.addGoal(2, new Boar.AttackPlayerGoal());
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
         this.targetSelector.addGoal(5, new ResetAngerGoal<>(this, false));
-    }
-
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 11.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.2D)
-                .add(Attributes.ATTACK_DAMAGE, 8.0F);
     }
 
     protected void defineSynchedData() {
@@ -93,20 +92,20 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
         this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.randomValue(this.random));
     }
 
-    public void setRemainingPersistentAngerTime(int time) {
-        this.remainingPersistentAngerTime = time;
-    }
-
     public int getRemainingPersistentAngerTime() {
         return this.remainingPersistentAngerTime;
     }
 
-    public void setPersistentAngerTarget(@Nullable UUID uuid) {
-        this.persistentAngerTarget = uuid;
+    public void setRemainingPersistentAngerTime(int time) {
+        this.remainingPersistentAngerTime = time;
     }
 
     public UUID getPersistentAngerTarget() {
         return this.persistentAngerTarget;
+    }
+
+    public void setPersistentAngerTarget(@Nullable UUID uuid) {
+        this.persistentAngerTarget = uuid;
     }
 
     protected SoundEvent getAmbientSound() {
@@ -243,7 +242,7 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
                 if (this.getTicksUntilNextAttack() <= 20) {
                     Boar.this.setStanding(true);
                     Boar.this.playWarningSound();
-                    Boar.this.setDeltaMovement(0, 0 ,0);
+                    Boar.this.setDeltaMovement(0, 0, 0);
                 }
             } else {
                 this.resetAttackCooldown();

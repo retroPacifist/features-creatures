@@ -19,9 +19,8 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class Jackalope extends RabbitEntity implements IAnimatable {
 
-    private final AnimationFactory factory = new AnimationFactory(this);
-
     private static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(Jackalope.class, DataSerializers.BOOLEAN);
+    private final AnimationFactory factory = new AnimationFactory(this);
 
     public Jackalope(EntityType<? extends Jackalope> type, World world) {
         super(type, world);
@@ -78,12 +77,12 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
         return this.factory;
     }
 
-//getters/setters
-    private void setSaddled(boolean saddled) {
-        this.entityData.set(SADDLED, saddled);
-    }
-
     private boolean getSaddled() {
         return this.entityData.get(SADDLED);
+    }
+
+    //getters/setters
+    private void setSaddled(boolean saddled) {
+        this.entityData.set(SADDLED, saddled);
     }
 }
