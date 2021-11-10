@@ -2,6 +2,8 @@
   "entity.featuresandcreatures.boar": "Boar",
   "entity.featuresandcreatures.jackalope": "Jackalope",
   "entity.featuresandcreatures.jockey": "Jockey",
+  "entity.featuresandcreatures.jockey.potion": "Jockey's Potion",
+  "entity.featuresandcreatures.jockey.arrow": "Jockey's Arrow",
   "entity.featuresandcreatures.sabertooth": "Sabertooth",
   "entity.featuresandcreatures.spear": "Spear",
   "item.featuresandcreatures.boar_spawn_egg": "Boar Spawn Egg",
