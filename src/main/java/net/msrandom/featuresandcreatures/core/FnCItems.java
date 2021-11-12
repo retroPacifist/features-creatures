@@ -1,6 +1,5 @@
 package net.msrandom.featuresandcreatures.core;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.item.*;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;

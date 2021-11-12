@@ -39,6 +39,8 @@ public class FeaturesAndCreatures {
         MinecraftForge.EVENT_BUS.addGenericListener(World.class, FeaturesAndCreatures::attachCapabilities);
         FnCEntities.REGISTRAR.register(bus);
         FnCItems.REGISTRAR.register(bus);
+
+        //GeckoLib
         GeckoLib.initialize();
     }
 

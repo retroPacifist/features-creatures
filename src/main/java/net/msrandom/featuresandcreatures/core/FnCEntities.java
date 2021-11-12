@@ -20,7 +20,7 @@ public class FnCEntities {
 
     public static final RegistryObject<EntityType<Jockey>> JOCKEY = createEntity("jockey", EntityType.Builder.of(Jockey::new, EntityClassification.CREATURE).sized(0.25f, 1f), 0xDBA5FF, 0x564237);
     public static final RegistryObject<EntityType<Boar>> BOAR = createEntity("boar", EntityType.Builder.of(Boar::new, EntityClassification.CREATURE).sized(0.9F, 0.9F), 0x705F44, 0xFFF05A);
-    public static final RegistryObject<EntityType<Jackalope>> JACKALOPE = createEntity("jackalope", EntityType.Builder.of(Jackalope::new, EntityClassification.CREATURE).sized(1.2F, 1.3F), 0xB3A98D, 0x444444);
+    public static final RegistryObject<EntityType<Jackalope>> JACKALOPE = createEntity("jackalope", EntityType.Builder.of(Jackalope::new, EntityClassification.CREATURE).sized(0.6F, 0.5F), 0xB3A98D, 0x444444);
     public static final RegistryObject<EntityType<Sabertooth>> SABERTOOTH = createEntity("sabertooth", EntityType.Builder.of(Sabertooth::new, EntityClassification.CREATURE).sized(1.2F, 1.3F), 0xC59125, 0xEEA2C4);
 
 

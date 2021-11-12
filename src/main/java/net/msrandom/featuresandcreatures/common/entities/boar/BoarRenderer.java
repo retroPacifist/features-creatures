@@ -28,13 +28,8 @@ public class BoarRenderer extends GeoEntityRenderer<Boar> {
 
     @Override
     public void render(Boar entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        AnimatedGeoModel<Boar> modelProvider = new BoarModel();
         if (entity.isBaby()) {
             stack.scale(0.5f, 0.5f, 0.5f);
-//            IBone head = modelProvider.getAnimationProcessor().getBone("head");
-//            head.setScaleX(1.0f);
-//            head.setScaleY(1.0f);
-//            head.setScaleZ(1.0f);
         }
         stack.scale(1f, 1f, 1f);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
