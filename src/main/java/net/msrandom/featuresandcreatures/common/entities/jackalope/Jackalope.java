@@ -1,6 +1,9 @@
 package net.msrandom.featuresandcreatures.common.entities.jackalope;
 
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,9 +22,8 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class Jackalope extends RabbitEntity implements IAnimatable {
 
-    private final AnimationFactory factory = new AnimationFactory(this);
-
     private static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(Jackalope.class, DataSerializers.BOOLEAN);
+    private final AnimationFactory factory = new AnimationFactory(this);
 
     public Jackalope(EntityType<? extends Jackalope> type, World world) {
         super(type, world);
@@ -33,8 +35,13 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
         this.entityData.define(SADDLED, false);
     }
 
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.6F);
+    }
+
     @Override
     protected void registerGoals() {
+        super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
@@ -78,12 +85,12 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
         return this.factory;
     }
 
-//getters/setters
-    private void setSaddled(boolean saddled) {
-        this.entityData.set(SADDLED, saddled);
-    }
-
     private boolean getSaddled() {
         return this.entityData.get(SADDLED);
+    }
+
+    //getters/setters
+    private void setSaddled(boolean saddled) {
+        this.entityData.set(SADDLED, saddled);
     }
 }

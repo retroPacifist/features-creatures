@@ -3,10 +3,8 @@ package net.msrandom.featuresandcreatures.common.entities.jockey;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class JockeyRenderer extends GeoEntityRenderer<Jockey> {
@@ -24,7 +22,7 @@ public class JockeyRenderer extends GeoEntityRenderer<Jockey> {
 
     @Override
     public void render(Jockey entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        if (entity.isBaby()){
+        if (entity.isBaby()) {
             stack.scale(0.5f, 0.5f, 0.5f);
         }
         stack.scale(1f, 1f, 1f);

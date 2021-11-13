@@ -5,22 +5,20 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.msrandom.featuresandcreatures.common.entities.AbstractAngryEntity;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
@@ -28,35 +26,16 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
-public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
+
+public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable {
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT, Items.POTATO, Items.BEETROOT);
-    private static final DataParameter<Boolean> DATA_STANDING_ID = EntityDataManager.defineId(Boar.class, DataSerializers.BOOLEAN);
     private final AnimationFactory factory = new AnimationFactory(this);
-    private int warningSoundTicks;
-    private static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
-    private int remainingPersistentAngerTime;
-    private UUID persistentAngerTarget;
+    public int animationTimer;
+
 
     public Boar(EntityType<? extends Boar> type, World world) {
         super(type, world);
-    }
-
-    @Override
-    protected void registerGoals() {
-        super.registerGoals();
-        this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new Boar.MeleeAttackGoal());
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25D));
-        this.goalSelector.addGoal(5, new RandomWalkingGoal(this, 1.0D));
-        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, FOOD_ITEMS));
-        this.goalSelector.addGoal(7, new LookRandomlyGoal(this));
-        this.targetSelector.addGoal(1, new Boar.HurtByTargetGoal());
-        this.targetSelector.addGoal(2, new Boar.AttackPlayerGoal());
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
-        this.targetSelector.addGoal(5, new ResetAngerGoal<>(this, false));
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
@@ -65,48 +44,22 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
                 .add(Attributes.ATTACK_DAMAGE, 8.0F);
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DATA_STANDING_ID, false);
-    }
-
-    public void readAdditionalSaveData(CompoundNBT nbt) {
-        super.readAdditionalSaveData(nbt);
-        if (!level.isClientSide)
-            this.readPersistentAngerSaveData((ServerWorld) this.level, nbt);
-    }
-
-    public void addAdditionalSaveData(CompoundNBT nbt) {
-        super.addAdditionalSaveData(nbt);
-        this.addPersistentAngerSaveData(nbt);
+    @Override
+    public ILivingEntityData finalizeSpawn(IServerWorld p_213386_1_, DifficultyInstance p_213386_2_, SpawnReason p_213386_3_, @Nullable ILivingEntityData p_213386_4_, @Nullable CompoundNBT p_213386_5_) {
+        this.animationTimer = 0;
+        return super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_, p_213386_4_, p_213386_5_);
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (this.warningSoundTicks > 0) {
-            --this.warningSoundTicks;
-        }
+    public boolean isFood(ItemStack stack) {
+        return FOOD_ITEMS.test(stack);
     }
 
-    public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.randomValue(this.random));
-    }
-
-    public void setRemainingPersistentAngerTime(int time) {
-        this.remainingPersistentAngerTime = time;
-    }
-
-    public int getRemainingPersistentAngerTime() {
-        return this.remainingPersistentAngerTime;
-    }
-
-    public void setPersistentAngerTarget(@Nullable UUID uuid) {
-        this.persistentAngerTarget = uuid;
-    }
-
-    public UUID getPersistentAngerTarget() {
-        return this.persistentAngerTarget;
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, FOOD_ITEMS));
+        this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
     }
 
     protected SoundEvent getAmbientSound() {
@@ -125,16 +78,20 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
         this.playSound(SoundEvents.PIG_STEP, 0.15F, 1.0F);
     }
 
-    protected void playWarningSound() {
-        if (this.warningSoundTicks <= 0) {
-            this.playSound(SoundEvents.PIG_HURT, 1.0F, this.getVoicePitch());
-            this.warningSoundTicks = 40;
-        }
+    @Override
+    public SoundEvent getWarningSound() {
+        return SoundEvents.PIG_HURT;
     }
 
     @Override
-    public boolean canAttack(LivingEntity entity) {
-        return true;
+    public void tick() {
+        super.tick();
+        if (this.isStanding()){
+            this.animationTimer = 15;
+        }
+        if (this.animationTimer > 0) {
+            --this.animationTimer;
+        }
     }
 
     @Override
@@ -147,10 +104,10 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         AnimationController<?> controller = event.getController();
         controller.transitionLengthTicks = 0;
-        if (this.isOnGround() && event.isMoving() && controller.getName() != "animation.boar.attack") {
+        if (event.isMoving() && this.animationTimer <= 0) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.boar.walk", true));
             return PlayState.CONTINUE;
-        } else if (this.isStanding()) {
+        } else if (this.animationTimer > 0) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.boar.attack", true));
             return PlayState.CONTINUE;
         } else {
@@ -168,98 +125,5 @@ public class Boar extends AnimalEntity implements IAngerable, IAnimatable {
         return this.factory;
     }
 
-    public boolean isStanding() {
-        return this.entityData.get(DATA_STANDING_ID);
-    }
-
-    public void setStanding(boolean p_189794_1_) {
-        this.entityData.set(DATA_STANDING_ID, p_189794_1_);
-    }
-
-    class AttackPlayerGoal extends NearestAttackableTargetGoal<PlayerEntity> {
-        public AttackPlayerGoal() {
-            super(Boar.this, PlayerEntity.class, 20, true, true, null);
-        }
-
-        public boolean canUse() {
-            if (!Boar.this.isBaby()) {
-                if (super.canUse()) {
-                    for (Boar boar : Boar.this.level.getEntitiesOfClass(Boar.class, Boar.this.getBoundingBox().inflate(8.0D, 4.0D, 8.0D))) {
-                        if (boar.isBaby()) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-        protected double getFollowDistance() {
-            return super.getFollowDistance() * 0.5D;
-        }
-    }
-
-    class HurtByTargetGoal extends net.minecraft.entity.ai.goal.HurtByTargetGoal {
-        public HurtByTargetGoal() {
-            super(Boar.this);
-        }
-
-        public void start() {
-            super.start();
-            if (Boar.this.isBaby()) {
-                this.alertOthers();
-                this.stop();
-            }
-
-        }
-
-        protected void alertOther(MobEntity mob, LivingEntity attacker) {
-            if (mob instanceof Boar && !mob.isBaby()) {
-                super.alertOther(mob, attacker);
-            }
-        }
-    }
-
-
-    class MeleeAttackGoal extends net.minecraft.entity.ai.goal.MeleeAttackGoal {
-
-        public MeleeAttackGoal() {
-            super(Boar.this, 1.24D, true);
-        }
-
-
-        protected void checkAndPerformAttack(LivingEntity entity, double time) {
-            double d0 = this.getAttackReachSqr(entity);
-            if (time <= d0 && this.isTimeToAttack()) {
-                this.resetAttackCooldown();
-                this.mob.doHurtTarget(entity);
-                Boar.this.setStanding(false);
-            } else if (time <= d0 * 2.0D) {
-                if (this.isTimeToAttack()) {
-                    Boar.this.setStanding(false);
-                    this.resetAttackCooldown();
-                }
-
-                if (this.getTicksUntilNextAttack() <= 20) {
-                    Boar.this.setStanding(true);
-                    Boar.this.playWarningSound();
-                    Boar.this.setDeltaMovement(0, 0 ,0);
-                }
-            } else {
-                this.resetAttackCooldown();
-                Boar.this.setStanding(false);
-            }
-
-        }
-
-        public void stop() {
-            Boar.this.setStanding(false);
-            super.stop();
-        }
-
-        protected double getAttackReachSqr(LivingEntity entity) {
-            return 3.0F + entity.getBbWidth();
-        }
-    }
 
 }
