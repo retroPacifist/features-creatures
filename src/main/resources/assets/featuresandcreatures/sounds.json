@@ -1,0 +1,164 @@
+{
+  "entity.boar.hurt": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.boar.hurts"
+  },
+  "entity.boar.ambient": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.boar.ambient"
+  },
+  "entity.boar.die": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.boar.dies"
+  },
+  "entity.boar.attack": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.boar.attack"
+  },
+  "entity.boar.saddle": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.boar.saddled"
+  },
+  "entity.boar.step": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.boar.steps"
+  },
+  "entity.jockey.hurt": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jockey.hurts"
+  },
+  "entity.jockey.ambient": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jockey.ambient"
+  },
+  "entity.jockey.die": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jockey.dies"
+  },
+  "entity.jockey.attack": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jockey.attack"
+  },
+  "entity.jockey.trade": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jockey.trades"
+  },
+  "entity.jockey.step": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jockey.steps"
+  },
+  "entity.jackalope.hurt": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jackalope.hurts"
+  },
+  "entity.jackalope.ambient": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jackalope.ambient"
+  },
+  "entity.jackalope.die": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jackalope.dies"
+  },
+  "entity.jackalope.saddle": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jackalope.saddled"
+  },
+  "entity.jackalope.step": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.jackalope.jumps"
+  },
+  "entity.sabertooth.hurt": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.sabertooth.hurts"
+  },
+  "entity.sabertooth.ambient": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.sabertooth.ambient"
+  },
+  "entity.sabertooth.die": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.sabertooth.dies"
+  },
+  "entity.sabertooth.attack": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.sabertooth.attack"
+  },
+  "entity.sabertooth.saddle": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.sabertooth.saddled"
+  },
+  "entity.sabertooth.step": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.sabertooth.steps"
+  },
+  "entity.spear.throw": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.spear.thrown"
+  },
+  "entity.spear.attack": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.spear.hits"
+  },
+  "entity.spear.miss": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.spear.lands"
+  },
+  "entity.antler_headdress.attack": {
+    "sounds": [
+      "modid:path/to/file"
+    ],
+    "subtitle": "subtitles.entity.antler_headdress.hits"
+  }
+}
