@@ -12,6 +12,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
@@ -68,7 +69,7 @@ public class FnCEvents {
     }
 
     @SubscribeEvent
-    public static void constructEntity(EntityEvent.EntityConstructing event) {
+    public static void constructEntity(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof WolfEntity || entity instanceof CreeperEntity) {
             ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, Sabertooth.class, 6.0F, 1.0D, 1.2D));
