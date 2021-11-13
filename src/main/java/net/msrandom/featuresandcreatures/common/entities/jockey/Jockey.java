@@ -110,9 +110,6 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         if (this.offers == null) {
             this.offers = new MerchantOffers();
             if (!level.isClientSide) {
-
-                VillagerTrades.ITrade[] trades = new VillagerTrades.ITrade[7];
-
                 for (int i = 0; i < 7; ++i) {
                     List<EffectInstance> effects = new ArrayList<>();
                     int price = random.nextInt(8) + 5;
@@ -131,7 +128,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                             amount = 1;
                     }
 
-                    HashSet<Effect> effectsSet = new HashSet<>(ForgeRegistries.POTIONS.getValues());
+                    Set<Effect> effectsSet = new HashSet<>(ForgeRegistries.POTIONS.getValues());
 
                     for (int j = 0; j < effectCount; ++j) {
                         Effect effect = getRandomElement(random, effectsSet);
@@ -164,27 +161,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                         }
                     }
 
-                    trades[i] = new BasicTrade(new ItemStack(Items.DIAMOND, price), PotionUtils.setCustomEffects(new ItemStack(item, amount), effects).setHoverName(new TranslationTextComponent(translationKey)), Integer.MAX_VALUE, 0, 1f);
-                }
-
-                IntSet set = new IntOpenHashSet();
-                while (set.size() < 5) {
-                    set.add(this.random.nextInt(7));
-                }
-
-                for (int index : set) {
-                    VillagerTrades.ITrade trade = trades[index];
-                    MerchantOffer merchantoffer = trade.getOffer(this, random);
-                    if (merchantoffer != null) {
-                        offers.add(merchantoffer);
-                    }
-                }
-
-                int i = this.random.nextInt(trades.length);
-                VillagerTrades.ITrade trade = trades[i];
-                MerchantOffer offer = trade.getOffer(this, this.random);
-                if (offer != null) {
-                    offers.add(offer);
+                    offers.add(new MerchantOffer(new ItemStack(Items.DIAMOND, price), ItemStack.EMPTY, PotionUtils.setCustomEffects(new ItemStack(item, amount), effects).setHoverName(new TranslationTextComponent(translationKey)), Integer.MAX_VALUE, 0, 1));
                 }
             }
         }
@@ -221,6 +198,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         return effectCount;
     }
 
+    // TODO clean this function
     private int generatePotionStrength(int effectCount) {
         int strength;
         int strengthChance = random.nextInt(100);
