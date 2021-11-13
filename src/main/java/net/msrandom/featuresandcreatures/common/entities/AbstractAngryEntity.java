@@ -23,8 +23,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAnimatable {
-
-    public int animationTimer;
+    // public int animationTimer;
     private static final DataParameter<Boolean> DATA_STANDING_ID = EntityDataManager.defineId(AbstractAngryEntity.class, DataSerializers.BOOLEAN);
     private static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
     private int warningSoundTicks;
@@ -40,7 +39,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new AbstractAngryEntity.MeleeAttackGoal());
-        this.goalSelector.addGoal(1, new AbstractAngryEntity.PanicGoal());
+        this.goalSelector.addGoal(1, new PanicGoal(this, 2));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25D));
         this.goalSelector.addGoal(5, new RandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
@@ -74,9 +73,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
             --this.warningSoundTicks;
         }
     }
-
-
-
+    
     @Nullable
     @Override
     public AgeableEntity getBreedOffspring(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
@@ -142,9 +139,9 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         }
 
         public boolean canUse() {
-            if (!AbstractAngryEntity.this.isBaby()) {
+            if (!isBaby()) {
                 if (super.canUse()) {
-                    for (AbstractAngryEntity entity : AbstractAngryEntity.this.level.getEntitiesOfClass(AbstractAngryEntity.class, AbstractAngryEntity.this.getBoundingBox().inflate(8.0D, 4.0D, 8.0D))) {
+                    for (AbstractAngryEntity entity : level.getEntitiesOfClass(AbstractAngryEntity.class, getBoundingBox().inflate(8.0D, 4.0D, 8.0D))) {
                         if (entity.isBaby()) {
                             return true;
                         }
@@ -166,7 +163,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
 
         public void start() {
             super.start();
-            if (AbstractAngryEntity.this.isBaby()) {
+            if (isBaby()) {
                 this.alertOthers();
                 this.stop();
             }
@@ -180,39 +177,36 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         }
     }
 
-
     protected class MeleeAttackGoal extends net.minecraft.entity.ai.goal.MeleeAttackGoal {
-
         public MeleeAttackGoal() {
             super(AbstractAngryEntity.this, 1.24D, true);
         }
-
-
+        
         protected void checkAndPerformAttack(LivingEntity entity, double time) {
             double d0 = this.getAttackReachSqr(entity);
             if (time <= d0 && this.isTimeToAttack()) {
                 this.resetAttackCooldown();
                 this.mob.doHurtTarget(entity);
-                AbstractAngryEntity.this.setStanding(false);
+                setStanding(false);
             } else if (time <= d0 * 2.0D) {
                 if (this.isTimeToAttack()) {
-                    AbstractAngryEntity.this.setStanding(false);
+                    setStanding(false);
                     this.resetAttackCooldown();
                 }
 
                 if (this.getTicksUntilNextAttack() <= 20) {
-                    AbstractAngryEntity.this.setStanding(true);
-                    AbstractAngryEntity.this.playWarningSound();
+                    setStanding(true);
+                    playWarningSound();
                 }
             } else {
                 this.resetAttackCooldown();
-                AbstractAngryEntity.this.setStanding(false);
+                setStanding(false);
             }
 
         }
 
         public void stop() {
-            AbstractAngryEntity.this.setStanding(false);
+            setStanding(false);
             super.stop();
         }
 
@@ -220,15 +214,4 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
             return 1.7F + entity.getBbWidth();
         }
     }
-
-    class PanicGoal extends net.minecraft.entity.ai.goal.PanicGoal {
-        public PanicGoal() {
-            super(AbstractAngryEntity.this, 2.0D);
-        }
-
-        public boolean canUse() {
-            return (AbstractAngryEntity.this.isBaby() || AbstractAngryEntity.this.isOnFire()) && super.canUse();
-        }
-    }
-
 }

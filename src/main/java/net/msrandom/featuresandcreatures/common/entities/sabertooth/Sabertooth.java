@@ -1,10 +1,7 @@
 package net.msrandom.featuresandcreatures.common.entities.sabertooth;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IAngerable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.BreedGoal;
@@ -20,7 +17,10 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.common.entities.AbstractAngryEntity;
+import net.msrandom.featuresandcreatures.common.entities.boar.Boar;
+import net.msrandom.featuresandcreatures.core.FnCEntities;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -29,10 +29,10 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 public class Sabertooth extends AbstractAngryEntity implements IAngerable, IAnimatable {
-
     private final AnimationFactory factory = new AnimationFactory(this);
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.SALMON, Items.COD, Items.MUTTON);
 
@@ -74,6 +74,14 @@ public class Sabertooth extends AbstractAngryEntity implements IAngerable, IAnim
 
     protected void playStepSound(BlockPos p_180429_1_, BlockState p_180429_2_) {
         this.playSound(SoundEvents.POLAR_BEAR_STEP, 0.15F, 1.0F);
+    }
+
+    @Nullable
+    @Override
+    public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity p_241840_2_) {
+        Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
+        sabertooth.setAge(-24000);
+        return sabertooth;
     }
 
     @Override

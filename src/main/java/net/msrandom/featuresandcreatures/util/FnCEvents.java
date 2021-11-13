@@ -1,21 +1,27 @@
 package net.msrandom.featuresandcreatures.util;
 
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.passive.CatEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
 import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
+import net.msrandom.featuresandcreatures.common.entities.sabertooth.Sabertooth;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 
 @Mod.EventBusSubscriber(modid = FeaturesAndCreatures.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class SpawnCapabilities {
+public class FnCEvents {
     private static final long JOCKEY_SPAWN_TIME = 216000L;
 
     @SubscribeEvent
@@ -58,6 +64,14 @@ public class SpawnCapabilities {
                     }
                 });
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void constructEntity(EntityEvent.EntityConstructing event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof WolfEntity || entity instanceof CreeperEntity) {
+            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, Sabertooth.class, 6.0F, 1.0D, 1.2D));
         }
     }
 }
