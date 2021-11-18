@@ -5,12 +5,19 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -50,6 +57,22 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
     }
 
     @Override
+    public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+        if (player.isHolding(Items.SADDLE)) {
+            this.setSaddled(true);
+            if (!player.isCreative()) {
+                player.getItemInHand(hand).shrink(1);
+            }
+        }
+        if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()){
+            this.setSaddled(false);
+            player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY() + 0.3f, this.getZ(), Items.SADDLE.getDefaultInstance()));
+            player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundCategory.AMBIENT, 1, 1);
+        }
+        return ActionResultType.SUCCESS;
+    }
+
+    @Override
     public void readAdditionalSaveData(CompoundNBT compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         this.setSaddled(compoundNBT.getBoolean("Saddled"));
@@ -58,7 +81,7 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
     @Override
     public void addAdditionalSaveData(CompoundNBT compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
-        compoundNBT.putBoolean("Saddled", this.getSaddled());
+        compoundNBT.putBoolean("Saddled", this.isSaddled());
     }
 
 
@@ -85,7 +108,7 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
         return this.factory;
     }
 
-    private boolean getSaddled() {
+    boolean isSaddled() {
         return this.entityData.get(SADDLED);
     }
 

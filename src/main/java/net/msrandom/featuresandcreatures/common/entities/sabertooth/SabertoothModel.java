@@ -2,6 +2,7 @@ package net.msrandom.featuresandcreatures.common.entities.sabertooth;
 
 import net.minecraft.util.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
+import net.msrandom.featuresandcreatures.common.entities.jackalope.JackalopeRenderer;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -18,7 +19,7 @@ public class SabertoothModel extends AnimatedGeoModel<Sabertooth> {
 
     @Override
     public ResourceLocation getTextureLocation(Sabertooth object) {
-        return SabertoothRenderer.TEXTURE;
+        return object.isSaddled() ? SabertoothRenderer.SADDLED : SabertoothRenderer.TEXTURE;
     }
 
     @Override

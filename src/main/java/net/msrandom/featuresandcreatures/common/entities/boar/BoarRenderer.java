@@ -10,14 +10,20 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 public class BoarRenderer extends GeoEntityRenderer<Boar> {
     public static final ResourceLocation MADTEXTURE = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/boar_angry.png");
     public static final ResourceLocation TEXTURE = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/boar.png");
+    public static final ResourceLocation SADDLED = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/boar_saddle.png");
+
 
     public BoarRenderer(EntityRendererManager dispatcher) {
         super(dispatcher, new BoarModel());
         this.shadowRadius = 0.2F;
     }
 
-    public static ResourceLocation texture(Boar boar) {
-        return boar.isAngry() ? MADTEXTURE : TEXTURE;
+    public static ResourceLocation texture(Boar object) {
+        if(object.isSaddled()){
+            return SADDLED;
+        } else if(object.isAngry()){
+            return MADTEXTURE;
+        } else return TEXTURE;
     }
 
     @Override

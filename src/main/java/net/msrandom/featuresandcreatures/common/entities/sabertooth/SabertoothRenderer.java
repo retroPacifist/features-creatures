@@ -9,6 +9,8 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class SabertoothRenderer extends GeoEntityRenderer<Sabertooth> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/sabertooth.png");
+    public static final ResourceLocation SADDLED = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/sabertooth_saddle.png");
+
 
     public SabertoothRenderer(EntityRendererManager dispatcher) {
         super(dispatcher, new SabertoothModel());
@@ -16,8 +18,8 @@ public class SabertoothRenderer extends GeoEntityRenderer<Sabertooth> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(net.msrandom.featuresandcreatures.common.entities.sabertooth.Sabertooth p_110775_1_) {
-        return TEXTURE;
+    public ResourceLocation getTextureLocation(Sabertooth object) {
+        return object.isSaddled() ? SabertoothRenderer.SADDLED : SabertoothRenderer.TEXTURE;
     }
 
     @Override

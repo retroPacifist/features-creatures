@@ -9,6 +9,8 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 import javax.annotation.Nullable;
 
+import static net.msrandom.featuresandcreatures.common.entities.boar.BoarRenderer.*;
+
 public class BoarModel extends AnimatedGeoModel<Boar> {
 
     @Override
@@ -18,7 +20,11 @@ public class BoarModel extends AnimatedGeoModel<Boar> {
 
     @Override
     public ResourceLocation getTextureLocation(Boar object) {
-        return BoarRenderer.texture(object);
+        if(object.isSaddled()){
+            return SADDLED;
+        } else if(object.isAngry()){
+            return MADTEXTURE;
+        } else return TEXTURE;
     }
 
     @Override

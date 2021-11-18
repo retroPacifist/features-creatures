@@ -2,18 +2,19 @@ package net.msrandom.featuresandcreatures.common.entities;
 
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.RangedInteger;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.TickRangeConverter;
+import net.minecraft.util.*;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAnimatable {
 
+    private static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(AbstractAngryEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> DATA_STANDING_ID = EntityDataManager.defineId(AbstractAngryEntity.class, DataSerializers.BOOLEAN);
     private static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
     private int warningSoundTicks;
@@ -52,17 +54,39 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DATA_STANDING_ID, false);
+        this.entityData.define(SADDLED, false);
     }
 
     public void readAdditionalSaveData(CompoundNBT nbt) {
         super.readAdditionalSaveData(nbt);
-        if (!level.isClientSide)
+        if (!level.isClientSide) {
             this.readPersistentAngerSaveData((ServerWorld) this.level, nbt);
+            this.setSaddled(nbt.getBoolean("Saddled"));
+
+        }
+    }
+
+    @Override
+    public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+        if (player.isHolding(Items.SADDLE)) {
+            this.setSaddled(true);
+            if (!player.isCreative()) {
+                player.getItemInHand(hand).shrink(1);
+            }
+        }
+        if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()){
+            this.setSaddled(false);
+            player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY() + 0.3f, this.getZ(), Items.SADDLE.getDefaultInstance()));
+            player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundCategory.AMBIENT, 1, 1);
+        }
+        return ActionResultType.SUCCESS;
     }
 
     public void addAdditionalSaveData(CompoundNBT nbt) {
         super.addAdditionalSaveData(nbt);
         this.addPersistentAngerSaveData(nbt);
+        nbt.putBoolean("Saddled", this.isSaddled());
+
     }
 
     @Override
@@ -221,5 +245,13 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         public boolean canUse() {
             return (isOnFire()) && super.canUse();
         }
+    }
+
+    public boolean isSaddled() {
+        return this.entityData.get(SADDLED);
+    }
+
+    private void setSaddled(boolean saddled) {
+        this.entityData.set(SADDLED, saddled);
     }
 }

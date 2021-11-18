@@ -18,7 +18,8 @@ public class JackalopeModel extends AnimatedGeoModel<Jackalope> {
 
     @Override
     public ResourceLocation getTextureLocation(Jackalope object) {
-        return JackalopeRenderer.TEXTURE;
+        return object.isSaddled() ? JackalopeRenderer.SADDLED : JackalopeRenderer.TEXTURE;
+
     }
 
     @Override
@@ -34,4 +35,5 @@ public class JackalopeModel extends AnimatedGeoModel<Jackalope> {
         head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
         head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
     }
+
 }

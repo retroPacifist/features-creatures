@@ -9,6 +9,8 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class JackalopeRenderer extends GeoEntityRenderer<Jackalope> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/jackalope.png");
+    public static final ResourceLocation SADDLED = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/jackalope_saddle.png");
+
 
     public JackalopeRenderer(EntityRendererManager dispatcher) {
         super(dispatcher, new JackalopeModel());
@@ -17,7 +19,7 @@ public class JackalopeRenderer extends GeoEntityRenderer<Jackalope> {
 
     @Override
     public ResourceLocation getTextureLocation(Jackalope instance) {
-        return TEXTURE;
+        return instance.isSaddled() ? SADDLED : TEXTURE;
     }
 
     @Override
