@@ -140,7 +140,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         public boolean canUse() {
             if (!isBaby()) {
                 if (super.canUse()) {
-                    for (AbstractAngryEntity entity : level.getEntitiesOfClass(AbstractAngryEntity.class, getBoundingBox().inflate(8.0D, 4.0D, 8.0D))) {
+                    for (AbstractAngryEntity entity : level.getEntitiesOfClass(AbstractAngryEntity.class, getBoundingBox().inflate(6.0D, 4.0D, 6.0D))) {
                         if (entity.isBaby()) {
                             return true;
                         }
@@ -209,7 +209,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         }
 
         protected double getAttackReachSqr(LivingEntity entity) {
-            return 1.7F + entity.getBbWidth();
+            return 4F + entity.getBbWidth();
         }
     }
 

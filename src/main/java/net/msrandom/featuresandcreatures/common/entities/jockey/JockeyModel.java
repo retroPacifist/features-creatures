@@ -29,6 +29,7 @@ public class JockeyModel extends AnimatedGeoModel<Jockey> {
 
     @Override
     public void setLivingAnimations(Jockey entity, Integer uniqueID, @Nullable AnimationEvent customPredicate) {
+        super.setLivingAnimations(entity, uniqueID, customPredicate);
         IBone head = this.getAnimationProcessor().getBone("head");
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
         head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
