@@ -54,6 +54,22 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         return createMobAttributes().add(Attributes.MAX_HEALTH, 12.0);
     }
 
+    private static <T> T getRandomElement(Random random, Collection<T> collection) {
+        int size = random.nextInt(collection.size());
+        int i = 0;
+        for (T t : collection) {
+            if (++i == size) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isRiding(Jockey jockey) {
+        Entity entity = jockey.getVehicle();
+        return entity instanceof Jackalope || entity instanceof Boar;
+    }
+
     @Override
     public boolean showProgressBar() {
         return false;
@@ -79,30 +95,19 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         }
     }
 
-    private static <T> T getRandomElement(Random random, Collection<T> collection) {
-        int size = random.nextInt(collection.size());
-        int i = 0;
-        for (T t : collection) {
-            if (++i == size) {
-                return t;
-            }
-        }
-        return null;
-    }
-
     protected float getStandingEyeHeight(Pose pose, EntitySize size) {
         return size.height * 0.85F;
-    }
-
-    @Override
-    public void setTradingPlayer(@Nullable PlayerEntity player) {
-        this.tradingPlayer = player;
     }
 
     @Nullable
     @Override
     public PlayerEntity getTradingPlayer() {
         return tradingPlayer;
+    }
+
+    @Override
+    public void setTradingPlayer(@Nullable PlayerEntity player) {
+        this.tradingPlayer = player;
     }
 
     @Override
@@ -296,11 +301,6 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     public void readAdditionalSaveData(CompoundNBT p_70037_1_) {
         super.readAdditionalSaveData(p_70037_1_);
         timeAlive = p_70037_1_.getInt("TimeAlive");
-    }
-
-    public static boolean isRiding(Jockey jockey) {
-        Entity entity = jockey.getVehicle();
-        return entity instanceof Jackalope || entity instanceof Boar;
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {

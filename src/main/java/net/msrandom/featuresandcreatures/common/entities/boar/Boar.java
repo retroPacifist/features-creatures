@@ -4,12 +4,15 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
@@ -86,7 +89,7 @@ public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable
     @Override
     public void tick() {
         super.tick();
-        if (this.isStanding()){
+        if (this.isStanding()) {
             this.animationTimer = 15;
         }
         if (this.animationTimer > 0) {

@@ -3,7 +3,6 @@ package net.msrandom.featuresandcreatures.common.entities;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.PolarBearEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -23,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAnimatable {
-    // public int animationTimer;
+
     private static final DataParameter<Boolean> DATA_STANDING_ID = EntityDataManager.defineId(AbstractAngryEntity.class, DataSerializers.BOOLEAN);
     private static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
     private int warningSoundTicks;
@@ -39,7 +38,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new AbstractAngryEntity.MeleeAttackGoal());
-        this.goalSelector.addGoal(1, new PanicGoal(this, 2));
+        this.goalSelector.addGoal(1, new AbstractAngryEntity.PanicGoal());
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25D));
         this.goalSelector.addGoal(5, new RandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
@@ -73,7 +72,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
             --this.warningSoundTicks;
         }
     }
-    
+
     @Nullable
     @Override
     public AgeableEntity getBreedOffspring(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
@@ -178,10 +177,11 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
     }
 
     protected class MeleeAttackGoal extends net.minecraft.entity.ai.goal.MeleeAttackGoal {
+
         public MeleeAttackGoal() {
             super(AbstractAngryEntity.this, 1.24D, true);
         }
-        
+
         protected void checkAndPerformAttack(LivingEntity entity, double time) {
             double d0 = this.getAttackReachSqr(entity);
             if (time <= d0 && this.isTimeToAttack()) {
@@ -193,7 +193,6 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
                     setStanding(false);
                     this.resetAttackCooldown();
                 }
-
                 if (this.getTicksUntilNextAttack() <= 20) {
                     setStanding(true);
                     playWarningSound();
@@ -202,7 +201,6 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
                 this.resetAttackCooldown();
                 setStanding(false);
             }
-
         }
 
         public void stop() {
@@ -212,6 +210,16 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
 
         protected double getAttackReachSqr(LivingEntity entity) {
             return 1.7F + entity.getBbWidth();
+        }
+    }
+
+    class PanicGoal extends net.minecraft.entity.ai.goal.PanicGoal {
+        public PanicGoal() {
+            super(AbstractAngryEntity.this, 2.0D);
+        }
+
+        public boolean canUse() {
+            return (isBaby() || isOnFire()) && super.canUse();
         }
     }
 }

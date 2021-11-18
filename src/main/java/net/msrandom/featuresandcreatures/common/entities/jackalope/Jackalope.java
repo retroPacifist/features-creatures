@@ -29,14 +29,14 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
         super(type, world);
     }
 
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.6F);
+    }
+
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(SADDLED, false);
-    }
-
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.6F);
     }
 
     @Override
