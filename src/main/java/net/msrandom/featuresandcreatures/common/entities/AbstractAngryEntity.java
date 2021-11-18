@@ -38,11 +38,11 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new AbstractAngryEntity.MeleeAttackGoal());
-        this.goalSelector.addGoal(1, new AbstractAngryEntity.PanicGoal());
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25D));
-        this.goalSelector.addGoal(5, new RandomWalkingGoal(this, 1.0D));
-        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(7, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(2, new AbstractAngryEntity.PanicGoal());
+        this.goalSelector.addGoal(3, new FollowParentGoal(this, 1.25D));
+        this.goalSelector.addGoal(4, new RandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new AbstractAngryEntity.HurtByTargetGoal());
         this.targetSelector.addGoal(2, new AbstractAngryEntity.AttackPlayerGoal());
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
@@ -219,7 +219,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         }
 
         public boolean canUse() {
-            return (isBaby() || isOnFire()) && super.canUse();
+            return (isOnFire()) && super.canUse();
         }
     }
 }
