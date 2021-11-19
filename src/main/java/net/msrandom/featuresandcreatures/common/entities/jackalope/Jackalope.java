@@ -10,7 +10,6 @@ import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -19,12 +18,14 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.pathfinding.Path;
+import net.minecraft.util.*;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -42,10 +43,170 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT, Items.GOLDEN_CARROT);
     private final AnimationFactory factory = new AnimationFactory(this);
 
+    private int jumpTicks;
+    private int jumpDuration;
+    private boolean wasOnGround;
+    private int jumpDelayTicks;
+
     public Jackalope(EntityType<? extends Jackalope> type, World world) {
         super(type, world);
-//        this.jumpControl = new RabbitEntity.JumpHelperController(this);
-//        this.moveControl = new RabbitEntity.MoveHelperController(this);
+        this.jumpControl = new JumpHelperController(this);
+        this.moveControl = new MoveHelperController(this);
+        this.setSpeedModifier(0.0D);
+
+    }
+
+    protected float getJumpPower() {
+        if (!this.horizontalCollision && (!this.moveControl.hasWanted() || !(this.moveControl.getWantedY() > this.getY() + 0.7D))) {
+            Path path = this.navigation.getPath();
+            if (path != null && !path.isDone()) {
+                Vector3d vector3d = path.getNextEntityPos(this);
+                if (vector3d.y > this.getY() + 0.7D) {
+                    return 0.7F;
+                }
+            }
+
+            return this.moveControl.getSpeedModifier() <= 0.6D ? 0.2F : 0.3F;
+        } else {
+            return 0.7F;
+        }
+    }
+
+    protected void jumpFromGround() {
+        super.jumpFromGround();
+        double d0 = this.moveControl.getSpeedModifier();
+        if (d0 > 0.0D) {
+            double d1 = getHorizontalDistanceSqr(this.getDeltaMovement());
+            if (d1 < 0.01D) {
+                this.moveRelative(0.2F, new Vector3d(0.0D, 0.0D, 1.0D));
+            }
+        }
+
+        if (!this.level.isClientSide) {
+            this.level.broadcastEntityEvent(this, (byte)1);
+        }
+
+    }
+
+    public void setSpeedModifier(double p_175515_1_) {
+        this.getNavigation().setSpeedModifier(p_175515_1_);
+        this.moveControl.setWantedPosition(this.moveControl.getWantedX(), this.moveControl.getWantedY(), this.moveControl.getWantedZ(), p_175515_1_);
+    }
+
+    public void setJumping(boolean p_70637_1_) {
+        super.setJumping(p_70637_1_);
+        if (p_70637_1_) {
+            this.playSound(this.getJumpSound(), this.getSoundVolume(), ((this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F) * 0.8F);
+        }
+
+    }
+
+    public void startJumping() {
+        this.setJumping(true);
+        this.jumpDuration = 10;
+        this.jumpTicks = 0;
+    }
+
+    public void customServerAiStep() {
+        if (this.jumpDelayTicks > 0) {
+            --this.jumpDelayTicks;
+        }
+
+        if (this.onGround) {
+            if (!this.wasOnGround) {
+                this.setJumping(false);
+                this.checkLandingDelay();
+            }
+
+
+            JumpHelperController controller = (JumpHelperController)this.jumpControl;
+            if (!controller.wantJump()) {
+                if (this.moveControl.hasWanted() && this.jumpDelayTicks == 0) {
+                    Path path = this.navigation.getPath();
+                    Vector3d vector3d = new Vector3d(this.moveControl.getWantedX(), this.moveControl.getWantedY(), this.moveControl.getWantedZ());
+                    if (path != null && !path.isDone()) {
+                        vector3d = path.getNextEntityPos(this);
+                    }
+
+                    this.facePoint(vector3d.x, vector3d.z);
+                    this.startJumping();
+                }
+            } else if (!controller.canJump()) {
+                this.enableJumpControl();
+            }
+        }
+
+        this.wasOnGround = this.onGround;
+    }
+
+    public boolean canSpawnSprintParticle() {
+        return false;
+    }
+
+    private void facePoint(double p_175533_1_, double p_175533_3_) {
+        this.yRot = (float)(MathHelper.atan2(p_175533_3_ - this.getZ(), p_175533_1_ - this.getX()) * (double)(180F / (float)Math.PI)) - 90.0F;
+    }
+
+    private void enableJumpControl() {
+        ((JumpHelperController)this.jumpControl).setCanJump(true);
+    }
+
+    private void disableJumpControl() {
+        ((JumpHelperController)this.jumpControl).setCanJump(false);
+    }
+
+    private void setLandingDelay() {
+        if (this.moveControl.getSpeedModifier() < 2.2D) {
+            this.jumpDelayTicks = 10;
+        } else {
+            this.jumpDelayTicks = 1;
+        }
+
+    }
+
+    private void checkLandingDelay() {
+        this.setLandingDelay();
+        this.disableJumpControl();
+    }
+
+    public void aiStep() {
+        super.aiStep();
+        if (this.jumpTicks != this.jumpDuration) {
+            ++this.jumpTicks;
+        } else if (this.jumpDuration != 0) {
+            this.jumpTicks = 0;
+            this.jumpDuration = 0;
+            this.setJumping(false);
+        }
+
+    }
+
+    protected SoundEvent getJumpSound() {
+        return SoundEvents.RABBIT_JUMP;
+    }
+
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.RABBIT_AMBIENT;
+    }
+
+    protected SoundEvent getHurtSound(DamageSource p_184601_1_) {
+        return SoundEvents.RABBIT_HURT;
+    }
+
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.RABBIT_DEATH;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void handleEntityEvent(byte p_70103_1_) {
+        if (p_70103_1_ == 1) {
+            this.spawnSprintParticle();
+            this.jumpDuration = 10;
+            this.jumpTicks = 0;
+        } else {
+            super.handleEntityEvent(p_70103_1_);
+        }
+
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
@@ -133,69 +294,68 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     public AnimationFactory getFactory() {
         return this.factory;
     }
-//
-//    public class JumpHelperController extends JumpController {
-//        private final Jackalope jackalope;
-//        private boolean canJump;
-//
-//        public JumpHelperController(Jackalope p_i45863_2_) {
-//            super(p_i45863_2_);
-//            this.jackalope = p_i45863_2_;
-//        }
-//
-//        public boolean wantJump() {
-//            return this.jump;
-//        }
-//
-//        public boolean canJump() {
-//            return this.canJump;
-//        }
-//
-//        public void setCanJump(boolean p_180066_1_) {
-//            this.canJump = p_180066_1_;
-//        }
-//
-//        public void tick() {
-//            if (this.jump) {
-//                this.jackalope.startJumping();
-//                this.jump = false;
-//            }
-//
-//        }
-//    }
-//
-//    static class MoveHelperController extends MovementController {
-//        private final Jackalope rabbit;
-//        private double nextJumpSpeed;
-//
-//        public MoveHelperController(Jackalope p_i45862_1_) {
-//            super(p_i45862_1_);
-//            this.rabbit = p_i45862_1_;
-//        }
-//
-//        public void tick() {
-//            if (this.rabbit.onGround && !this.rabbit.jumping && !((RabbitEntity.JumpHelperController)this.rabbit.jumpControl).wantJump()) {
-//                this.rabbit.setSpeedModifier(0.0D);
-//            } else if (this.hasWanted()) {
-//                this.rabbit.setSpeedModifier(this.nextJumpSpeed);
-//            }
-//
-//            super.tick();
-//        }
-//
-//        public void setWantedPosition(double p_75642_1_, double p_75642_3_, double p_75642_5_, double p_75642_7_) {
-//            if (this.rabbit.isInWater()) {
-//                p_75642_7_ = 1.5D;
-//            }
-//
-//            super.setWantedPosition(p_75642_1_, p_75642_3_, p_75642_5_, p_75642_7_);
-//            if (p_75642_7_ > 0.0D) {
-//                this.nextJumpSpeed = p_75642_7_;
-//            }
-//
-//        }
-//    }
 
+    public class JumpHelperController extends JumpController {
+        private final Jackalope jack;
+        private boolean canJump;
+
+        public JumpHelperController(Jackalope jackalope) {
+            super(jackalope);
+            this.jack = jackalope;
+        }
+
+        public boolean wantJump() {
+            return this.jump;
+        }
+
+        public boolean canJump() {
+            return this.canJump;
+        }
+
+        public void setCanJump(boolean p_180066_1_) {
+            this.canJump = p_180066_1_;
+        }
+
+        public void tick() {
+            if (this.jump) {
+                this.jack.startJumping();
+                this.jump = false;
+            }
+
+        }
+    }
+
+    static class MoveHelperController extends MovementController {
+        private final Jackalope jack;
+        private double nextJumpSpeed;
+
+        public MoveHelperController(Jackalope jackalope) {
+            super(jackalope);
+            this.jack = jackalope;
+        }
+
+        public void tick() {
+            if (this.jack.onGround && !this.jack.jumping && !((JumpHelperController)this.jack.jumpControl).wantJump()) {
+                this.jack.setSpeedModifier(0.0D);
+            } else if (this.hasWanted()) {
+                this.jack.setSpeedModifier(this.nextJumpSpeed);
+            }
+
+            super.tick();
+        }
+
+        public void setWantedPosition(double p_75642_1_, double p_75642_3_, double p_75642_5_, double p_75642_7_) {
+            if (this.jack.isInWater()) {
+                p_75642_7_ = 1.5D;
+            }
+
+            super.setWantedPosition(p_75642_1_, p_75642_3_, p_75642_5_, p_75642_7_);
+            if (p_75642_7_ > 0.0D) {
+                this.nextJumpSpeed = p_75642_7_;
+            }
+
+        }
+    }
 
     boolean isSaddled() {
         return this.entityData.get(SADDLED);
