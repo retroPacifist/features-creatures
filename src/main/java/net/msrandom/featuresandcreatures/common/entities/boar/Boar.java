@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 
 
 public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable {
-    private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT, Items.POTATO, Items.BEETROOT);
+    private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT);
     private final AnimationFactory factory = new AnimationFactory(this);
     public int animationTimer;
 

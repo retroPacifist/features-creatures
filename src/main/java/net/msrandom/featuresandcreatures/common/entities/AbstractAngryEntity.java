@@ -40,7 +40,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new AbstractAngryEntity.MeleeAttackGoal());
-        this.goalSelector.addGoal(2, new AbstractAngryEntity.PanicGoal());
+        this.goalSelector.addGoal(2, new PanicGoal(this, 1.2D));
         this.goalSelector.addGoal(3, new FollowParentGoal(this, 1.25D));
         this.goalSelector.addGoal(4, new RandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 6.0F));
@@ -68,7 +68,8 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
 
     @Override
     public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
-        if (player.isHolding(Items.SADDLE)) {
+        super.mobInteract(player, hand);
+        if (player.isHolding(Items.SADDLE) && !this.isBaby()) {
             this.setSaddled(true);
             if (!player.isCreative()) {
                 player.getItemInHand(hand).shrink(1);
@@ -234,16 +235,6 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
 
         protected double getAttackReachSqr(LivingEntity entity) {
             return 4F + entity.getBbWidth();
-        }
-    }
-
-    class PanicGoal extends net.minecraft.entity.ai.goal.PanicGoal {
-        public PanicGoal() {
-            super(AbstractAngryEntity.this, 2.0D);
-        }
-
-        public boolean canUse() {
-            return (isOnFire()) && super.canUse();
         }
     }
 

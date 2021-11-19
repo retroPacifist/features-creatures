@@ -1,14 +1,20 @@
 package net.msrandom.featuresandcreatures.common.entities.jackalope;
 
+import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.controller.JumpController;
+import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -17,8 +23,9 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.msrandom.featuresandcreatures.core.FnCEntities;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -27,17 +34,35 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class Jackalope extends RabbitEntity implements IAnimatable {
+import javax.annotation.Nullable;
+
+public class Jackalope extends AnimalEntity implements IAnimatable {
 
     private static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(Jackalope.class, DataSerializers.BOOLEAN);
+    private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT, Items.GOLDEN_CARROT);
     private final AnimationFactory factory = new AnimationFactory(this);
 
     public Jackalope(EntityType<? extends Jackalope> type, World world) {
         super(type, world);
+//        this.jumpControl = new RabbitEntity.JumpHelperController(this);
+//        this.moveControl = new RabbitEntity.MoveHelperController(this);
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.6F);
+    }
+
+    @Override
+    public boolean isFood(ItemStack stack) {
+        return FOOD_ITEMS.test(stack);
+    }
+
+    @Nullable
+    @Override
+    public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity entity) {
+        Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
+        jackalope.setAge(-24000);
+        return jackalope;
     }
 
     @Override
@@ -58,6 +83,7 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
 
     @Override
     public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+        super.mobInteract(player, hand);
         if (player.isHolding(Items.SADDLE)) {
             this.setSaddled(true);
             if (!player.isCreative()) {
@@ -107,6 +133,69 @@ public class Jackalope extends RabbitEntity implements IAnimatable {
     public AnimationFactory getFactory() {
         return this.factory;
     }
+//
+//    public class JumpHelperController extends JumpController {
+//        private final Jackalope jackalope;
+//        private boolean canJump;
+//
+//        public JumpHelperController(Jackalope p_i45863_2_) {
+//            super(p_i45863_2_);
+//            this.jackalope = p_i45863_2_;
+//        }
+//
+//        public boolean wantJump() {
+//            return this.jump;
+//        }
+//
+//        public boolean canJump() {
+//            return this.canJump;
+//        }
+//
+//        public void setCanJump(boolean p_180066_1_) {
+//            this.canJump = p_180066_1_;
+//        }
+//
+//        public void tick() {
+//            if (this.jump) {
+//                this.jackalope.startJumping();
+//                this.jump = false;
+//            }
+//
+//        }
+//    }
+//
+//    static class MoveHelperController extends MovementController {
+//        private final Jackalope rabbit;
+//        private double nextJumpSpeed;
+//
+//        public MoveHelperController(Jackalope p_i45862_1_) {
+//            super(p_i45862_1_);
+//            this.rabbit = p_i45862_1_;
+//        }
+//
+//        public void tick() {
+//            if (this.rabbit.onGround && !this.rabbit.jumping && !((RabbitEntity.JumpHelperController)this.rabbit.jumpControl).wantJump()) {
+//                this.rabbit.setSpeedModifier(0.0D);
+//            } else if (this.hasWanted()) {
+//                this.rabbit.setSpeedModifier(this.nextJumpSpeed);
+//            }
+//
+//            super.tick();
+//        }
+//
+//        public void setWantedPosition(double p_75642_1_, double p_75642_3_, double p_75642_5_, double p_75642_7_) {
+//            if (this.rabbit.isInWater()) {
+//                p_75642_7_ = 1.5D;
+//            }
+//
+//            super.setWantedPosition(p_75642_1_, p_75642_3_, p_75642_5_, p_75642_7_);
+//            if (p_75642_7_ > 0.0D) {
+//                this.nextJumpSpeed = p_75642_7_;
+//            }
+//
+//        }
+//    }
+
 
     boolean isSaddled() {
         return this.entityData.get(SADDLED);
