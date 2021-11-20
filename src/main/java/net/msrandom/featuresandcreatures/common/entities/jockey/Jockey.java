@@ -1,12 +1,9 @@
 package net.msrandom.featuresandcreatures.common.entities.jockey;
 
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.merchant.IMerchant;
-import net.minecraft.entity.merchant.villager.VillagerTrades;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
@@ -19,7 +16,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.BasicTrade;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.common.entities.boar.Boar;

@@ -1,13 +1,15 @@
 package net.msrandom.featuresandcreatures.common.entities.sabertooth;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.IAngerable;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.passive.PolarBearEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -19,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.common.entities.AbstractAngryEntity;
-import net.msrandom.featuresandcreatures.common.entities.boar.Boar;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -30,11 +31,10 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
-import java.util.function.Predicate;
 
 public class Sabertooth extends AbstractAngryEntity implements IAngerable, IAnimatable {
-    private final AnimationFactory factory = new AnimationFactory(this);
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.SALMON, Items.COD, Items.MUTTON);
+    private final AnimationFactory factory = new AnimationFactory(this);
 
 
     public Sabertooth(EntityType<? extends Sabertooth> type, World world) {

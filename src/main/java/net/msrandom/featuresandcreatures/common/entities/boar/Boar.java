@@ -6,14 +6,19 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
+import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
@@ -31,10 +36,14 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import javax.annotation.Nullable;
 
 
-public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable {
+public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable, IRideable {
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT);
     private final AnimationFactory factory = new AnimationFactory(this);
+    private static final DataParameter<Boolean> DATA_SADDLE_ID = EntityDataManager.defineId(Boar.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> DATA_BOOST_TIME = EntityDataManager.defineId(Boar.class, DataSerializers.INT);
     public int animationTimer;
+    private final BoostHelper boostHelper = new BoostHelper(this.entityData, DATA_BOOST_TIME, DATA_SADDLE_ID);
+
 
 
     public Boar(EntityType<? extends Boar> type, World world) {
@@ -53,6 +62,31 @@ public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable
         return super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_, p_213386_4_, p_213386_5_);
     }
 
+    public void onSyncedDataUpdated(DataParameter<?> p_184206_1_) {
+        if (DATA_BOOST_TIME.equals(p_184206_1_) && this.level.isClientSide) {
+            this.boostHelper.onSynced();
+        }
+
+        super.onSyncedDataUpdated(p_184206_1_);
+    }
+
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_SADDLE_ID, false);
+        this.entityData.define(DATA_BOOST_TIME, 0);
+    }
+
+    public void addAdditionalSaveData(CompoundNBT nbt) {
+        super.addAdditionalSaveData(nbt);
+        this.boostHelper.addAdditionalSaveData(nbt);
+    }
+
+    public void readAdditionalSaveData(CompoundNBT nbt) {
+        super.readAdditionalSaveData(nbt);
+        this.boostHelper.readAdditionalSaveData(nbt);
+    }
+
+
     @Override
     public boolean isFood(ItemStack stack) {
         return FOOD_ITEMS.test(stack);
@@ -62,7 +96,31 @@ public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, FOOD_ITEMS));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT_ON_A_STICK), false));
         this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
+    }
+
+    @Override
+    public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+        boolean flag = this.isFood(player.getItemInHand(hand));
+        if (!flag && this.isSaddled() && !this.isVehicle() && !player.isSecondaryUseActive()) {
+            if (!this.level.isClientSide) {
+                player.startRiding(this);
+            }
+            return ActionResultType.sidedSuccess(this.level.isClientSide);
+        }else{
+            return super.mobInteract(player, hand);
+        }
+    }
+
+    public boolean canBeControlledByRider() {
+        Entity entity = this.getControllingPassenger();
+        if (!(entity instanceof PlayerEntity)) {
+            return false;
+        } else {
+            PlayerEntity playerentity = (PlayerEntity)entity;
+            return playerentity.getMainHandItem().getItem() == Items.CARROT_ON_A_STICK || playerentity.getOffhandItem().getItem() == Items.CARROT_ON_A_STICK;
+        }
     }
 
     protected SoundEvent getAmbientSound() {
@@ -128,5 +186,24 @@ public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable
         return this.factory;
     }
 
+    @Nullable
+    public Entity getControllingPassenger() {
+        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+    }
 
+    public void travel(Vector3d p_213352_1_) {
+        this.travel(this, this.boostHelper, p_213352_1_);
+    }
+
+    public float getSteeringSpeed() {
+        return (float)this.getAttributeValue(Attributes.MOVEMENT_SPEED) * 0.225F;
+    }
+
+    public void travelWithInput(Vector3d p_230267_1_) {
+        super.travel(p_230267_1_);
+    }
+
+    public boolean boost() {
+        return this.boostHelper.boost(this.getRandom());
+    }
 }

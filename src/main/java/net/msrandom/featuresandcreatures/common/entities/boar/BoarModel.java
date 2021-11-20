@@ -20,9 +20,9 @@ public class BoarModel extends AnimatedGeoModel<Boar> {
 
     @Override
     public ResourceLocation getTextureLocation(Boar object) {
-        if(object.isSaddled()){
+        if (object.isSaddled()) {
             return SADDLED;
-        } else if(object.isAngry()){
+        } else if (object.isAngry()) {
             return MADTEXTURE;
         } else return TEXTURE;
     }

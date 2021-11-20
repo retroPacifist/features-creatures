@@ -17,7 +17,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -91,7 +94,7 @@ public class SpearItem extends Item implements IVanishable {
     }
 
     public boolean mineBlock(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity entity) {
-        if ((double)state.getDestroySpeed(world, pos) != 0.0D) {
+        if ((double) state.getDestroySpeed(world, pos) != 0.0D) {
             stack.hurtAndBreak(2, entity, (p_220046_0_) -> {
                 p_220046_0_.broadcastBreakEvent(EquipmentSlotType.MAINHAND);
             });

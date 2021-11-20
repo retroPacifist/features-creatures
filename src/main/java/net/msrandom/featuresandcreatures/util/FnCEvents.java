@@ -1,9 +1,10 @@
 package net.msrandom.featuresandcreatures.util;
 
-import net.minecraft.entity.*;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -11,7 +12,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

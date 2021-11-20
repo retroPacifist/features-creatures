@@ -2,7 +2,6 @@ package net.msrandom.featuresandcreatures.common.entities.sabertooth;
 
 import net.minecraft.util.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.common.entities.jackalope.JackalopeRenderer;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;

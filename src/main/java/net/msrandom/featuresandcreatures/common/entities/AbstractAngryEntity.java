@@ -11,10 +11,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -75,7 +73,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
                 player.getItemInHand(hand).shrink(1);
             }
         }
-        if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()){
+        if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()) {
             this.setSaddled(false);
             player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY() + 0.3f, this.getZ(), Items.SADDLE.getDefaultInstance()));
             player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundCategory.AMBIENT, 1, 1);
@@ -157,6 +155,14 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         return null;
     }
 
+    public boolean isSaddled() {
+        return this.entityData.get(SADDLED);
+    }
+
+    private void setSaddled(boolean saddled) {
+        this.entityData.set(SADDLED, saddled);
+    }
+
     protected class AttackPlayerGoal extends NearestAttackableTargetGoal<PlayerEntity> {
         public AttackPlayerGoal() {
             super(AbstractAngryEntity.this, PlayerEntity.class, 20, true, true, null);
@@ -236,13 +242,5 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         protected double getAttackReachSqr(LivingEntity entity) {
             return 4F + entity.getBbWidth();
         }
-    }
-
-    public boolean isSaddled() {
-        return this.entityData.get(SADDLED);
-    }
-
-    private void setSaddled(boolean saddled) {
-        this.entityData.set(SADDLED, saddled);
     }
 }

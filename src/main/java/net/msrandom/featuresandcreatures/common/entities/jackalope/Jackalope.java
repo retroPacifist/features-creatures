@@ -53,7 +53,10 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         this.jumpControl = new JumpHelperController(this);
         this.moveControl = new MoveHelperController(this);
         this.setSpeedModifier(0.0D);
+    }
 
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.6F);
     }
 
     protected float getJumpPower() {
@@ -65,7 +68,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
                     return 0.7F;
                 }
             }
-
             return this.moveControl.getSpeedModifier() <= 0.6D ? 0.2F : 0.3F;
         } else {
             return 0.7F;
@@ -81,11 +83,9 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
                 this.moveRelative(0.2F, new Vector3d(0.0D, 0.0D, 1.0D));
             }
         }
-
         if (!this.level.isClientSide) {
-            this.level.broadcastEntityEvent(this, (byte)1);
+            this.level.broadcastEntityEvent(this, (byte) 1);
         }
-
     }
 
     public void setSpeedModifier(double p_175515_1_) {
@@ -119,7 +119,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
             }
 
 
-            JumpHelperController controller = (JumpHelperController)this.jumpControl;
+            JumpHelperController controller = (JumpHelperController) this.jumpControl;
             if (!controller.wantJump()) {
                 if (this.moveControl.hasWanted() && this.jumpDelayTicks == 0) {
                     Path path = this.navigation.getPath();
@@ -144,15 +144,15 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     }
 
     private void facePoint(double p_175533_1_, double p_175533_3_) {
-        this.yRot = (float)(MathHelper.atan2(p_175533_3_ - this.getZ(), p_175533_1_ - this.getX()) * (double)(180F / (float)Math.PI)) - 90.0F;
+        this.yRot = (float) (MathHelper.atan2(p_175533_3_ - this.getZ(), p_175533_1_ - this.getX()) * (double) (180F / (float) Math.PI)) - 90.0F;
     }
 
     private void enableJumpControl() {
-        ((JumpHelperController)this.jumpControl).setCanJump(true);
+        ((JumpHelperController) this.jumpControl).setCanJump(true);
     }
 
     private void disableJumpControl() {
-        ((JumpHelperController)this.jumpControl).setCanJump(false);
+        ((JumpHelperController) this.jumpControl).setCanJump(false);
     }
 
     private void setLandingDelay() {
@@ -209,10 +209,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
 
     }
 
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.6F);
-    }
-
     @Override
     public boolean isFood(ItemStack stack) {
         return FOOD_ITEMS.test(stack);
@@ -251,7 +247,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
                 player.getItemInHand(hand).shrink(1);
             }
         }
-        if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()){
+        if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()) {
             this.setSaddled(false);
             player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY() + 0.3f, this.getZ(), Items.SADDLE.getDefaultInstance()));
             player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundCategory.AMBIENT, 1, 1);
@@ -295,6 +291,47 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         return this.factory;
     }
 
+    boolean isSaddled() {
+        return this.entityData.get(SADDLED);
+    }
+
+    //getters/setters
+    private void setSaddled(boolean saddled) {
+        this.entityData.set(SADDLED, saddled);
+    }
+
+    static class MoveHelperController extends MovementController {
+        private final Jackalope jack;
+        private double nextJumpSpeed;
+
+        public MoveHelperController(Jackalope jackalope) {
+            super(jackalope);
+            this.jack = jackalope;
+        }
+
+        public void tick() {
+            if (this.jack.onGround && !this.jack.jumping && !((JumpHelperController) this.jack.jumpControl).wantJump()) {
+                this.jack.setSpeedModifier(0.0D);
+            } else if (this.hasWanted()) {
+                this.jack.setSpeedModifier(this.nextJumpSpeed);
+            }
+
+            super.tick();
+        }
+
+        public void setWantedPosition(double p_75642_1_, double p_75642_3_, double p_75642_5_, double p_75642_7_) {
+            if (this.jack.isInWater()) {
+                p_75642_7_ = 1.5D;
+            }
+
+            super.setWantedPosition(p_75642_1_, p_75642_3_, p_75642_5_, p_75642_7_);
+            if (p_75642_7_ > 0.0D) {
+                this.nextJumpSpeed = p_75642_7_;
+            }
+
+        }
+    }
+
     public class JumpHelperController extends JumpController {
         private final Jackalope jack;
         private boolean canJump;
@@ -323,46 +360,5 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
             }
 
         }
-    }
-
-    static class MoveHelperController extends MovementController {
-        private final Jackalope jack;
-        private double nextJumpSpeed;
-
-        public MoveHelperController(Jackalope jackalope) {
-            super(jackalope);
-            this.jack = jackalope;
-        }
-
-        public void tick() {
-            if (this.jack.onGround && !this.jack.jumping && !((JumpHelperController)this.jack.jumpControl).wantJump()) {
-                this.jack.setSpeedModifier(0.0D);
-            } else if (this.hasWanted()) {
-                this.jack.setSpeedModifier(this.nextJumpSpeed);
-            }
-
-            super.tick();
-        }
-
-        public void setWantedPosition(double p_75642_1_, double p_75642_3_, double p_75642_5_, double p_75642_7_) {
-            if (this.jack.isInWater()) {
-                p_75642_7_ = 1.5D;
-            }
-
-            super.setWantedPosition(p_75642_1_, p_75642_3_, p_75642_5_, p_75642_7_);
-            if (p_75642_7_ > 0.0D) {
-                this.nextJumpSpeed = p_75642_7_;
-            }
-
-        }
-    }
-
-    boolean isSaddled() {
-        return this.entityData.get(SADDLED);
-    }
-
-    //getters/setters
-    private void setSaddled(boolean saddled) {
-        this.entityData.set(SADDLED, saddled);
     }
 }
