@@ -101,6 +101,13 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
 
     }
 
+    @Override
+    protected void dropEquipment() {
+        super.dropEquipment();
+        if (this.isSaddled())
+            this.spawnAtLocation(Items.SADDLE);
+    }
+
     public void startJumping() {
         this.setJumping(true);
         this.jumpDuration = 10;

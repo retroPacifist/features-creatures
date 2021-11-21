@@ -13,7 +13,5 @@ import java.util.Map;
 public class FnCTriggers {
 
     public static final JockeyTradeTrigger JOCKEY_TRADE = CriteriaTriggers.register(new JockeyTradeTrigger());
-
-
 }
 

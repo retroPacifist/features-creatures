@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.items.materials;
+package net.msrandom.featuresandcreatures.common.items.antler_headdress;
 
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
@@ -11,12 +11,12 @@ import net.msrandom.featuresandcreatures.core.FnCItems;
 
 import java.util.function.Supplier;
 
-public enum HeadDressMaterial implements IArmorMaterial {
-    HEAD_DRESS(FeaturesAndCreatures.MOD_ID + ":headdress", 37, new int[]{3, 6, 8, 3}, 420, SoundEvents.ARMOR_EQUIP_NETHERITE, 0.1F, 3.0F, () -> {
+public enum AntlerHeadDressMaterial implements IArmorMaterial {
+    HEAD_DRESS(FeaturesAndCreatures.MOD_ID + ":headdress", 37, new int[]{0, 0, 0, 0}, 0, SoundEvents.ARMOR_EQUIP_NETHERITE, 0.0F, 0.0F, () -> {
         return Ingredient.of(FnCItems.ANTLER.get());
     });
 
-    public static final int[] HEALTH_PER_SLOT = new int[]{1, 3, 3, 1};
+    public static final int[] HEALTH_PER_SLOT = new int[]{0, 3, 3, 1};
     private final String name;
     private final int maxDamageFactor;
     private final int[] damageReductionAmountArray;
@@ -26,7 +26,7 @@ public enum HeadDressMaterial implements IArmorMaterial {
     private final float knockbackResistance;
     private final LazyValue<Ingredient> repairMaterial;
 
-    HeadDressMaterial(String nameIn, int maxDamageFactorIn, int[] damageReductionAmountArrayIn, int enchantabilityIn, SoundEvent soundEventIn, float resistance, float toughnessIn, Supplier<Ingredient> repairMaterialIn) {
+    AntlerHeadDressMaterial(String nameIn, int maxDamageFactorIn, int[] damageReductionAmountArrayIn, int enchantabilityIn, SoundEvent soundEventIn, float resistance, float toughnessIn, Supplier<Ingredient> repairMaterialIn) {
         this.name = nameIn;
         this.maxDamageFactor = maxDamageFactorIn;
         this.damageReductionAmountArray = damageReductionAmountArrayIn;

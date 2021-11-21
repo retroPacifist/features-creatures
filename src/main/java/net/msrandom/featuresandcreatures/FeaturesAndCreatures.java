@@ -19,12 +19,15 @@ import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
 import net.msrandom.featuresandcreatures.common.entities.jockey.JockeyRenderer;
 import net.msrandom.featuresandcreatures.common.entities.sabertooth.Sabertooth;
 import net.msrandom.featuresandcreatures.common.entities.sabertooth.SabertoothRenderer;
+import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressItem;
+import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressRenderer;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 @Mod(FeaturesAndCreatures.MOD_ID)
 public class FeaturesAndCreatures {
@@ -61,6 +64,7 @@ public class FeaturesAndCreatures {
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.BOAR.get(), BoarRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JACKALOPE.get(), JackalopeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SABERTOOTH.get(), SabertoothRenderer::new);
+        GeoArmorRenderer.registerArmorRenderer(AntlerHeadDressItem.class, new AntlerHeadDressRenderer());
     }
 
     private void registerAttributes(EntityAttributeCreationEvent event) {

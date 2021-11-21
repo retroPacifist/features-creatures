@@ -96,6 +96,13 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         }
     }
 
+    @Override
+    protected void dropEquipment() {
+        super.dropEquipment();
+        if (this.isSaddled())
+            this.spawnAtLocation(Items.SADDLE);
+    }
+
     @Nullable
     @Override
     public AgeableEntity getBreedOffspring(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
