@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
+
 public class BoarRenderer extends GeoEntityRenderer<Boar> {
     public static final ResourceLocation MADTEXTURE = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/boar_angry.png");
     public static final ResourceLocation TEXTURE = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/boar.png");

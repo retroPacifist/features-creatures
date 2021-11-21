@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:potion"
+    },
+    "title": "Alchemist Supreme",
+    "description": "Trade with a Jockey.",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "featuresandcreatures:jockey_trade",
+      "conditions": {}
+      }
+    }
+  }
+

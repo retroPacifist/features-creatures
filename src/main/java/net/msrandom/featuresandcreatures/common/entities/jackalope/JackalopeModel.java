@@ -34,6 +34,11 @@ public class JackalopeModel extends AnimatedGeoModel<Jackalope> {
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
         head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
         head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
+        if (entity.isBaby()) {
+            head.setScaleX(2);
+            head.setScaleY(2);
+            head.setScaleZ(2);
+        }
     }
 
 }

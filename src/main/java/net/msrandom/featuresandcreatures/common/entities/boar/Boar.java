@@ -6,7 +6,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -17,7 +16,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
@@ -38,12 +36,11 @@ import javax.annotation.Nullable;
 
 public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable, IRideable {
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT);
-    private final AnimationFactory factory = new AnimationFactory(this);
     private static final DataParameter<Boolean> DATA_SADDLE_ID = EntityDataManager.defineId(Boar.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> DATA_BOOST_TIME = EntityDataManager.defineId(Boar.class, DataSerializers.INT);
-    public int animationTimer;
+    private final AnimationFactory factory = new AnimationFactory(this);
     private final BoostHelper boostHelper = new BoostHelper(this.entityData, DATA_BOOST_TIME, DATA_SADDLE_ID);
-
+    public int animationTimer;
 
 
     public Boar(EntityType<? extends Boar> type, World world) {
@@ -108,7 +105,7 @@ public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable
                 player.startRiding(this);
             }
             return ActionResultType.sidedSuccess(this.level.isClientSide);
-        }else{
+        } else {
             return super.mobInteract(player, hand);
         }
     }
@@ -118,7 +115,7 @@ public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable
         if (!(entity instanceof PlayerEntity)) {
             return false;
         } else {
-            PlayerEntity playerentity = (PlayerEntity)entity;
+            PlayerEntity playerentity = (PlayerEntity) entity;
             return playerentity.getMainHandItem().getItem() == Items.CARROT_ON_A_STICK || playerentity.getOffhandItem().getItem() == Items.CARROT_ON_A_STICK;
         }
     }
@@ -196,7 +193,7 @@ public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable
     }
 
     public float getSteeringSpeed() {
-        return (float)this.getAttributeValue(Attributes.MOVEMENT_SPEED) * 0.225F;
+        return (float) this.getAttributeValue(Attributes.MOVEMENT_SPEED) * 0.225F;
     }
 
     public void travelWithInput(Vector3d p_230267_1_) {

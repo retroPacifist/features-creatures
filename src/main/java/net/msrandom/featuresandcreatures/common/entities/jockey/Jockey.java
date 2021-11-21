@@ -1,10 +1,12 @@
 package net.msrandom.featuresandcreatures.common.entities.jockey;
 
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.merchant.IMerchant;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
@@ -20,6 +22,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.common.entities.boar.Boar;
 import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
+import net.msrandom.featuresandcreatures.core.FnCTriggers;
 import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -71,6 +74,8 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         return false;
     }
 
+
+
     @Override
     public SoundEvent getNotifyTradeSound() {
         return null;
@@ -90,6 +95,8 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
             return super.mobInteract(player, hand);
         }
     }
+
+
 
     protected float getStandingEyeHeight(Pose pose, EntitySize size) {
         return size.height * 0.85F;
@@ -250,6 +257,11 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     public void notifyTrade(MerchantOffer offer) {
+        offer.increaseUses();
+        this.ambientSoundTime = -this.getAmbientSoundInterval();
+        if (this.tradingPlayer instanceof ServerPlayerEntity) {
+            FnCTriggers.JOCKEY_TRADE.trigger((ServerPlayerEntity)this.tradingPlayer, this, offer.getResult());
+        }
     }
 
     @Override
