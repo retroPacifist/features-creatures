@@ -1,43 +1,55 @@
 {
   "entity.boar.hurt": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/pig/say1",
+      "mob/pig/say2",
+      "mob/pig/say3"
     ],
     "subtitle": "subtitles.entity.boar.hurts"
   },
   "entity.boar.ambient": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/pig/say1",
+      "mob/pig/say2",
+      "mob/pig/say3"
     ],
     "subtitle": "subtitles.entity.boar.ambient"
   },
   "entity.boar.die": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/pig/death"
     ],
     "subtitle": "subtitles.entity.boar.dies"
   },
   "entity.boar.attack": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/pig/say1",
+      "mob/pig/say2",
+      "mob/pig/say3"
     ],
     "subtitle": "subtitles.entity.boar.attack"
   },
   "entity.boar.saddle": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/horse/leather"
     ],
     "subtitle": "subtitles.entity.boar.saddled"
   },
   "entity.boar.step": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/pig/step1",
+      "mob/pig/step2",
+      "mob/pig/step3",
+      "mob/pig/step4",
+      "mob/pig/step5"
     ],
     "subtitle": "subtitles.entity.boar.steps"
   },
   "entity.jockey.hurt": {
     "sounds": [
-      "modid:path/to/file"
+      "damage/hit1",
+      "damage/hit2",
+      "damage/hit3"
     ],
     "subtitle": "subtitles.entity.jockey.hurts"
   },
@@ -49,13 +61,15 @@
   },
   "entity.jockey.die": {
     "sounds": [
-      "modid:path/to/file"
+      "damage/hit1",
+      "damage/hit2",
+      "damage/hit3"
     ],
     "subtitle": "subtitles.entity.jockey.dies"
   },
   "entity.jockey.attack": {
     "sounds": [
-      "modid:path/to/file"
+      "random/bow"
     ],
     "subtitle": "subtitles.entity.jockey.attack"
   },
@@ -73,61 +87,79 @@
   },
   "entity.jackalope.hurt": {
     "sounds": [
-      "modid:path/to/file"
+       "mob/rabbit/hurt1",
+       "mob/rabbit/hurt2",
+       "mob/rabbit/hurt3",
+       "mob/rabbit/hurt4"
     ],
     "subtitle": "subtitles.entity.jackalope.hurts"
   },
   "entity.jackalope.ambient": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/rabbit/idle1",
+      "mob/rabbit/idle2",
+      "mob/rabbit/idle3",
+      "mob/rabbit/idle4"
     ],
     "subtitle": "subtitles.entity.jackalope.ambient"
   },
   "entity.jackalope.die": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/rabbit/bunnymurder"
     ],
     "subtitle": "subtitles.entity.jackalope.dies"
   },
   "entity.jackalope.saddle": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/horse/leather"
     ],
     "subtitle": "subtitles.entity.jackalope.saddled"
   },
   "entity.jackalope.step": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/rabbit/hop1",
+      "mob/rabbit/hop2",
+      "mob/rabbit/hop3",
+      "mob/rabbit/hop4"
     ],
     "subtitle": "subtitles.entity.jackalope.jumps"
   },
   "entity.sabertooth.hurt": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/cat/hitt1",
+      "mob/cat/hitt2",
+      "mob/cat/hitt3"
     ],
     "subtitle": "subtitles.entity.sabertooth.hurts"
   },
   "entity.sabertooth.ambient": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/cat/ocelot/idle1",
+      "mob/cat/ocelot/idle2",
+      "mob/cat/ocelot/idle3",
+      "mob/cat/ocelot/idle4"
     ],
     "subtitle": "subtitles.entity.sabertooth.ambient"
   },
   "entity.sabertooth.die": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/cat/ocelot/death1",
+      "mob/cat/ocelot/death2",
+      "mob/cat/ocelot/death3"
     ],
     "subtitle": "subtitles.entity.sabertooth.dies"
   },
   "entity.sabertooth.attack": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/cat/ocelot/death1",
+      "mob/cat/ocelot/death2",
+      "mob/cat/ocelot/death3"
     ],
     "subtitle": "subtitles.entity.sabertooth.attack"
   },
   "entity.sabertooth.saddle": {
     "sounds": [
-      "modid:path/to/file"
+      "mob/horse/leather"
     ],
     "subtitle": "subtitles.entity.sabertooth.saddled"
   },
@@ -139,26 +171,80 @@
   },
   "entity.spear.throw": {
     "sounds": [
-      "modid:path/to/file"
+      "random/bowhit1",
+      "random/bowhit2",
+      "random/bowhit3",
+      "random/bowhit4"
     ],
     "subtitle": "subtitles.entity.spear.thrown"
   },
   "entity.spear.attack": {
     "sounds": [
-      "modid:path/to/file"
+      "random/successful_hit"
     ],
     "subtitle": "subtitles.entity.spear.hits"
   },
   "entity.spear.miss": {
     "sounds": [
-      "modid:path/to/file"
+      "random/successful_hit"
     ],
     "subtitle": "subtitles.entity.spear.lands"
   },
-  "entity.antler_headdress.attack": {
+  "entity.antler_headdress.attack_weak": {
+    "sounds": [
+      "entity/player/attack/weak1",
+      "entity/player/attack/weak2",
+      "entity/player/attack/weak3",
+      "entity/player/attack/weak4"
+    ],
+    "subtitle": "subtitles.entity.antler_headdress.hit_weak"
+  },
+  "entity.antler_headdress.attack_strong": {
+    "sounds": [
+      "entity/player/attack/strong1",
+      "entity/player/attack/strong2",
+      "entity/player/attack/strong3",
+      "entity/player/attack/strong4"
+    ],
+    "subtitle": "subtitles.entity.antler_headdress.hit_strong"
+  },
+  "entity.antler_headdress.charge": {
     "sounds": [
       "modid:path/to/file"
     ],
-    "subtitle": "subtitles.entity.antler_headdress.hits"
+    "subtitle": "subtitles.entity.antler_headdress.charging"
+  },
+  "entity.antler_headdress.finish_charge": {
+    "sounds": [
+      "note/icechime"
+    ],
+    "subtitle": "subtitles.entity.antler_headdress.finished_charging"
+  },
+  "entity.boar.desaddles": {
+    "sounds": [
+      "entity/itemframe/remove_item1",
+      "entity/itemframe/remove_item2",
+      "entity/itemframe/remove_item3",
+      "entity/itemframe/remove_item4"
+    ],
+    "subtitle": "subtitles.entity.boar.desaddles"
+  },
+  "entity.sabertooth.desaddles": {
+    "sounds": [
+      "entity/itemframe/remove_item1",
+      "entity/itemframe/remove_item2",
+      "entity/itemframe/remove_item3",
+      "entity/itemframe/remove_item4"
+    ],
+    "subtitle": "subtitles.entity.sabertooth.desaddles"
+  },
+  "entity.jackalope.desaddles": {
+    "sounds": [
+      "entity/itemframe/remove_item1",
+      "entity/itemframe/remove_item2",
+      "entity/itemframe/remove_item3",
+      "entity/itemframe/remove_item4"
+    ],
+    "subtitle": "subtitles.entity.jackalope.desaddles"
   }
 }

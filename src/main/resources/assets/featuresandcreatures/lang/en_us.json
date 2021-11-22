@@ -45,5 +45,6 @@
   "subtitles.entity.sabertooth.steps": "Sabertooth steps",
   "subtitles.entity.spear.thrown": "Spear flies",
   "subtitles.entity.spear.hits": "Spear hits",
-  "subtitles.entity.spear.lands": "Spear lands"
+  "subtitles.entity.spear.lands": "Spear lands",
+  "subtitles.entity.antler_headdress.charging": ""
 }
