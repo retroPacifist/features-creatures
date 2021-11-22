@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.items;
+package net.msrandom.featuresandcreatures.common.items.spear;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -23,9 +23,13 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class SpearItem extends Item implements IVanishable {
+public class SpearItem extends Item implements IVanishable, IAnimatable {
     private final Multimap<Attribute, AttributeModifier> spearAttributes;
+    private final AnimationFactory factory = new AnimationFactory(this);
 
     public SpearItem(Properties properties) {
         super(properties);
@@ -109,6 +113,16 @@ public class SpearItem extends Item implements IVanishable {
 
     public int getEnchantmentValue() {
         return 1;
+    }
+
+    @Override
+    public void registerControllers(AnimationData data) {
+
+    }
+
+    @Override
+    public AnimationFactory getFactory() {
+        return factory;
     }
 }
 

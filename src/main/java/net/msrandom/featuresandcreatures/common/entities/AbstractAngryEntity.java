@@ -38,7 +38,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new AbstractAngryEntity.MeleeAttackGoal());
-        this.goalSelector.addGoal(2, new PanicGoal(this, 1.2D));
+        this.goalSelector.addGoal(2, new PanicGoal(this, 1.32D));
         this.goalSelector.addGoal(3, new FollowParentGoal(this, 1.25D));
         this.goalSelector.addGoal(4, new RandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 6.0F));
@@ -70,6 +70,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         if (player.isHolding(Items.SADDLE) && !this.isBaby()) {
             this.setSaddled(true);
             if (!player.isCreative()) {
+                player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.PIG_SADDLE, SoundCategory.AMBIENT, 1, 1);
                 player.getItemInHand(hand).shrink(1);
             }
         }
@@ -96,12 +97,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         }
     }
 
-    @Override
-    protected void dropEquipment() {
-        super.dropEquipment();
-        if (this.isSaddled())
-            this.spawnAtLocation(Items.SADDLE);
-    }
+
 
     @Nullable
     @Override

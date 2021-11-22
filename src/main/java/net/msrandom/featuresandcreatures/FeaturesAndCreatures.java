@@ -23,6 +23,7 @@ import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHea
 import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressRenderer;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCItems;
+import net.msrandom.featuresandcreatures.core.FnCTriggers;
 import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,6 +43,7 @@ public class FeaturesAndCreatures {
         MinecraftForge.EVENT_BUS.addGenericListener(World.class, FeaturesAndCreatures::attachCapabilities);
         FnCEntities.REGISTRAR.register(bus);
         FnCItems.REGISTRAR.register(bus);
+        FnCTriggers.register();
 
         //GeckoLib
         GeckoLib.initialize();

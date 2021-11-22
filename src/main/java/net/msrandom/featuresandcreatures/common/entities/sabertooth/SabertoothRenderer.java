@@ -14,7 +14,6 @@ public class SabertoothRenderer extends GeoEntityRenderer<Sabertooth> {
 
     public SabertoothRenderer(EntityRendererManager dispatcher) {
         super(dispatcher, new SabertoothModel());
-        this.shadowRadius = 0.2F;
     }
 
     @Override
@@ -24,10 +23,11 @@ public class SabertoothRenderer extends GeoEntityRenderer<Sabertooth> {
 
     @Override
     public void render(Sabertooth entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        shadowRadius = 0.7f;
         if (entity.isBaby()) {
             stack.scale(0.5f, 0.5f, 0.5f);
+            shadowRadius *= 2;
         }
-        stack.scale(1f, 1f, 1f);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
 }

@@ -56,7 +56,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.6F);
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.7F);
     }
 
     protected float getJumpPower() {
@@ -64,8 +64,8 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
             Path path = this.navigation.getPath();
             if (path != null && !path.isDone()) {
                 Vector3d vector3d = path.getNextEntityPos(this);
-                if (vector3d.y > this.getY() + 0.7D) {
-                    return 0.7F;
+                if (vector3d.y > this.getY() + 0.6D) {
+                    return 0.6F;
                 }
             }
             return this.moveControl.getSpeedModifier() <= 0.6D ? 0.2F : 0.3F;
@@ -93,9 +93,9 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         this.moveControl.setWantedPosition(this.moveControl.getWantedX(), this.moveControl.getWantedY(), this.moveControl.getWantedZ(), p_175515_1_);
     }
 
-    public void setJumping(boolean p_70637_1_) {
-        super.setJumping(p_70637_1_);
-        if (p_70637_1_) {
+    public void setJumping(boolean isJumping) {
+        super.setJumping(isJumping);
+        if (isJumping) {
             this.playSound(this.getJumpSound(), this.getSoundVolume(), ((this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F) * 0.8F);
         }
 
@@ -192,14 +192,17 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         return SoundEvents.RABBIT_JUMP;
     }
 
+    @Override
     protected SoundEvent getAmbientSound() {
         return SoundEvents.RABBIT_AMBIENT;
     }
 
+    @Override
     protected SoundEvent getHurtSound(DamageSource p_184601_1_) {
         return SoundEvents.RABBIT_HURT;
     }
 
+    @Override
     protected SoundEvent getDeathSound() {
         return SoundEvents.RABBIT_DEATH;
     }
@@ -240,6 +243,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT), false));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
@@ -279,7 +283,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         AnimationController<?> controller = event.getController();
         controller.transitionLengthTicks = 0;
 
-        if (this.isOnGround() && event.isMoving()) {
+        if (this.jumpDuration >= 1) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.jackalope.walk", true));
             return PlayState.CONTINUE;
         } else {

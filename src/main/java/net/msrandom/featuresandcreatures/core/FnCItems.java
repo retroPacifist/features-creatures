@@ -9,8 +9,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressItem;
-import net.msrandom.featuresandcreatures.common.items.SpearItem;
+import net.msrandom.featuresandcreatures.common.items.spear.SpearItem;
 import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressMaterial;
+import net.msrandom.featuresandcreatures.common.items.spear.SpearRenderer;
+import software.bernie.example.client.renderer.item.JackInTheBoxRenderer;
 
 public class FnCItems {
     public static final DeferredRegister<Item> REGISTRAR = DeferredRegister.create(ForgeRegistries.ITEMS, FeaturesAndCreatures.MOD_ID);
@@ -24,5 +26,5 @@ public class FnCItems {
     public static final RegistryObject<Item> ANTLER = REGISTRAR.register("antler", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> ANTLER_HEADDRESS = REGISTRAR.register("antler_headdress", () -> new AntlerHeadDressItem(AntlerHeadDressMaterial.HEAD_DRESS, EquipmentSlotType.HEAD, new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> SABERTOOTH_FANG = REGISTRAR.register("sabertooth_fang", () -> new Item(new Item.Properties().tab(TAB)));
-    public static final RegistryObject<Item> SPEAR_ITEM = REGISTRAR.register("spear_item", () -> new SpearItem(new Item.Properties().durability(350).tab(TAB)));
+    public static final RegistryObject<Item> SPEAR_ITEM = REGISTRAR.register("spear_item", () -> new SpearItem(new Item.Properties().durability(350).tab(TAB).setISTER(() -> SpearRenderer::new)));
 }

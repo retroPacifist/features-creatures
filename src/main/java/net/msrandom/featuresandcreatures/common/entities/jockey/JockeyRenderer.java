@@ -12,7 +12,7 @@ public class JockeyRenderer extends GeoEntityRenderer<Jockey> {
 
     public JockeyRenderer(EntityRendererManager dispatcher) {
         super(dispatcher, new JockeyModel());
-        this.shadowRadius = 0.3f;
+        this.shadowRadius = 0.5f;
     }
 
     @Override
@@ -20,12 +20,4 @@ public class JockeyRenderer extends GeoEntityRenderer<Jockey> {
         return TEXTURE;
     }
 
-    @Override
-    public void render(Jockey entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        if (entity.isBaby()) {
-            stack.scale(0.5f, 0.5f, 0.5f);
-        }
-        stack.scale(1f, 1f, 1f);
-        super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
-    }
 }

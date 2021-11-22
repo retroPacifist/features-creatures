@@ -14,7 +14,6 @@ public class JackalopeRenderer extends GeoEntityRenderer<Jackalope> {
 
     public JackalopeRenderer(EntityRendererManager dispatcher) {
         super(dispatcher, new JackalopeModel());
-        this.shadowRadius = 0.2F;
     }
 
     @Override
@@ -26,8 +25,10 @@ public class JackalopeRenderer extends GeoEntityRenderer<Jackalope> {
     public void render(Jackalope entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
         if (entity.isBaby()) {
             stack.scale(0.5f, 0.5f, 0.5f);
+            shadowRadius = 0.5f;
+        } else {
+            shadowRadius = 0.8f;
         }
-        stack.scale(1f, 1f, 1f);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
 }

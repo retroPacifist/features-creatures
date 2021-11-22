@@ -16,7 +16,6 @@ public class BoarRenderer extends GeoEntityRenderer<Boar> {
 
     public BoarRenderer(EntityRendererManager dispatcher) {
         super(dispatcher, new BoarModel());
-        this.shadowRadius = 0.2F;
     }
 
     public static ResourceLocation texture(Boar object) {
@@ -36,8 +35,10 @@ public class BoarRenderer extends GeoEntityRenderer<Boar> {
     public void render(Boar entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
         if (entity.isBaby()) {
             stack.scale(0.5f, 0.5f, 0.5f);
+            shadowRadius = 0.7f;
+        } else {
+            shadowRadius = 1.1f;
         }
-        stack.scale(1f, 1f, 1f);
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
 }

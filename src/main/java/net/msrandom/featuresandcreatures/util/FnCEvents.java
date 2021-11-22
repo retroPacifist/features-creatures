@@ -43,19 +43,19 @@ public class FnCEvents {
                             }
                             if (availableBlocks == 27) {
                                 // FIXME use appropriate mount based on biome
-                                Jackalope horse = FnCEntities.JACKALOPE.get().create(event.world);
-                                if (horse != null) {
+                                Jackalope jackalope = FnCEntities.JACKALOPE.get().create(event.world);
+                                if (jackalope != null) {
                                     Jockey jockey = FnCEntities.JOCKEY.get().create(event.world);
                                     if (jockey != null) {
-                                        horse.setBaby(true);
+                                        jackalope.setBaby(true);
                                         Vector3d lookAngle = player.getLookAngle();
                                         Vector3d offset = new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().scale(-1.5);
-                                        horse.moveTo(position.getX() + 0.5 + offset.x(), position.getY() + 1, position.getZ() + 0.5 + offset.z());
-                                        horse.finalizeSpawn((IServerWorld) event.world, event.world.getCurrentDifficultyAt(position), SpawnReason.NATURAL, null, null);
-                                        jockey.moveTo(horse.getX(), horse.getY(), horse.getZ());
+                                        jackalope.moveTo(position.getX() + 0.5 + offset.x(), position.getY() + 1, position.getZ() + 0.5 + offset.z());
+                                        jackalope.finalizeSpawn((IServerWorld) event.world, event.world.getCurrentDifficultyAt(position), SpawnReason.NATURAL, null, null);
+                                        jockey.moveTo(jackalope.getX(), jackalope.getY(), jackalope.getZ());
                                         jockey.finalizeSpawn((IServerWorld) event.world, event.world.getCurrentDifficultyAt(position), SpawnReason.NATURAL, null, null);
-                                        jockey.startRiding(horse);
-                                        event.world.addFreshEntity(horse);
+                                        jockey.startRiding(jackalope);
+                                        event.world.addFreshEntity(jackalope);
                                         event.world.addFreshEntity(jockey);
                                         capability.setSpawned(true);
                                     }
