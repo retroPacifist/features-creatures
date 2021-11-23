@@ -12,7 +12,7 @@ import net.msrandom.featuresandcreatures.core.FnCItems;
 import java.util.function.Supplier;
 
 public enum AntlerHeadDressMaterial implements IArmorMaterial {
-    HEAD_DRESS(FeaturesAndCreatures.MOD_ID + ":headdress", 37, new int[]{0, 0, 0, 0}, 0, SoundEvents.ARMOR_EQUIP_NETHERITE, 0.0F, 0.0F, () -> {
+    HEAD_DRESS(FeaturesAndCreatures.MOD_ID + ":headdress", 37, new int[]{0, 0, 0, 0}, 420, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> {
         return Ingredient.of(FnCItems.ANTLER.get());
     });
 

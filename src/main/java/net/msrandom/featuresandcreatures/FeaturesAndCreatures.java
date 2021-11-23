@@ -23,6 +23,7 @@ import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHea
 import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressRenderer;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCItems;
+import net.msrandom.featuresandcreatures.core.FnCKeybinds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
 import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import org.apache.logging.log4j.LogManager;
@@ -59,6 +60,7 @@ public class FeaturesAndCreatures {
 
     private void clientSetup(FMLClientSetupEvent event) {
         registerRenderers();
+        FnCKeybinds.register();
     }
 
     public void registerRenderers() {
