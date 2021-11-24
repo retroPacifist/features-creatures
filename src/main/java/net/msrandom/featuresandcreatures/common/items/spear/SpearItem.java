@@ -34,8 +34,8 @@ public class SpearItem extends Item implements IVanishable, IAnimatable {
     public SpearItem(Properties properties) {
         super(properties);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", 9.0D, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", -2.9F, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", 0.0D, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", 0F, AttributeModifier.Operation.ADDITION));
         this.spearAttributes = builder.build();
     }
 
@@ -56,13 +56,10 @@ public class SpearItem extends Item implements IVanishable, IAnimatable {
             PlayerEntity playerentity = (PlayerEntity) entity;
             int i = this.getUseDuration(stack) - timeLeft;
             if (i >= 10) {
-                int j = EnchantmentHelper.getRiptide(stack);
-                if (j <= 0 || playerentity.isInWaterOrRain()) {
                     if (!world.isClientSide) {
                         stack.hurtAndBreak(1, playerentity, (p_220047_1_) -> {
                             p_220047_1_.broadcastBreakEvent(entity.getUsedItemHand());
                         });
-                        if (j == 0) {
                             TridentEntity spear = new TridentEntity(world, playerentity, stack);
                             spear.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F, 2.5F + (float) 2 * 0.5F, 1.0F);
                             spear.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
@@ -76,8 +73,6 @@ public class SpearItem extends Item implements IVanishable, IAnimatable {
                     playerentity.awardStat(Stats.ITEM_USED.get(this));
                 }
             }
-        }
-    }
 
 
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
@@ -112,7 +107,7 @@ public class SpearItem extends Item implements IVanishable, IAnimatable {
     }
 
     public int getEnchantmentValue() {
-        return 1;
+        return 40;
     }
 
     @Override
