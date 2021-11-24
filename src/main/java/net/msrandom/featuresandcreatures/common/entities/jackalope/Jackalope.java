@@ -98,7 +98,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         if (isJumping) {
             this.playSound(this.getJumpSound(), this.getSoundVolume(), ((this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F) * 0.8F);
         }
-
     }
 
     @Override
@@ -125,7 +124,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
                 this.checkLandingDelay();
             }
 
-
             JumpHelperController controller = (JumpHelperController) this.jumpControl;
             if (!controller.wantJump()) {
                 if (this.moveControl.hasWanted() && this.jumpDelayTicks == 0) {
@@ -142,7 +140,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
                 this.enableJumpControl();
             }
         }
-
         this.wasOnGround = this.onGround;
     }
 
@@ -168,7 +165,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         } else {
             this.jumpDelayTicks = 1;
         }
-
     }
 
     private void checkLandingDelay() {
@@ -185,7 +181,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
             this.jumpDuration = 0;
             this.setJumping(false);
         }
-
     }
 
     protected SoundEvent getJumpSound() {
@@ -216,7 +211,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         } else {
             super.handleEntityEvent(p_70103_1_);
         }
-
     }
 
     @Override
@@ -278,7 +272,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         compoundNBT.putBoolean("Saddled", this.isSaddled());
     }
 
-
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         AnimationController<?> controller = event.getController();
         controller.transitionLengthTicks = 0;
@@ -294,7 +287,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     @Override
     public void registerControllers(AnimationData data) {
         data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
-
     }
 
     @Override
@@ -326,7 +318,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
             } else if (this.hasWanted()) {
                 this.jack.setSpeedModifier(this.nextJumpSpeed);
             }
-
             super.tick();
         }
 
@@ -334,12 +325,10 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
             if (this.jack.isInWater()) {
                 p_75642_7_ = 1.5D;
             }
-
             super.setWantedPosition(p_75642_1_, p_75642_3_, p_75642_5_, p_75642_7_);
             if (p_75642_7_ > 0.0D) {
                 this.nextJumpSpeed = p_75642_7_;
             }
-
         }
     }
 
@@ -369,7 +358,6 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
                 this.jack.startJumping();
                 this.jump = false;
             }
-
         }
     }
 }

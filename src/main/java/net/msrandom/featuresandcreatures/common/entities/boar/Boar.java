@@ -5,6 +5,7 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -95,6 +96,7 @@ public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable
         super.registerGoals();
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, FOOD_ITEMS));
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT_ON_A_STICK), false));
+        this.goalSelector.addGoal(2, new PanicGoal(this, 1.42D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
     }
 
