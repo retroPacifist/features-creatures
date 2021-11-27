@@ -37,7 +37,6 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
     public void registerControllers(AnimationData data) {
     }
 
-
     @Override
     public AnimationFactory getFactory() {
         return factory;

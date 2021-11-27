@@ -291,7 +291,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
-    public void overrideXp(int p_213702_1_) {
+    public void overrideXp(int xp) {
     }
 
     @Override
