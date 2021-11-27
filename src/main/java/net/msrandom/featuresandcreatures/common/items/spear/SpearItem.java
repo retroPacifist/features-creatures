@@ -29,6 +29,8 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import java.util.Map;
+
 public class SpearItem extends Item implements IVanishable, IAnimatable {
     private final Multimap<Attribute, AttributeModifier> spearAttributes;
     private final AnimationFactory factory = new AnimationFactory(this);
@@ -55,8 +57,9 @@ public class SpearItem extends Item implements IVanishable, IAnimatable {
 
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return EnchantmentHelper.getEnchantments(book).containsKey(Enchantments.FIRE_ASPECT) || EnchantmentHelper.getEnchantments(book).containsKey(Enchantments.MENDING)
-                || EnchantmentHelper.getEnchantments(book).containsKey(Enchantments.UNBREAKING);
+        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(book);
+        return enchantments.containsKey(Enchantments.FIRE_ASPECT) || enchantments.containsKey(Enchantments.MENDING)
+                || enchantments.containsKey(Enchantments.UNBREAKING);
     }
 
     @Override

@@ -24,6 +24,7 @@ import java.util.List;
 public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
     public boolean isCharging = false;
     public int charge = 0;
+    public int oldCharge = 0;
     public boolean isDamaging = false;
     public int damageTimer = 40;
     private final AnimationFactory factory = new AnimationFactory(this);
@@ -71,16 +72,18 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
                     float k = f3 * (j / f4);
                     if (charge > 37) {
                         player.push(i, 0.1, k);
-                        charge = 0;
                         world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
                         player.getCooldowns().addCooldown(stack.getItem(), 40);
                         isDamaging = true;
+                        oldCharge = charge;
+                        charge = 0;
                     } else if (charge >= 1) {
                         player.push(f1 * (0.5 / f4), 0.1, f3 * (0.5 / f4));
-                        charge = 0;
                         world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
                         player.getCooldowns().addCooldown(stack.getItem(), 40);
                         isDamaging = true;
+                        oldCharge = charge;
+                        charge = 0;
                     } else {
                         charge = 0;
                     }
@@ -93,7 +96,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
             for (LivingEntity entity2 : list) {
                 if (entity2 != entity) {
                     entity2.hurt(DamageSource.playerAttack(player), getDamageAmount());
-                    if (charge > 37) {
+                    if (oldCharge > 37) {
                         entity2.knockback(0.8F, -f1 * (2 / f4), -f3 * (2 / f4));
                     }
                 }
@@ -108,11 +111,11 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
     }
 
     public float getDamageAmount() {
-        if (charge <= 20) {
+        if (oldCharge <= 20) {
             return 1F;
-        } else if (charge <= 40) {
+        } else if (oldCharge <= 40) {
             return 2F;
-        } else if (charge == 80) {
+        } else if (oldCharge == 80) {
             return 4F;
         } else {
             return 3F;

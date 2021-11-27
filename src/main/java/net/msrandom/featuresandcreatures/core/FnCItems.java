@@ -12,7 +12,6 @@ import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHea
 import net.msrandom.featuresandcreatures.common.items.spear.SpearItem;
 import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressMaterial;
 import net.msrandom.featuresandcreatures.common.items.spear.SpearRenderer;
-import software.bernie.example.client.renderer.item.JackInTheBoxRenderer;
 
 public class FnCItems {
     public static final DeferredRegister<Item> REGISTRAR = DeferredRegister.create(ForgeRegistries.ITEMS, FeaturesAndCreatures.MOD_ID);
