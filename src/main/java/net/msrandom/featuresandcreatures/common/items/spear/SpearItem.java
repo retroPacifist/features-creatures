@@ -3,7 +3,9 @@ package net.msrandom.featuresandcreatures.common.items.spear;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.enchantment.IVanishable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -49,6 +51,17 @@ public class SpearItem extends Item implements IVanishable, IAnimatable {
 
     public int getUseDuration(ItemStack stack) {
         return 72000;
+    }
+
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        return EnchantmentHelper.getEnchantments(book).containsKey(Enchantments.FIRE_ASPECT) || EnchantmentHelper.getEnchantments(book).containsKey(Enchantments.MENDING)
+                || EnchantmentHelper.getEnchantments(book).containsKey(Enchantments.UNBREAKING);
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment == Enchantments.SHARPNESS || enchantment == Enchantments.FIRE_ASPECT;
     }
 
     public void releaseUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft) {

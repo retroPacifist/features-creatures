@@ -1,13 +1,10 @@
 package net.msrandom.featuresandcreatures.common.entities.jockey;
 
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.merchant.IMerchant;
-import net.minecraft.entity.monster.AbstractRaiderEntity;
-import net.minecraft.entity.monster.SpiderEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
@@ -38,7 +35,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatable, IRangedAttackMob {
     private static final String POTION_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.potion";
@@ -71,8 +67,6 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         this.goalSelector.addGoal(0, new UseItemGoal<>(this, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING), SoundEvents.GENERIC_DRINK, (entity) -> {
             return this.getHealth() <= 6;
         }));
-
-
     }
 
     private static <T> T getRandomElement(Random random, Collection<T> collection) {
@@ -96,8 +90,6 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         return false;
     }
 
-
-
     @Override
     public SoundEvent getNotifyTradeSound() {
         return null;
@@ -117,8 +109,6 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
             return super.mobInteract(player, hand);
         }
     }
-
-
 
     protected float getStandingEyeHeight(Pose pose, EntitySize size) {
         return size.height * 0.85F;
@@ -365,7 +355,6 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         double d2 = jockey.getZ() + vector3d.z - this.getZ();
         float f = MathHelper.sqrt(d0 * d0 + d2 * d2);
         Potion potion = Potions.HARMING;
-
         PotionEntity potionentity = new PotionEntity(this.level, this);
         potionentity.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
         potionentity.xRot -= -20.0F;
@@ -373,10 +362,8 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         if (!this.isSilent()) {
             this.level.playSound((PlayerEntity)null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
         }
-
         this.level.addFreshEntity(potionentity);
     }
-
 
     public enum TradeType {
         DRINK,

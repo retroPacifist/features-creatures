@@ -56,7 +56,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.7F);
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 5.0D).add(Attributes.MOVEMENT_SPEED, 0.7F);
     }
 
     protected float getJumpPower() {
@@ -300,7 +300,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     }
 
     //getters/setters
-    private void setSaddled(boolean saddled) {
+    public void setSaddled(boolean saddled) {
         this.entityData.set(SADDLED, saddled);
     }
 

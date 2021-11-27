@@ -47,7 +47,7 @@ public class FnCEvents {
                                 if (jackalope != null) {
                                     Jockey jockey = FnCEntities.JOCKEY.get().create(event.world);
                                     if (jockey != null) {
-                                        jackalope.setBaby(true);
+                                        jackalope.setSaddled(true);
                                         Vector3d lookAngle = player.getLookAngle();
                                         Vector3d offset = new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().scale(-1.5);
                                         jackalope.moveTo(position.getX() + 0.5 + offset.x(), position.getY() + 1, position.getZ() + 0.5 + offset.z());
