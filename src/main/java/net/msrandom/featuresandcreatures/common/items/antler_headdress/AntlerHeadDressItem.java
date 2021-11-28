@@ -53,7 +53,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
         float f3 = MathHelper.cos(f7 * ((float) Math.PI / 180F)) * MathHelper.cos(f * ((float) Math.PI / 180F));
         float f4 = MathHelper.sqrt(f1 * f1 + f2 * f2 + f3 * f3);
         if (world.isClientSide) {
-            if (!player.getCooldowns().isOnCooldown(stack.getItem())) {
+            if (!player.getCooldowns().isOnCooldown(stack.getItem()) && !isDamaging) {
                 if (isCharging && player.getItemBySlot(EquipmentSlotType.HEAD).getItem() == FnCItems.ANTLER_HEADDRESS.get() && charge <= getMaxCharge()) {
                     charge++;
                 }
@@ -73,14 +73,12 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
                     if (charge > Math.round(getMaxCharge()*(37F/100F))) {
                         player.push(i, 0.1, k);
                         world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
-                        player.getCooldowns().addCooldown(stack.getItem(), 40);
                         isDamaging = true;
                         oldCharge = charge;
                         charge = 0;
                     } else if (charge >= 1) {
                         player.push(f1 * (0.5 / f4), 0.1, f3 * (0.5 / f4));
                         world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
-                        player.getCooldowns().addCooldown(stack.getItem(), 40);
                         isDamaging = true;
                         oldCharge = charge;
                         charge = 0;
@@ -105,6 +103,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
         }
         if (damageTimer <= 0) {
             isDamaging = false;
+            player.getCooldowns().addCooldown(stack.getItem(), 40);
             damageTimer = 30;
         }
         super.inventoryTick(stack, world, entity, p_77663_4_, p_77663_5_);
