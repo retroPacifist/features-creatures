@@ -54,15 +54,15 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
         float f4 = MathHelper.sqrt(f1 * f1 + f2 * f2 + f3 * f3);
         if (!player.getCooldowns().isOnCooldown(stack.getItem())) {
             if (world.isClientSide) {
-                if (isCharging && player.getItemBySlot(EquipmentSlotType.HEAD).getItem() == FnCItems.ANTLER_HEADDRESS.get() && charge <= 90) {
+                if (isCharging && player.getItemBySlot(EquipmentSlotType.HEAD).getItem() == FnCItems.ANTLER_HEADDRESS.get() && charge <= getMaxCharge()) {
                     charge++;
                 }
-                if (charge == 1 || charge == 22 || charge == 44) {
+                if (charge == getMaxCharge()*(1F/100F) || charge == getMaxCharge()*(25F/100F) || charge == getMaxCharge()*(50F/100F)) {
                     world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.LEVER_CLICK, SoundCategory.AMBIENT, 1, charge / 25F, false);
-                } else if (charge == 66) {
+                } else if (charge == getMaxCharge()*(75F/100F)) {
                     world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_CHIME, SoundCategory.AMBIENT, 2, 1.5F, false);
                 }
-                if (charge == 90) {
+                if (charge == getMaxCharge()) {
                     world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_CHIME, SoundCategory.AMBIENT, 30, charge / 15F, false);
                 }
 
@@ -112,5 +112,9 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
 
     public float getDamageAmount() {
         return oldCharge / 22.5F;
+    }
+
+    public int getMaxCharge(){
+        return 100;
     }
 }
