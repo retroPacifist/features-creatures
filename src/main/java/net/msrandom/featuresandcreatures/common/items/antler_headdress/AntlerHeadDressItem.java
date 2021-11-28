@@ -110,14 +110,6 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
     }
 
     public float getDamageAmount() {
-        if (oldCharge <= 20) {
-            return 1F;
-        } else if (oldCharge <= 40) {
-            return 2F;
-        } else if (oldCharge == 80) {
-            return 4F;
-        } else {
-            return 3F;
+            return oldCharge / 20F;
         }
-    }
 }
