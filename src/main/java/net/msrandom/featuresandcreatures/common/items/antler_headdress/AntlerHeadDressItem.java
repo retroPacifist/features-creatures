@@ -60,7 +60,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
                 if (charge == Math.round(getMaxCharge()*(1F/100F)) || charge == Math.round(getMaxCharge()*(25F/100F)) || charge == Math.round(getMaxCharge()*(50F/100F))) {
                     world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.LEVER_CLICK, SoundCategory.AMBIENT, 1, charge / 50F, false);
                 } else if (charge == Math.round(getMaxCharge()*(75F/100F))) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_CHIME, SoundCategory.AMBIENT, 2, 1.5F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIPWIRE_CLICK_ON, SoundCategory.AMBIENT, 2, 1.5F, false);
                 }
                 if (charge == getMaxCharge()) {
                     world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_CHIME, SoundCategory.AMBIENT, 30, charge / 15F, false);
