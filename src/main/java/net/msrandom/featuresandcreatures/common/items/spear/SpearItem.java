@@ -64,7 +64,7 @@ public class SpearItem extends Item implements IVanishable, IAnimatable {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.SHARPNESS || enchantment == Enchantments.FIRE_ASPECT;
+        return enchantment == Enchantments.UNBREAKING || enchantment == Enchantments.FIRE_ASPECT;
     }
 
     public void releaseUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft) {
