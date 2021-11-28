@@ -94,7 +94,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
             for (LivingEntity entity2 : list) {
                 if (entity2 != entity) {
                     if (getDamageAmount() < 1) {
-                        entity2.hurt(DamageSource.playerAttack(player), 1);
+                        entity2.hurt(DamageSource.playerAttack(player), 0.5F);
                     }
                     else {
                         entity2.hurt(DamageSource.playerAttack(player), getDamageAmount());
