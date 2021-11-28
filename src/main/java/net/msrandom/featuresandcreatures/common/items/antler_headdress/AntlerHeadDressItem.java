@@ -67,10 +67,10 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
                 }
 
                 if (!isCharging) {
-                    int j = charge / 74;
+                    int j = charge / Math.round(getMaxCharge()*(37F/100F));
                     float i = f1 * (j / f4);
                     float k = f3 * (j / f4);
-                    if (charge > 74) {
+                    if (charge > Math.round(getMaxCharge()*(37F/100F))) {
                         player.push(i, 0.1, k);
                         world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
                         player.getCooldowns().addCooldown(stack.getItem(), 40);
@@ -96,7 +96,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
             for (LivingEntity entity2 : list) {
                 if (entity2 != entity) {
                     entity2.hurt(DamageSource.playerAttack(player), getDamageAmount());
-                    if (oldCharge > 74) {
+                    if (oldCharge > Math.round(getMaxCharge()*(37F/100F))) {
                         entity2.knockback(0.3F, -f1 * (1.5 / f4), -f3 * (1.5 / f4));
                     }
                 }
@@ -111,7 +111,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
     }
 
     public float getDamageAmount() {
-        return oldCharge / 40F;
+        return oldCharge / (float)Math.round(getMaxCharge()*(20F/100F));
     }
 
     public int getMaxCharge(){
