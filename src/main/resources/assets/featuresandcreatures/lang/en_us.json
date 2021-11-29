@@ -46,5 +46,7 @@
   "subtitles.entity.spear.thrown": "Spear flies",
   "subtitles.entity.spear.hits": "Spear hits",
   "subtitles.entity.spear.lands": "Spear lands",
-  "subtitles.entity.antler_headdress.charging": "Player Charges"
+  "subtitles.entity.antler_headdress.charging": "Player Charges",
+  //misc
+  "advancementRoot.description": "A world of creatures big and small."
 }

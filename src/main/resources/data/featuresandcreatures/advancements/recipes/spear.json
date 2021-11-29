@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "featuresandcreatures:spear"
+    ]
+  },
+  "criteria": {
+    "has_fang": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "featuresandcreatures:sabertooth_fang"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "featuresandcreatures:spear"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_fang",
+      "has_the_recipe"
+    ]
+  ]
+}

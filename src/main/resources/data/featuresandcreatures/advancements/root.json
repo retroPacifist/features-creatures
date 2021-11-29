@@ -1,0 +1,20 @@
+{
+  "display": {
+    "icon": {
+      "item": "featuresandcreatures:mega_potion"
+    },
+    "title": {
+      "translate": "itemGroup.featuresandcreatures"
+    },
+    "description": "A world of creatures big and small.",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": true,
+    "background": "featuresandcreatures:textures/block/templestone.png"
+  },
+  "criteria": {
+    "always": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}
