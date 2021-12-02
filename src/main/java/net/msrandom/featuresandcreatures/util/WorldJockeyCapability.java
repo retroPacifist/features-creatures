@@ -4,6 +4,7 @@ import net.minecraft.nbt.ByteNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -20,6 +21,13 @@ public class WorldJockeyCapability implements ICapabilitySerializable<ByteNBT> {
     public static Capability<WorldJockeyCapability> capability;
 
     private boolean isSpawned;
+    private long spawnAttemptTime;
+
+    private World world;
+
+    public WorldJockeyCapability(World world) {
+        this.world = world;
+    }
 
     @Nonnull
     @Override
@@ -43,6 +51,16 @@ public class WorldJockeyCapability implements ICapabilitySerializable<ByteNBT> {
 
     public void setSpawned(boolean spawned) {
         this.isSpawned = spawned;
+    }
+
+    public void markSpawnAttempt() {
+        if (world != null) {
+            spawnAttemptTime = world.getGameTime();
+        }
+    }
+
+    public long getSpawnAttemptTime() {
+        return spawnAttemptTime;
     }
 
     public static class Storage implements Capability.IStorage<WorldJockeyCapability> {

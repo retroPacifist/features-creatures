@@ -4,6 +4,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -42,7 +43,6 @@ public class FeaturesAndCreatures {
         bus.addListener(this::commonSetup);
         bus.addListener(this::clientSetup);
         bus.addListener(this::registerAttributes);
-        MinecraftForge.EVENT_BUS.addGenericListener(World.class, FeaturesAndCreatures::attachCapabilities);
         FnCEntities.REGISTRAR.register(bus);
         FnCItems.REGISTRAR.register(bus);
         FnCTriggers.register();
@@ -51,12 +51,8 @@ public class FeaturesAndCreatures {
         GeckoLib.initialize();
     }
 
-    private static void attachCapabilities(AttachCapabilitiesEvent<World> event) {
-        event.addCapability(WorldJockeyCapability.ID, new WorldJockeyCapability());
-    }
-
     private void commonSetup(FMLCommonSetupEvent event) {
-        CapabilityManager.INSTANCE.register(WorldJockeyCapability.class, new WorldJockeyCapability.Storage(), WorldJockeyCapability::new);
+        CapabilityManager.INSTANCE.register(WorldJockeyCapability.class, new WorldJockeyCapability.Storage(), () -> new WorldJockeyCapability(null));
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
