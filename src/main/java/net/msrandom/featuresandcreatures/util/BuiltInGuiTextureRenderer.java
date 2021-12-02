@@ -20,7 +20,7 @@ public class BuiltInGuiTextureRenderer {
         if (item.getRegistryName() == null) return null; // Not registered, so we don't care.
         return MODELS.compute(item, (k, v) -> {
             if (v == null) {
-                return new ModelResourceLocation(k.getRegistryName().getPath() + "_gui", "inventory");
+                return new ModelResourceLocation(k.getRegistryName() + "_gui", "inventory");
             } else {
                 return v;
             }
