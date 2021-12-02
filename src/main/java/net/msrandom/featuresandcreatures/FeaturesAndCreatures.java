@@ -25,6 +25,7 @@ import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
+import net.msrandom.featuresandcreatures.util.BuiltInGuiTextureRenderer;
 import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,6 +70,8 @@ public class FeaturesAndCreatures {
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JACKALOPE.get(), JackalopeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SABERTOOTH.get(), SabertoothRenderer::new);
         GeoArmorRenderer.registerArmorRenderer(AntlerHeadDressItem.class, new AntlerHeadDressRenderer());
+
+        BuiltInGuiTextureRenderer.register(FnCItems.SPEAR_ITEM.get());
     }
 
     private void registerAttributes(EntityAttributeCreationEvent event) {
