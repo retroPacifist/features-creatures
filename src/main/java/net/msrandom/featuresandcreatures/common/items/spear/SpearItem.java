@@ -13,7 +13,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,6 +24,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.msrandom.featuresandcreatures.common.entities.spear.SpearEntity;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -76,7 +76,7 @@ public class SpearItem extends Item implements IVanishable, IAnimatable {
                         stack.hurtAndBreak(1, playerentity, (p_220047_1_) -> {
                             p_220047_1_.broadcastBreakEvent(entity.getUsedItemHand());
                         });
-                            TridentEntity spear = new TridentEntity(world, playerentity, stack);
+                            SpearEntity spear = new SpearEntity(world, playerentity, stack);
                             spear.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F, 2.5F + (float) 2 * 0.5F, 1.0F);
                             spear.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
                             world.addFreshEntity(spear);
