@@ -1,0 +1,10 @@
+{
+  "required": false,
+  "package": "net.msrandom.featuresandcreatures.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "featuresandcreatures.refmap.json",
+  "client": [
+    "ItemRendererMixin"
+  ],
+  "minVersion": "0.8"
+}
