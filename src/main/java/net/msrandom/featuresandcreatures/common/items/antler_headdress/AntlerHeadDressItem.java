@@ -116,7 +116,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
     }
 
     public float getDamageAmount() {
-        return oldCharge / (float)Math.round(getMaxCharge()*(10F/100F));
+        return (oldCharge / (float)Math.round(getMaxCharge()*(10F/100F)) * 2);
     }
 
     public int getMaxCharge(){
