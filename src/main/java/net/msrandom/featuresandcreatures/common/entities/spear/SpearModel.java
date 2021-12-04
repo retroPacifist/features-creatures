@@ -1,6 +1,4 @@
-package net.msrandom.featuresandcreatures.common.entities.spear;// Made with Blockbench 4.0.5
-// Exported for Minecraft version 1.15 - 1.16 with MCP mappings
-// Paste this class into your mod and generate all required imports
+package net.msrandom.featuresandcreatures.common.entities.spear;
 
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -8,13 +6,12 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 public class SpearModel extends Model {
 	private final ModelRenderer pole = new ModelRenderer(32, 32, 0, 6);
 
 	public SpearModel() {
-		super(RenderType::entitySolid);
+		super(RenderType::entityCutout);
 		texWidth = 32;
 		texHeight = 32;
 

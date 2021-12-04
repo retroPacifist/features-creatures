@@ -69,7 +69,7 @@ public class FeaturesAndCreatures {
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SPEAR.get(), SpearRenderer::new);
         GeoArmorRenderer.registerArmorRenderer(AntlerHeadDressItem.class, new AntlerHeadDressRenderer());
 
-        BuiltInGuiTextureRenderer.register(FnCItems.SPEAR_ITEM.get());
+        BuiltInGuiTextureRenderer.register(FnCItems.SPEAR.get());
     }
 
     private void registerAttributes(EntityAttributeCreationEvent event) {
