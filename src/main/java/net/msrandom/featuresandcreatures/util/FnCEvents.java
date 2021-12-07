@@ -4,12 +4,12 @@ import net.minecraft.command.Commands;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.monster.SlimeEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
@@ -30,6 +30,7 @@ import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
 import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
 import net.msrandom.featuresandcreatures.common.entities.sabertooth.Sabertooth;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
+import net.msrandom.featuresandcreatures.mixin.SlimeSizeInvoker;
 
 @Mod.EventBusSubscriber(modid = FeaturesAndCreatures.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class FnCEvents {
@@ -89,7 +90,9 @@ public class FnCEvents {
             return sabertooth;
         }
         if (biome == Biome.Category.SWAMP) {
-            return EntityType.SLIME.create(world);
+            SlimeEntity slime = EntityType.SLIME.create(world);
+            ((SlimeSizeInvoker)slime).setSize(2, true);
+            return slime;
         }
         if (biome == Biome.Category.EXTREME_HILLS) {
             Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
