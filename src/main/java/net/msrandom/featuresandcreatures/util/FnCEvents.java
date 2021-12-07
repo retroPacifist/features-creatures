@@ -1,17 +1,22 @@
 package net.msrandom.featuresandcreatures.util;
 
 import net.minecraft.command.Commands;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.passive.horse.HorseEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -20,6 +25,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
+import net.msrandom.featuresandcreatures.common.entities.boar.Boar;
 import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
 import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
 import net.msrandom.featuresandcreatures.common.entities.sabertooth.Sabertooth;
@@ -41,8 +47,7 @@ public class FnCEvents {
     }
 
     public static void spawnJockey(World world, WorldJockeyCapability capability) {
-        // TODO don't check dimension like this, I hate everything about this.
-        if (world.dimension().location().getPath().equals("overworld")) {
+        if (world.dimension() == RegistryKey.create(Registry.DIMENSION_REGISTRY, DimensionType.OVERWORLD_EFFECTS)) {
             if (!capability.isSpawned()) {
                 capability.markSpawnAttempt();
                 ServerPlayerEntity player = ((ServerWorld) world).getRandomPlayer();
@@ -55,20 +60,17 @@ public class FnCEvents {
                         }
                     }
                     if (availableBlocks == 27) {
-                        // FIXME use appropriate mount based on biome
-                        Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
-                        if (jackalope != null) {
+                        LivingEntity mount = getMountEntity(world, player);
+                        if (mount != null) {
                             Jockey jockey = FnCEntities.JOCKEY.get().create(world);
                             if (jockey != null) {
-                                jackalope.setSaddled(true);
                                 Vector3d lookAngle = player.getLookAngle();
                                 Vector3d offset = new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().scale(-1.5);
-                                jackalope.moveTo(position.getX() + 0.5 + offset.x(), position.getY() + 1, position.getZ() + 0.5 + offset.z());
-                                jackalope.finalizeSpawn((IServerWorld) world, world.getCurrentDifficultyAt(position), SpawnReason.NATURAL, null, null);
-                                jockey.moveTo(jackalope.getX(), jackalope.getY(), jackalope.getZ());
+                                mount.moveTo(position.getX() + 0.5 + offset.x(), position.getY() + 1, position.getZ() + 0.5 + offset.z());
+                                jockey.moveTo(mount.getX(), mount.getY(), mount.getZ());
                                 jockey.finalizeSpawn((IServerWorld) world, world.getCurrentDifficultyAt(position), SpawnReason.NATURAL, null, null);
-                                jockey.startRiding(jackalope);
-                                world.addFreshEntity(jackalope);
+                                jockey.startRiding(mount);
+                                world.addFreshEntity(mount);
                                 world.addFreshEntity(jockey);
                                 capability.setSpawned(true);
                             }
@@ -76,6 +78,34 @@ public class FnCEvents {
                     }
                 }
             }
+        }
+    }
+
+    public static LivingEntity getMountEntity(World world, PlayerEntity player) {
+        Biome.Category biome = world.getBiome(player.blockPosition()).getBiomeCategory();
+        if (biome == Biome.Category.ICY) {
+            Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
+            sabertooth.setSaddled(true);
+            return sabertooth;
+        }
+        if (biome == Biome.Category.SWAMP) {
+            return EntityType.SLIME.create(world);
+        }
+        if (biome == Biome.Category.EXTREME_HILLS) {
+            Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
+            jackalope.setSaddled(true);
+            return jackalope;
+        }
+        if (biome == Biome.Category.PLAINS) {
+            HorseEntity horse = EntityType.HORSE.create(world);
+            horse.isSaddled();
+            horse.setAge(-24000);
+            return horse;
+        }
+        else{
+            Boar boar = FnCEntities.BOAR.get().create(world);
+            boar.setSaddled(true);
+            return boar;
         }
     }
 

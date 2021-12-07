@@ -162,7 +162,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         return this.entityData.get(SADDLED);
     }
 
-    private void setSaddled(boolean saddled) {
+    public void setSaddled(boolean saddled) {
         this.entityData.set(SADDLED, saddled);
     }
 
