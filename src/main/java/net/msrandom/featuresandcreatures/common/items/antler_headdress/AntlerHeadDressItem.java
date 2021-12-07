@@ -94,7 +94,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
             for (LivingEntity entity2 : list) {
                 if (entity2 != entity) {
                     if (getDamageAmount() < 1) {
-                        entity2.hurt(DamageSource.playerAttack(player), 0.5F);
+                        entity2.hurt(DamageSource.playerAttack(player), 1F);
                     }
                     else {
                         entity2.hurt(DamageSource.playerAttack(player), getDamageAmount());
@@ -116,7 +116,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
     }
 
     public float getDamageAmount() {
-        return (oldCharge / (float)Math.round(getMaxCharge()*(10F/100F)) * 2);
+        return (oldCharge / (float)Math.round(getMaxCharge()*(20.2F/100F)));
     }
 
     public int getMaxCharge(){
