@@ -9,9 +9,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressItem;
-import net.msrandom.featuresandcreatures.common.items.spear.SpearItem;
 import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressMaterial;
-import net.msrandom.featuresandcreatures.common.entities.spear.SpearRenderer;
+import net.msrandom.featuresandcreatures.common.items.spear.SpearItem;
 
 public class FnCItems {
     public static final DeferredRegister<Item> REGISTRAR = DeferredRegister.create(ForgeRegistries.ITEMS, FeaturesAndCreatures.MOD_ID);

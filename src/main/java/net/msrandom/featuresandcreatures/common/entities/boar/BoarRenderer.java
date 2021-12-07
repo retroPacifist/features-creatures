@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
@@ -36,7 +35,6 @@ public class BoarRenderer extends GeoEntityRenderer<Boar> {
     public void render(Boar entity, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
         if (entity.isBaby()) {
             stack.scale(0.5f, 0.5f, 0.5f);
-            entity.setBoundingBox(new AxisAlignedBB(entity.blockPosition()));
             shadowRadius = 0.7f;
         } else {
             shadowRadius = 1.1f;

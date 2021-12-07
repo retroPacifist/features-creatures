@@ -1,7 +1,10 @@
 package net.msrandom.featuresandcreatures.common.advancements;
 
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.criterion.*;
+import net.minecraft.advancements.criterion.AbstractCriterionTrigger;
+import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.ConditionArrayParser;
