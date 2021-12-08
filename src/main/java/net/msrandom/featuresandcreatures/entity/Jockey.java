@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.entities.jockey;
+package net.msrandom.featuresandcreatures.entity;
 
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -21,9 +21,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.common.entities.boar.Boar;
-import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
+import net.msrandom.featuresandcreatures.util.FnCConfig;
 import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -35,6 +34,8 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatable, IRangedAttackMob {
     private static final String POTION_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.potion";
@@ -148,7 +149,12 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                             amount = 1;
                     }
 
-                    Set<Effect> effectsSet = new HashSet<>(ForgeRegistries.POTIONS.getValues());
+                    Predicate<Effect> blacklisted = FnCConfig.getInstance().getJockeyEffectBlacklist()::contains;
+
+                    Set<Effect> effectsSet =ForgeRegistries.POTIONS.getValues()
+                            .stream()
+                            .filter(blacklisted.negate())
+                            .collect(Collectors.toSet());
 
                     for (int j = 0; j < effectCount; ++j) {
                         Effect effect = getRandomElement(random, effectsSet);

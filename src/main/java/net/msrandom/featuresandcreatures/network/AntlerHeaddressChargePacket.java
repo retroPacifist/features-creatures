@@ -3,12 +3,11 @@ package net.msrandom.featuresandcreatures.network;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeaddressItem;
+import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
 
 import java.util.Optional;
 import java.util.function.Supplier;

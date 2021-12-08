@@ -12,7 +12,7 @@ import net.minecraft.loot.ConditionArraySerializer;
 import net.minecraft.loot.LootContext;
 import net.minecraft.util.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
+import net.msrandom.featuresandcreatures.entity.Jockey;
 
 public class JockeyTradeTrigger extends AbstractCriterionTrigger<JockeyTradeTrigger.Instance> {
     private static final ResourceLocation ID = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "jockey_trade");

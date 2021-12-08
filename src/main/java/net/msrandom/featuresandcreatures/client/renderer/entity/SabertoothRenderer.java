@@ -1,10 +1,12 @@
-package net.msrandom.featuresandcreatures.common.entities.sabertooth;
+package net.msrandom.featuresandcreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
+import net.msrandom.featuresandcreatures.entity.Sabertooth;
+import net.msrandom.featuresandcreatures.client.model.SabertoothModel;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class SabertoothRenderer extends GeoEntityRenderer<Sabertooth> {

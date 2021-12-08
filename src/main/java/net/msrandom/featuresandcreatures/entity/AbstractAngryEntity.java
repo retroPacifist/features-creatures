@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.entities;
+package net.msrandom.featuresandcreatures.entity;
 
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;

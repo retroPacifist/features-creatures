@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.entities.spear;
+package net.msrandom.featuresandcreatures.entity;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -21,15 +21,15 @@ import net.msrandom.featuresandcreatures.core.FnCItems;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SpearEntity extends AbstractArrowEntity {
+public class Spear extends AbstractArrowEntity {
     private boolean dealtDamage;
     private final ItemStack thrownStack = new ItemStack(FnCItems.SPEAR.get());
 
-    public SpearEntity(EntityType<? extends AbstractArrowEntity> type, World worldIn) {
+    public Spear(EntityType<? extends AbstractArrowEntity> type, World worldIn) {
         super(type, worldIn);
     }
 
-    public SpearEntity(World worldIn, LivingEntity thrower, ItemStack thrownStackIn) {
+    public Spear(World worldIn, LivingEntity thrower) {
         super(FnCEntities.SPEAR.get(), thrower, worldIn);
     }
 

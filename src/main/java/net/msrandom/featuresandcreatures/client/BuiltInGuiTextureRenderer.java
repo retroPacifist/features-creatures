@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.util;
+package net.msrandom.featuresandcreatures.client;
 
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;

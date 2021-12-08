@@ -9,11 +9,11 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.common.entities.boar.Boar;
-import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
-import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
-import net.msrandom.featuresandcreatures.common.entities.sabertooth.Sabertooth;
-import net.msrandom.featuresandcreatures.common.entities.spear.SpearEntity;
+import net.msrandom.featuresandcreatures.entity.Boar;
+import net.msrandom.featuresandcreatures.entity.Jackalope;
+import net.msrandom.featuresandcreatures.entity.Jockey;
+import net.msrandom.featuresandcreatures.entity.Sabertooth;
+import net.msrandom.featuresandcreatures.entity.Spear;
 
 public class FnCEntities {
 
@@ -24,7 +24,7 @@ public class FnCEntities {
     public static final RegistryObject<EntityType<Jackalope>> JACKALOPE = createMobEntity("jackalope", EntityType.Builder.of(Jackalope::new, EntityClassification.CREATURE).sized(1F, 0.8F), 0xB3A98D, 0x444444);
     public static final RegistryObject<EntityType<Sabertooth>> SABERTOOTH = createMobEntity("sabertooth", EntityType.Builder.of(Sabertooth::new, EntityClassification.CREATURE).sized(1.2F, 1.3F), 0xC59125, 0xEEA2C4);
 
-    public static final RegistryObject<EntityType<SpearEntity>> SPEAR = createEntity("spear", EntityType.Builder.<SpearEntity>of(SpearEntity::new, EntityClassification.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20));
+    public static final RegistryObject<EntityType<Spear>> SPEAR = createEntity("spear", EntityType.Builder.<Spear>of(Spear::new, EntityClassification.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20));
 
 
     private static <T extends Entity> RegistryObject<EntityType<T>> createMobEntity(String name, EntityType.Builder<T> builder, int colour1, int colour2) {

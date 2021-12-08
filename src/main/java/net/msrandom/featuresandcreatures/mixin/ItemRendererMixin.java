@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.msrandom.featuresandcreatures.util.BuiltInGuiTextureRenderer;
+import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

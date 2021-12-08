@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.items.spear;
+package net.msrandom.featuresandcreatures.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -23,13 +23,12 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.msrandom.featuresandcreatures.common.entities.spear.SpearEntity;
+import net.msrandom.featuresandcreatures.entity.Spear;
 
 import java.util.Map;
 
 public class SpearItem extends Item implements IVanishable {
     private final Multimap<Attribute, AttributeModifier> spearAttributes;
-
 
     public SpearItem(Properties properties) {
         super(properties);
@@ -70,7 +69,7 @@ public class SpearItem extends Item implements IVanishable {
                     stack.hurtAndBreak(1, playerentity, (p_220047_1_) -> {
                         p_220047_1_.broadcastBreakEvent(entity.getUsedItemHand());
                     });
-                    SpearEntity spear = new SpearEntity(world, playerentity, stack);
+                    Spear spear = new Spear(world, playerentity);
                     spear.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F, 2.5F + (float) 2 * 0.5F, 1.0F);
                     spear.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
                     world.addFreshEntity(spear);

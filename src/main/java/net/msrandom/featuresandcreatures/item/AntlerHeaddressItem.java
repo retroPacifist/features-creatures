@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.items.antler_headdress;
+package net.msrandom.featuresandcreatures.item;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -6,14 +6,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
+import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
 import net.msrandom.featuresandcreatures.network.AntlerHeaddressChargePacket;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -22,6 +25,17 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.item.GeoArmorItem;
 
 public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
+    private static final IArmorMaterial MATERIAL = new FnCArmorMaterial(
+            new ResourceLocation(FeaturesAndCreatures.MOD_ID, "headdress"),
+            new int[]{0, 111, 111, 37},
+            new int[]{0, 0, 0, 0},
+            420,
+            SoundEvents.ARMOR_EQUIP_LEATHER,
+            0.0F,
+            0.0F,
+            () -> Ingredient.of(FnCItems.ANTLER.get())
+    );
+
     private static final String DATA_PREFIX = "AntlerHeaddress";
     public static final String CURRENT_CHARGE = DATA_PREFIX + "Charge";
     private static final String LAST_CHARGE = DATA_PREFIX + "LastCharge";
@@ -29,8 +43,8 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
     private static final String DAMAGE_TIMER = DATA_PREFIX + "DamageTimer";
     private final AnimationFactory factory = new AnimationFactory(this);
 
-    public AntlerHeaddressItem(IArmorMaterial materialIn, EquipmentSlotType slot, Properties builder) {
-        super(materialIn, slot, builder);
+    public AntlerHeaddressItem(EquipmentSlotType slot, Properties builder) {
+        super(MATERIAL, slot, builder);
     }
 
     @Override

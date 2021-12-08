@@ -1,7 +1,8 @@
-package net.msrandom.featuresandcreatures.common.entities.boar;
+package net.msrandom.featuresandcreatures.client.model;
 
 import net.minecraft.util.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
+import net.msrandom.featuresandcreatures.entity.Boar;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -9,7 +10,7 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 import javax.annotation.Nullable;
 
-import static net.msrandom.featuresandcreatures.common.entities.boar.BoarRenderer.*;
+import static net.msrandom.featuresandcreatures.client.renderer.entity.BoarRenderer.*;
 
 public class BoarModel extends AnimatedGeoModel<Boar> {
 

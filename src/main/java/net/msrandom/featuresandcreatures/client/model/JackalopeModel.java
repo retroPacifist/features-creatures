@@ -1,7 +1,9 @@
-package net.msrandom.featuresandcreatures.common.entities.sabertooth;
+package net.msrandom.featuresandcreatures.client.model;
 
 import net.minecraft.util.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
+import net.msrandom.featuresandcreatures.client.renderer.entity.JackalopeRenderer;
+import net.msrandom.featuresandcreatures.entity.Jackalope;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -9,25 +11,25 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 import javax.annotation.Nullable;
 
-public class SabertoothModel extends AnimatedGeoModel<Sabertooth> {
+public class JackalopeModel extends AnimatedGeoModel<Jackalope> {
 
     @Override
-    public ResourceLocation getModelLocation(Sabertooth object) {
-        return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "geo/sabertooth.geo.json");
+    public ResourceLocation getModelLocation(Jackalope object) {
+        return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "geo/jackalope.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Sabertooth object) {
-        return object.isSaddled() ? SabertoothRenderer.SADDLED : SabertoothRenderer.TEXTURE;
+    public ResourceLocation getTextureLocation(Jackalope object) {
+        return object.isSaddled() ? JackalopeRenderer.SADDLED : JackalopeRenderer.TEXTURE;
     }
 
     @Override
-    public ResourceLocation getAnimationFileLocation(Sabertooth animatable) {
-        return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "animations/sabertooth.animation.json");
+    public ResourceLocation getAnimationFileLocation(Jackalope animatable) {
+        return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "animations/jackalope.animation.json");
     }
 
     @Override
-    public void setLivingAnimations(Sabertooth entity, Integer uniqueID, @Nullable AnimationEvent customPredicate) {
+    public void setLivingAnimations(Jackalope entity, Integer uniqueID, @Nullable AnimationEvent customPredicate) {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
         IBone head = this.getAnimationProcessor().getBone("head");
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
@@ -39,4 +41,5 @@ public class SabertoothModel extends AnimatedGeoModel<Sabertooth> {
             head.setScaleZ(2);
         }
     }
+
 }

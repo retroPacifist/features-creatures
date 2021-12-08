@@ -25,10 +25,10 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.common.entities.boar.Boar;
-import net.msrandom.featuresandcreatures.common.entities.jackalope.Jackalope;
-import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
-import net.msrandom.featuresandcreatures.common.entities.sabertooth.Sabertooth;
+import net.msrandom.featuresandcreatures.entity.Boar;
+import net.msrandom.featuresandcreatures.entity.Jackalope;
+import net.msrandom.featuresandcreatures.entity.Jockey;
+import net.msrandom.featuresandcreatures.entity.Sabertooth;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.mixin.SlimeSizeInvoker;
 

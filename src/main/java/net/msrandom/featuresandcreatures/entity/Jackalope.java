@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.entities.jackalope;
+package net.msrandom.featuresandcreatures.entity;
 
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
@@ -302,11 +302,10 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         return this.factory;
     }
 
-    boolean isSaddled() {
+    public boolean isSaddled() {
         return this.entityData.get(SADDLED);
     }
 
-    //getters/setters
     public void setSaddled(boolean saddled) {
         this.entityData.set(SADDLED, saddled);
     }

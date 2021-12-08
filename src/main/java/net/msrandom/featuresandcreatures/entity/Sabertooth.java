@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.entities.sabertooth;
+package net.msrandom.featuresandcreatures.entity;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -17,7 +17,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.msrandom.featuresandcreatures.common.entities.AbstractAngryEntity;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;

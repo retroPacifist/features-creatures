@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.entities.spear;
+package net.msrandom.featuresandcreatures.client.model;
 
 
 import com.mojang.blaze3d.matrix.MatrixStack;

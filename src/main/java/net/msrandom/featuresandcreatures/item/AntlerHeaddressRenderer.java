@@ -1,5 +1,6 @@
-package net.msrandom.featuresandcreatures.common.items.antler_headdress;
+package net.msrandom.featuresandcreatures.item;
 
+import net.msrandom.featuresandcreatures.client.model.AntlerHeaddressModel;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 public class AntlerHeaddressRenderer extends GeoArmorRenderer<AntlerHeaddressItem> {
