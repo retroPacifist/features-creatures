@@ -29,9 +29,7 @@ public class JockeyTradeTrigger extends AbstractCriterionTrigger<JockeyTradeTrig
 
     public void trigger(ServerPlayerEntity player, Jockey jockey, ItemStack item) {
         LootContext lootcontext = EntityPredicate.createContext(player, jockey);
-        this.trigger(player, (p_227267_2_) -> {
-            return p_227267_2_.matches(lootcontext, item);
-        });
+        this.trigger(player, instance -> instance.matches(lootcontext, item));
     }
 
     public static class Instance extends CriterionInstance {
