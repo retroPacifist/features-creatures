@@ -10,10 +10,8 @@ import net.minecraft.enchantment.IVanishable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,21 +23,17 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import net.msrandom.featuresandcreatures.common.entities.spear.SpearEntity;
 
 import java.util.Map;
 
-public class SpearItem extends Item implements IVanishable, IAnimatable {
+public class SpearItem extends Item implements IVanishable {
     private final Multimap<Attribute, AttributeModifier> spearAttributes;
-    private final AnimationFactory factory = new AnimationFactory(this);
+
 
     public SpearItem(Properties properties) {
         super(properties);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", 0.0D, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", 0F, AttributeModifier.Operation.ADDITION));
         this.spearAttributes = builder.build();
     }
 
@@ -72,23 +66,23 @@ public class SpearItem extends Item implements IVanishable, IAnimatable {
             PlayerEntity playerentity = (PlayerEntity) entity;
             int i = this.getUseDuration(stack) - timeLeft;
             if (i >= 10) {
-                    if (!world.isClientSide) {
-                        stack.hurtAndBreak(1, playerentity, (p_220047_1_) -> {
-                            p_220047_1_.broadcastBreakEvent(entity.getUsedItemHand());
-                        });
-                            TridentEntity spear = new TridentEntity(world, playerentity, stack);
-                            spear.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F, 2.5F + (float) 2 * 0.5F, 1.0F);
-                            spear.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
-                            world.addFreshEntity(spear);
-                            world.playSound(null, spear, SoundEvents.TRIDENT_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                            if (!playerentity.abilities.instabuild) {
-                                playerentity.inventory.removeItem(stack);
-                            }
-                        }
+                if (!world.isClientSide) {
+                    stack.hurtAndBreak(1, playerentity, (p_220047_1_) -> {
+                        p_220047_1_.broadcastBreakEvent(entity.getUsedItemHand());
+                    });
+                    SpearEntity spear = new SpearEntity(world, playerentity, stack);
+                    spear.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F, 2.5F + (float) 2 * 0.5F, 1.0F);
+                    spear.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
+                    world.addFreshEntity(spear);
+                    world.playSound(null, spear, SoundEvents.TRIDENT_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    if (!playerentity.abilities.instabuild) {
+                        playerentity.inventory.removeItem(stack);
                     }
-                    playerentity.awardStat(Stats.ITEM_USED.get(this));
                 }
             }
+            playerentity.awardStat(Stats.ITEM_USED.get(this));
+        }
+    }
 
 
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
@@ -125,15 +119,4 @@ public class SpearItem extends Item implements IVanishable, IAnimatable {
     public int getEnchantmentValue() {
         return 40;
     }
-
-    @Override
-    public void registerControllers(AnimationData data) {
-
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
-    }
 }
-

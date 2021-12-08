@@ -1,6 +1,84 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "featuresandcreatures:item/spear"
-  }
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "featuresandcreatures:entity/spear_entity"
+	},
+	"elements": [
+		{
+			"name": "pole",
+			"from": [7.49, -3.01, 7.49],
+			"to": [8.51, 23.01, 8.51],
+			"faces": {
+				"north": {"uv": [0.5, 0.5, 1, 13.5], "texture": "#0"},
+				"east": {"uv": [0, 0.5, 0.5, 13.5], "texture": "#0"},
+				"south": {"uv": [1.5, 0.5, 2, 13.5], "texture": "#0"},
+				"west": {"uv": [1, 0.5, 1.5, 13.5], "texture": "#0"},
+				"up": {"uv": [1, 0.5, 0.5, 0], "texture": "#0"},
+				"down": {"uv": [1.5, 0, 1, 0.5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "pole",
+			"from": [7, 22, 7],
+			"to": [9, 25, 9],
+			"faces": {
+				"north": {"uv": [3, 5.5, 4, 7], "texture": "#0"},
+				"east": {"uv": [2, 5.5, 3, 7], "texture": "#0"},
+				"south": {"uv": [5, 5.5, 6, 7], "texture": "#0"},
+				"west": {"uv": [4, 5.5, 5, 7], "texture": "#0"},
+				"up": {"uv": [4, 5.5, 3, 4.5], "texture": "#0"},
+				"down": {"uv": [5, 4.5, 4, 5.5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "pole",
+			"from": [5.5, 23, 8],
+			"to": [10.5, 32, 8],
+			"faces": {
+				"north": {"uv": [2, 0, 4.5, 4.5], "texture": "#0"},
+				"east": {"uv": [2, 0, 2, 4.5], "texture": "#0"},
+				"south": {"uv": [4.5, 0, 7, 4.5], "texture": "#0"},
+				"west": {"uv": [4.5, 0, 4.5, 4.5], "texture": "#0"},
+				"up": {"uv": [4.5, 0, 2, 0], "texture": "#0"},
+				"down": {"uv": [7, 0, 4.5, 0], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 0, 1.25]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 0, 1.25]
+		},
+		"firstperson_righthand": {
+			"rotation": [-46, 0, 0]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-46, 0, 0]
+		},
+		"ground": {
+			"rotation": [90, 0, 0],
+			"translation": [0, -3, 0]
+		},
+		"gui": {
+			"rotation": [-13, -180, -45],
+			"translation": [6.25, -6.5, 0],
+			"scale": [1.75, 1.75, 1.75]
+		},
+		"fixed": {
+			"rotation": [0, 0, 43],
+			"translation": [3, -3.5, -1],
+			"scale": [0.75, 0.75, 0.75]
+		}
+	},
+	"groups": [
+		{
+			"name": "pole",
+			"origin": [0, 24, 0],
+			"color": 0,
+			"shade": false,
+			"children": [0, 1, 2]
+		}
+	]
 }

@@ -49,6 +49,11 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         this.targetSelector.addGoal(5, new ResetAngerGoal<>(this, false));
     }
 
+    @Override
+    public void setBaby(boolean p_82227_1_) {
+        super.setBaby(p_82227_1_);
+    }
+
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DATA_STANDING_ID, false);
@@ -162,7 +167,7 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         return this.entityData.get(SADDLED);
     }
 
-    private void setSaddled(boolean saddled) {
+    public void setSaddled(boolean saddled) {
         this.entityData.set(SADDLED, saddled);
     }
 

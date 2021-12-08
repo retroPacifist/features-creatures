@@ -1,10 +1,6 @@
 package net.msrandom.featuresandcreatures;
 
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -20,6 +16,7 @@ import net.msrandom.featuresandcreatures.common.entities.jockey.Jockey;
 import net.msrandom.featuresandcreatures.common.entities.jockey.JockeyRenderer;
 import net.msrandom.featuresandcreatures.common.entities.sabertooth.Sabertooth;
 import net.msrandom.featuresandcreatures.common.entities.sabertooth.SabertoothRenderer;
+import net.msrandom.featuresandcreatures.common.entities.spear.SpearRenderer;
 import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressItem;
 import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressRenderer;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
@@ -65,9 +62,10 @@ public class FeaturesAndCreatures {
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.BOAR.get(), BoarRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JACKALOPE.get(), JackalopeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SABERTOOTH.get(), SabertoothRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SPEAR.get(), SpearRenderer::new);
         GeoArmorRenderer.registerArmorRenderer(AntlerHeadDressItem.class, new AntlerHeadDressRenderer());
 
-        BuiltInGuiTextureRenderer.register(FnCItems.SPEAR_ITEM.get());
+        BuiltInGuiTextureRenderer.register(FnCItems.SPEAR.get());
     }
 
     private void registerAttributes(EntityAttributeCreationEvent event) {

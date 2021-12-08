@@ -20,6 +20,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -58,6 +59,12 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 10.0D).add(Attributes.MOVEMENT_SPEED, 0.7F);
     }
+    @Override
+    public void setBaby(boolean p_82227_1_) {
+        super.setBaby(p_82227_1_);
+        this.setBoundingBox(new AxisAlignedBB(this.blockPosition()));
+    }
+
 
     protected float getJumpPower() {
         if (!this.horizontalCollision && (!this.moveControl.hasWanted() || !(this.moveControl.getWantedY() > this.getY() + 0.7D))) {
