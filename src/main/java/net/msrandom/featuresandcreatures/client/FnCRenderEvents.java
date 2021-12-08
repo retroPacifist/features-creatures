@@ -18,25 +18,23 @@ import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
 public class FnCRenderEvents {
     @SubscribeEvent
     public static void renderHotbar(RenderGameOverlayEvent.Pre event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
-            Minecraft client = Minecraft.getInstance();
-            ClientPlayerEntity player = client.player;
-            if (player != null) {
-                Item helmet = player.getItemBySlot(EquipmentSlotType.HEAD).getItem();
-                if (helmet instanceof AntlerHeaddressItem) {
-                    float percentage = player.getPersistentData().getInt(AntlerHeaddressItem.CURRENT_CHARGE) / (float) ((AntlerHeaddressItem) helmet).getMaxCharge();
-                    if (percentage > 0) {
-                        int width = 182;
-                        int x = event.getWindow().getGuiScaledWidth() / 2 - width / 2;
-                        int y = event.getWindow().getGuiScaledHeight() - 29;
-                        MatrixStack poseStack = event.getMatrixStack();
-                        client.getTextureManager().bind(AbstractGui.GUI_ICONS_LOCATION);
-                        RenderSystem.disableBlend();
-                        AbstractGui.blit(poseStack, x, y, 0, 0f, 84f, width, 5, 256, 256);
-                        AbstractGui.blit(poseStack, x, y, 0, 0f, 89f, (int) (percentage * (width + 1)), 5, 256, 256);
-                        RenderSystem.enableBlend();
-                        event.setCanceled(true);
-                    }
+        Minecraft client = Minecraft.getInstance();
+        ClientPlayerEntity player = client.player;
+        if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE && player != null) {
+            Item helmet = player.getItemBySlot(EquipmentSlotType.HEAD).getItem();
+            if (helmet instanceof AntlerHeaddressItem) {
+                float percentage = player.getPersistentData().getInt(AntlerHeaddressItem.CURRENT_CHARGE) / (float) ((AntlerHeaddressItem) helmet).getMaxCharge();
+                if (percentage > 0) {
+                    int width = 182;
+                    int x = event.getWindow().getGuiScaledWidth() / 2 - width / 2;
+                    int y = event.getWindow().getGuiScaledHeight() - 29;
+                    MatrixStack poseStack = event.getMatrixStack();
+                    client.getTextureManager().bind(AbstractGui.GUI_ICONS_LOCATION);
+                    RenderSystem.disableBlend();
+                    AbstractGui.blit(poseStack, x, y, 0, 0f, 84f, width, 5, 256, 256);
+                    AbstractGui.blit(poseStack, x, y, 0, 0f, 89f, (int) (percentage * (width + 1)), 5, 256, 256);
+                    RenderSystem.enableBlend();
+                    event.setCanceled(true);
                 }
             }
         }

@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.common.advancements;
+package net.msrandom.featuresandcreatures.advancements;
 
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.criterion.AbstractCriterionTrigger;

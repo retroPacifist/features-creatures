@@ -1,7 +1,7 @@
 package net.msrandom.featuresandcreatures.core;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.msrandom.featuresandcreatures.common.advancements.JockeyTradeTrigger;
+import net.msrandom.featuresandcreatures.advancements.JockeyTradeTrigger;
 
 public class FnCTriggers {
 
