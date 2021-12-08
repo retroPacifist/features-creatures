@@ -17,8 +17,8 @@ import net.msrandom.featuresandcreatures.common.entities.jockey.JockeyRenderer;
 import net.msrandom.featuresandcreatures.common.entities.sabertooth.Sabertooth;
 import net.msrandom.featuresandcreatures.common.entities.sabertooth.SabertoothRenderer;
 import net.msrandom.featuresandcreatures.common.entities.spear.SpearRenderer;
-import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressItem;
-import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeadDressRenderer;
+import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeaddressItem;
+import net.msrandom.featuresandcreatures.common.items.antler_headdress.AntlerHeaddressRenderer;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
@@ -63,7 +63,7 @@ public class FeaturesAndCreatures {
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JACKALOPE.get(), JackalopeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SABERTOOTH.get(), SabertoothRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SPEAR.get(), SpearRenderer::new);
-        GeoArmorRenderer.registerArmorRenderer(AntlerHeadDressItem.class, new AntlerHeadDressRenderer());
+        GeoArmorRenderer.registerArmorRenderer(AntlerHeaddressItem.class, new AntlerHeaddressRenderer());
 
         BuiltInGuiTextureRenderer.register(FnCItems.SPEAR.get());
     }

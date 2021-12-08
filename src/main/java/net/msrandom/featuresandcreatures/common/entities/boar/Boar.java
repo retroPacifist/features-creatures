@@ -34,7 +34,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 
-
 public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable, IRideable {
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT);
     private static final DataParameter<Boolean> DATA_SADDLE_ID = EntityDataManager.defineId(Boar.class, DataSerializers.BOOLEAN);

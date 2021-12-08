@@ -73,7 +73,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         int size = random.nextInt(collection.size());
         int i = 0;
         for (T t : collection) {
-            if (++i == size) {
+            if (i++ == size) {
                 return t;
             }
         }

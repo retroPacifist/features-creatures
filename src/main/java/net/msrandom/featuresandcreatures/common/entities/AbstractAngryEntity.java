@@ -37,13 +37,13 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new AbstractAngryEntity.MeleeAttackGoal());
+        this.goalSelector.addGoal(1, new AttackGoal());
         this.goalSelector.addGoal(2, new PanicGoal(this, 1.32D));
         this.goalSelector.addGoal(3, new FollowParentGoal(this, 1.25D));
         this.goalSelector.addGoal(4, new RandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
-        this.targetSelector.addGoal(1, new AbstractAngryEntity.HurtByTargetGoal());
+        this.targetSelector.addGoal(1, new CallForHelpGoal());
         this.targetSelector.addGoal(2, new AbstractAngryEntity.AttackPlayerGoal());
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
         this.targetSelector.addGoal(5, new ResetAngerGoal<>(this, false));
@@ -194,8 +194,8 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         }
     }
 
-    protected class HurtByTargetGoal extends net.minecraft.entity.ai.goal.HurtByTargetGoal {
-        public HurtByTargetGoal() {
+    protected class CallForHelpGoal extends HurtByTargetGoal {
+        public CallForHelpGoal() {
             super(AbstractAngryEntity.this);
         }
 
@@ -215,9 +215,9 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         }
     }
 
-    protected class MeleeAttackGoal extends net.minecraft.entity.ai.goal.MeleeAttackGoal {
+    protected class AttackGoal extends MeleeAttackGoal {
 
-        public MeleeAttackGoal() {
+        public AttackGoal() {
             super(AbstractAngryEntity.this, 1.24D, true);
         }
 

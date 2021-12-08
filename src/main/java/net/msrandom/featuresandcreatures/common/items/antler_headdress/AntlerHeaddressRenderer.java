@@ -2,9 +2,9 @@ package net.msrandom.featuresandcreatures.common.items.antler_headdress;
 
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
-public class AntlerHeadDressRenderer extends GeoArmorRenderer<AntlerHeadDressItem> {
-    public AntlerHeadDressRenderer() {
-        super(new AntlerHeadDressModel());
+public class AntlerHeaddressRenderer extends GeoArmorRenderer<AntlerHeaddressItem> {
+    public AntlerHeaddressRenderer() {
+        super(new AntlerHeaddressModel());
         this.headBone = "head";
         this.bodyBone = "body";
         this.rightArmBone = "rarm";

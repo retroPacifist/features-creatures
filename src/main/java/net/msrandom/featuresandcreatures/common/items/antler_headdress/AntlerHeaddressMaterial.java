@@ -11,7 +11,7 @@ import net.msrandom.featuresandcreatures.core.FnCItems;
 
 import java.util.function.Supplier;
 
-public enum AntlerHeadDressMaterial implements IArmorMaterial {
+public enum AntlerHeaddressMaterial implements IArmorMaterial {
     HEAD_DRESS(FeaturesAndCreatures.MOD_ID + ":headdress", 37, new int[]{0, 0, 0, 0}, 420, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> {
         return Ingredient.of(FnCItems.ANTLER.get());
     });
@@ -26,7 +26,7 @@ public enum AntlerHeadDressMaterial implements IArmorMaterial {
     private final float knockbackResistance;
     private final LazyValue<Ingredient> repairMaterial;
 
-    AntlerHeadDressMaterial(String nameIn, int maxDamageFactorIn, int[] damageReductionAmountArrayIn, int enchantabilityIn, SoundEvent soundEventIn, float resistance, float toughnessIn, Supplier<Ingredient> repairMaterialIn) {
+    AntlerHeaddressMaterial(String nameIn, int maxDamageFactorIn, int[] damageReductionAmountArrayIn, int enchantabilityIn, SoundEvent soundEventIn, float resistance, float toughnessIn, Supplier<Ingredient> repairMaterialIn) {
         this.name = nameIn;
         this.maxDamageFactor = maxDamageFactorIn;
         this.damageReductionAmountArray = damageReductionAmountArrayIn;

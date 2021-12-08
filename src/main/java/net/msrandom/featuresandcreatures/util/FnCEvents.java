@@ -84,31 +84,30 @@ public class FnCEvents {
 
     public static LivingEntity getMountEntity(World world, PlayerEntity player) {
         Biome.Category biome = world.getBiome(player.blockPosition()).getBiomeCategory();
-        if (biome == Biome.Category.ICY) {
-            Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
-            sabertooth.setSaddled(true);
-            return sabertooth;
-        }
-        if (biome == Biome.Category.SWAMP) {
-            SlimeEntity slime = EntityType.SLIME.create(world);
-            ((SlimeSizeInvoker)slime).setSize(2, true);
-            return slime;
-        }
-        if (biome == Biome.Category.EXTREME_HILLS) {
-            Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
-            jackalope.setSaddled(true);
-            return jackalope;
-        }
-        if (biome == Biome.Category.PLAINS) {
-            HorseEntity horse = EntityType.HORSE.create(world);
-            horse.isSaddled();
-            horse.setAge(-24000);
-            return horse;
-        }
-        else{
-            Boar boar = FnCEntities.BOAR.get().create(world);
-            boar.setSaddled(true);
-            return boar;
+        switch (biome) {
+            case ICY:
+                Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
+                if (sabertooth != null) sabertooth.setSaddled(true);
+                return sabertooth;
+            case SWAMP:
+                SlimeEntity slime = EntityType.SLIME.create(world);
+                if (slime != null) ((SlimeSizeInvoker) slime).callSetSize(2, true);
+                return slime;
+            case EXTREME_HILLS:
+                Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
+                if (jackalope != null) jackalope.setSaddled(true);
+                return jackalope;
+            case PLAINS:
+                HorseEntity horse = EntityType.HORSE.create(world);
+                if (horse != null) {
+                    horse.isSaddled();
+                    horse.setBaby(true);
+                }
+                return horse;
+            default:
+                Boar boar = FnCEntities.BOAR.get().create(world);
+                if (boar != null) boar.setSaddled(true);
+                return boar;
         }
     }
 
