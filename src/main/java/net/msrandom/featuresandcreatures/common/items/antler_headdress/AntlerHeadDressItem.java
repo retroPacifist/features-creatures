@@ -11,6 +11,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
@@ -46,20 +47,15 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
     public void inventoryTick(ItemStack stack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
         PlayerEntity player = (PlayerEntity) entity;
         isCharging = FnCKeybinds.CHARGE_ANTLER.isDown();
-        float f7 = player.yRot;
-        float f = player.xRot;
-        float f1 = -MathHelper.sin(f7 * ((float) Math.PI / 180F)) * MathHelper.cos(f * ((float) Math.PI / 180F));
-        float f2 = -MathHelper.sin(f * ((float) Math.PI / 180F));
-        float f3 = MathHelper.cos(f7 * ((float) Math.PI / 180F)) * MathHelper.cos(f * ((float) Math.PI / 180F));
-        float f4 = MathHelper.sqrt(f1 * f1 + f2 * f2 + f3 * f3);
+        Vector3d look = player.getLookAngle();
         if (world.isClientSide) {
             if (!player.getCooldowns().isOnCooldown(stack.getItem()) && !isDamaging) {
                 if (isCharging && player.getItemBySlot(EquipmentSlotType.HEAD).getItem() == FnCItems.ANTLER_HEADDRESS.get() && charge <= getMaxCharge()) {
                     charge++;
                 }
-                if (charge == Math.round(getMaxCharge()*(1F/100F)) || charge == Math.round(getMaxCharge()*(25F/100F)) || charge == Math.round(getMaxCharge()*(50F/100F))) {
+                if (charge == Math.round(getMaxCharge() * 0.01f) || charge == getMaxCharge() / 4 || charge == getMaxCharge() / 2) {
                     world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.LEVER_CLICK, SoundCategory.AMBIENT, 1, charge / 50F, false);
-                } else if (charge == Math.round(getMaxCharge()*(75F/100F))) {
+                } else if (charge == Math.round(getMaxCharge() * 0.75f)) {
                     world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIPWIRE_CLICK_ON, SoundCategory.AMBIENT, 2, 1.5F, false);
                 }
                 if (charge == getMaxCharge()) {
@@ -67,17 +63,15 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
                 }
 
                 if (!isCharging) {
-                    int j = charge / Math.round(getMaxCharge()*(37F/100F));
-                    float i = f1 * (j / f4);
-                    float k = f3 * (j / f4);
-                    if (charge > Math.round(getMaxCharge()*(37F/100F))) {
-                        player.push(i, 0.1, k);
+                    if (charge > Math.round(getMaxCharge() * 0.37f)) {
+                        double amount = charge / (getMaxCharge() * 0.37);
+                        player.push(-look.x * amount, 0.1, -look.z * amount);
                         world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
                         isDamaging = true;
                         oldCharge = charge;
                         charge = 0;
                     } else if (charge >= 1) {
-                        player.push(f1 * (0.5 / f4), 0.1, f3 * (0.5 / f4));
+                        player.push(-look.x * (0.5), 0.1, -look.z * (0.5));
                         world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
                         isDamaging = true;
                         oldCharge = charge;
@@ -90,18 +84,16 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
         }
         if (isDamaging) {
             AxisAlignedBB aabb = new AxisAlignedBB(player.blockPosition());
-            List<LivingEntity> list = world.getEntitiesOfClass(LivingEntity.class, aabb);
-            for (LivingEntity entity2 : list) {
+            for (LivingEntity entity2 : world.getEntitiesOfClass(LivingEntity.class, aabb)) {
                 if (entity2 != entity) {
                     if (getDamageAmount() < 1) {
                         entity2.hurt(DamageSource.playerAttack(player), 0.5F);
                     }
                     else {
                         entity2.hurt(DamageSource.playerAttack(player), getDamageAmount());
-
                     }
-                    if (oldCharge > Math.round(getMaxCharge()*(37F/100F))) {
-                        entity2.knockback(0.3F, -f1 * (1.5 / f4), -f3 * (1.5 / f4));
+                    if (oldCharge > Math.round(getMaxCharge() * 0.37f)) {
+                        entity2.knockback(0.3F, look.x * 1.5, look.z * 1.5);
                     }
                 }
             }
@@ -116,7 +108,7 @@ public class AntlerHeadDressItem extends GeoArmorItem implements IAnimatable {
     }
 
     public float getDamageAmount() {
-        return oldCharge / (float)Math.round(getMaxCharge()*(10F/100F));
+        return oldCharge / (getMaxCharge() * 0.1f);
     }
 
     public int getMaxCharge(){
