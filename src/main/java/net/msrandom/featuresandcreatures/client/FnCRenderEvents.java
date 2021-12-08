@@ -24,7 +24,7 @@ public class FnCRenderEvents {
             if (player != null) {
                 Item helmet = player.getItemBySlot(EquipmentSlotType.HEAD).getItem();
                 if (helmet instanceof AntlerHeaddressItem) {
-                    float percentage = player.getPersistentData().getInt(AntlerHeaddressItem.PLAYER_CHARGE) / (float) ((AntlerHeaddressItem) helmet).getMaxCharge();
+                    float percentage = player.getPersistentData().getInt(AntlerHeaddressItem.CURRENT_CHARGE) / (float) ((AntlerHeaddressItem) helmet).getMaxCharge();
                     int width = 182;
                     int x = event.getWindow().getGuiScaledWidth() / 2 - width / 2;
                     int y = event.getWindow().getGuiScaledHeight() - 50;

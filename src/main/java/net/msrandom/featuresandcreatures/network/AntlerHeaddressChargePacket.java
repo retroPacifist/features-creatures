@@ -32,11 +32,10 @@ public class AntlerHeaddressChargePacket {
         contextSupplier.get().enqueueWork(() -> {
             ServerPlayerEntity player = contextSupplier.get().getSender();
             if (player != null) {
-                ItemStack stack = player.getItemBySlot(EquipmentSlotType.HEAD);
-                Item item = stack.getItem();
+                Item item = player.getItemBySlot(EquipmentSlotType.HEAD).getItem();
                 // Check cooldown again, in case the player is cheating
                 if (item instanceof AntlerHeaddressItem && !player.getCooldowns().isOnCooldown(item)) {
-                    ((AntlerHeaddressItem) item).handleCharge(player, stack, charge);
+                    ((AntlerHeaddressItem) item).handleCharge(player, charge);
                 }
             }
         });
