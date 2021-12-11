@@ -69,9 +69,11 @@ public class SpearItem extends Item implements IVanishable {
                     stack.hurtAndBreak(1, playerentity, (p_220047_1_) -> {
                         p_220047_1_.broadcastBreakEvent(entity.getUsedItemHand());
                     });
-                    Spear spear = new Spear(world, playerentity);
+                    Spear spear = new Spear(world, playerentity, stack);
                     spear.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F, 2.5F + (float) 2 * 0.5F, 1.0F);
-                    spear.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
+                    if (playerentity.abilities.instabuild) {
+                        spear.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+                    }
                     world.addFreshEntity(spear);
                     world.playSound(null, spear, SoundEvents.TRIDENT_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     if (!playerentity.abilities.instabuild) {

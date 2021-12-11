@@ -7,6 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
@@ -23,14 +24,16 @@ import javax.annotation.Nullable;
 
 public class Spear extends AbstractArrowEntity {
     private boolean dealtDamage;
-    private final ItemStack thrownStack = new ItemStack(FnCItems.SPEAR.get());
+    private ItemStack thrownStack = new ItemStack(FnCItems.SPEAR.get());
 
     public Spear(EntityType<? extends AbstractArrowEntity> type, World worldIn) {
         super(type, worldIn);
     }
 
-    public Spear(World worldIn, LivingEntity thrower) {
+    public Spear(World worldIn, LivingEntity thrower, ItemStack stack) {
         super(FnCEntities.SPEAR.get(), thrower, worldIn);
+        this.thrownStack = stack.copy();
+
     }
 
     protected ItemStack getPickupItem() {
@@ -84,6 +87,25 @@ public class Spear extends AbstractArrowEntity {
         Entity entity = this.getOwner();
         if (entity == null || entity.getUUID() == player.getUUID()) {
             super.playerTouch(player);
+        }
+    }
+    public void readAdditionalSaveData(CompoundNBT p_70037_1_) {
+        super.readAdditionalSaveData(p_70037_1_);
+        if (p_70037_1_.contains("Spear", 10)) {
+            this.thrownStack = ItemStack.of(p_70037_1_.getCompound("Spear"));
+        }
+        this.dealtDamage = p_70037_1_.getBoolean("DealtDamage");
+    }
+
+    public void addAdditionalSaveData(CompoundNBT p_213281_1_) {
+        super.addAdditionalSaveData(p_213281_1_);
+        p_213281_1_.put("Spear", this.thrownStack.save(new CompoundNBT()));
+        p_213281_1_.putBoolean("DealtDamage", this.dealtDamage);
+    }
+
+    public void tickDespawn() {
+        if (this.pickup != AbstractArrowEntity.PickupStatus.ALLOWED) {
+            super.tickDespawn();
         }
     }
 }
