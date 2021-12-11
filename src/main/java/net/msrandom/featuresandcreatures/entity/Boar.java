@@ -1,5 +1,6 @@
 package net.msrandom.featuresandcreatures.entity;
 
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -32,8 +33,11 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable, IRideable {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class Boar extends AbstractAngryEntity implements IAngerable, AgingMountEntity, IRideable {
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT);
     private static final DataParameter<Boolean> DATA_SADDLE_ID = EntityDataManager.defineId(Boar.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> DATA_BOOST_TIME = EntityDataManager.defineId(Boar.class, DataSerializers.INT);
@@ -81,7 +85,6 @@ public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable
         super.readAdditionalSaveData(nbt);
         this.boostHelper.readAdditionalSaveData(nbt);
     }
-
 
     @Override
     public boolean isFood(ItemStack stack) {

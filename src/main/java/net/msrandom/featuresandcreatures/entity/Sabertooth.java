@@ -28,11 +28,9 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 
-public class Sabertooth extends AbstractAngryEntity implements IAngerable, IAnimatable {
+public class Sabertooth extends AbstractAngryEntity implements IAngerable, AgingMountEntity {
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.SALMON, Items.COD, Items.MUTTON);
     private final AnimationFactory factory = new AnimationFactory(this);
-
-
 
     public Sabertooth(EntityType<? extends Sabertooth> type, World world) {
         super(type, world);

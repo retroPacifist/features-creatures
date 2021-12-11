@@ -28,6 +28,7 @@ public abstract class ItemRendererMixin {
             ModelResourceLocation itemModel = BuiltInGuiTextureRenderer.getItemModel(stack);
             if (itemModel != null) {
                 matrixStack.pushPose();
+                matrixStack.scale(0.325F, 0.325F, 0.325F);
                 boolean flag = transformType == ItemCameraTransforms.TransformType.GUI || transformType == ItemCameraTransforms.TransformType.GROUND || transformType == ItemCameraTransforms.TransformType.FIXED;
                 if (flag) {
                     model = itemModelShaper.getModelManager().getModel(itemModel);
