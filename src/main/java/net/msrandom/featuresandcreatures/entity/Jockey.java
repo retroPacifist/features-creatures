@@ -5,23 +5,25 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.merchant.IMerchant;
+import net.minecraft.entity.monster.SlimeEntity;
+import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.*;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
+import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
+import net.msrandom.featuresandcreatures.mixin.SlimeSizeInvoker;
 import net.msrandom.featuresandcreatures.util.FnCConfig;
 import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -58,7 +60,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0D ,60, 10.0F));
+        this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0D, 60, 10.0F));
         this.goalSelector.addGoal(2, new SwimGoal(this));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 0.35D));
         this.goalSelector.addGoal(4, new LookAtWithoutMovingGoal(this, PlayerEntity.class, 3.0F, 1.0F));
@@ -131,65 +133,63 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     public MerchantOffers getOffers() {
         if (this.offers == null) {
             this.offers = new MerchantOffers();
-            if (!level.isClientSide) {
-                for (int i = 0; i < 7; ++i) {
-                    List<EffectInstance> effects = new ArrayList<>();
-                    int price = random.nextInt(8) + 5;
-                    int effectCount = generateEffectCount();
-                    TradeType type = generateTradeType();
+            for (int i = 0; i < 7; ++i) {
+                List<EffectInstance> effects = new ArrayList<>();
+                int price = random.nextInt(8) + 5;
+                int effectCount = generateEffectCount();
+                TradeType type = generateTradeType();
 
-                    int amount;
-                    switch (type) {
-                        case ARROWS_16:
-                            amount = 16;
-                            break;
-                        case ARROWS_32:
-                            amount = 32;
-                            break;
-                        default:
-                            amount = 1;
-                    }
-
-                    Predicate<Effect> blacklisted = FnCConfig.getInstance().getJockeyEffectBlacklist()::contains;
-
-                    Set<Effect> effectsSet =ForgeRegistries.POTIONS.getValues()
-                            .stream()
-                            .filter(blacklisted.negate())
-                            .collect(Collectors.toSet());
-
-                    for (int j = 0; j < effectCount; ++j) {
-                        Effect effect = getRandomElement(random, effectsSet);
-                        if (effect == null) effect = Effects.REGENERATION;
-                        effectsSet.remove(effect);
-                        effects.add(new EffectInstance(effect, 1800, generatePotionStrength(effectCount)));
-                    }
-
-                    Item item;
-                    String translationKey;
-                    switch (type) {
-                        case DRINK: {
-                            item = Items.POTION;
-                            translationKey = POTION_TRANSLATION_KEY;
-                            break;
-                        }
-                        case SPLASH: {
-                            item = Items.SPLASH_POTION;
-                            translationKey = POTION_TRANSLATION_KEY;
-                            break;
-                        }
-                        case LINGERING: {
-                            item = Items.LINGERING_POTION;
-                            translationKey = POTION_TRANSLATION_KEY;
-                            break;
-                        }
-                        default: {
-                            item = Items.TIPPED_ARROW;
-                            translationKey = ARROW_TRANSLATION_KEY;
-                        }
-                    }
-
-                    offers.add(new MerchantOffer(new ItemStack(Items.DIAMOND, price), ItemStack.EMPTY, PotionUtils.setCustomEffects(new ItemStack(item, amount), effects).setHoverName(new TranslationTextComponent(translationKey)), Integer.MAX_VALUE, 0, 1));
+                int amount;
+                switch (type) {
+                    case ARROWS_16:
+                        amount = 16;
+                        break;
+                    case ARROWS_32:
+                        amount = 32;
+                        break;
+                    default:
+                        amount = 1;
                 }
+
+                Predicate<Effect> blacklisted = FnCConfig.getInstance().getJockeyEffectBlacklist()::contains;
+
+                Set<Effect> effectsSet = ForgeRegistries.POTIONS.getValues()
+                        .stream()
+                        .filter(blacklisted.negate())
+                        .collect(Collectors.toSet());
+
+                for (int j = 0; j < effectCount; ++j) {
+                    Effect effect = getRandomElement(random, effectsSet);
+                    if (effect == null) effect = Effects.REGENERATION;
+                    effectsSet.remove(effect);
+                    effects.add(new EffectInstance(effect, 1800, generatePotionStrength(effectCount)));
+                }
+
+                Item item;
+                String translationKey;
+                switch (type) {
+                    case DRINK: {
+                        item = Items.POTION;
+                        translationKey = POTION_TRANSLATION_KEY;
+                        break;
+                    }
+                    case SPLASH: {
+                        item = Items.SPLASH_POTION;
+                        translationKey = POTION_TRANSLATION_KEY;
+                        break;
+                    }
+                    case LINGERING: {
+                        item = Items.LINGERING_POTION;
+                        translationKey = POTION_TRANSLATION_KEY;
+                        break;
+                    }
+                    default: {
+                        item = Items.TIPPED_ARROW;
+                        translationKey = ARROW_TRANSLATION_KEY;
+                    }
+                }
+
+                offers.add(new MerchantOffer(new ItemStack(Items.DIAMOND, price), ItemStack.EMPTY, PotionUtils.setCustomEffects(new ItemStack(item, amount), effects).setHoverName(new TranslationTextComponent(translationKey)), Integer.MAX_VALUE, 0, 1));
             }
         }
         return offers;
@@ -279,7 +279,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         offer.increaseUses();
         this.ambientSoundTime = -this.getAmbientSoundInterval();
         if (this.tradingPlayer instanceof ServerPlayerEntity) {
-            FnCTriggers.JOCKEY_TRADE.trigger((ServerPlayerEntity)this.tradingPlayer, this, offer.getResult());
+            FnCTriggers.JOCKEY_TRADE.trigger((ServerPlayerEntity) this.tradingPlayer, this, offer.getResult());
         }
     }
 
@@ -349,6 +349,16 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
     }
 
+
+    @Override
+    public void rideTick() {
+        super.rideTick();
+        if (this.getVehicle() instanceof CreatureEntity) {
+            CreatureEntity creatureentity = (CreatureEntity) this.getVehicle();
+            this.yBodyRot = creatureentity.yBodyRot;
+        }
+    }
+
     @Override
     public AnimationFactory getFactory() {
         return this.factory;
@@ -358,16 +368,16 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     public void performRangedAttack(LivingEntity jockey, float v) {
         Vector3d vector3d = jockey.getDeltaMovement();
         double d0 = jockey.getX() + vector3d.x - this.getX();
-        double d1 = jockey.getEyeY() - (double)1.1F - this.getY();
+        double d1 = jockey.getEyeY() - (double) 1.1F - this.getY();
         double d2 = jockey.getZ() + vector3d.z - this.getZ();
         float f = MathHelper.sqrt(d0 * d0 + d2 * d2);
         Potion potion = Potions.HARMING;
         PotionEntity potionentity = new PotionEntity(this.level, this);
         potionentity.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
         potionentity.xRot -= -20.0F;
-        potionentity.shoot(d0, d1 + (double)(f * 0.2F), d2, 0.75F, 8.0F);
+        potionentity.shoot(d0, d1 + (double) (f * 0.2F), d2, 0.75F, 8.0F);
         if (!this.isSilent()) {
-            this.level.playSound((PlayerEntity)null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
+            this.level.playSound((PlayerEntity) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
         }
         this.level.addFreshEntity(potionentity);
     }
@@ -378,5 +388,37 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         LINGERING,
         ARROWS_16,
         ARROWS_32
+    }
+
+    public static MobEntity getMountEntity(World world, Jockey jockey) {
+        if (jockey.getY() < 30) {
+            return EntityType.CAVE_SPIDER.create(world);
+        }
+
+        Biome.Category biome = world.getBiome(jockey.blockPosition()).getBiomeCategory();
+        switch (biome) {
+            case ICY:
+                Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
+                if (sabertooth != null) sabertooth.setSaddled(true);
+                return sabertooth;
+            case SWAMP:
+                SlimeEntity slime = EntityType.SLIME.create(world);
+                if (slime != null) ((SlimeSizeInvoker) slime).callSetSize(2, true);
+                return slime;
+            case EXTREME_HILLS:
+                Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
+                if (jackalope != null) jackalope.setSaddled(true);
+                return jackalope;
+            case PLAINS:
+                HorseEntity horse = EntityType.HORSE.create(world);
+                if (horse != null) {
+                    horse.equipSaddle(SoundCategory.NEUTRAL);
+                }
+                return horse;
+            default:
+                Boar boar = FnCEntities.BOAR.get().create(world);
+                if (boar != null) boar.setSaddled(true);
+                return boar;
+        }
     }
 }
