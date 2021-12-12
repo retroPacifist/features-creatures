@@ -79,12 +79,6 @@
     ],
     "subtitle": "subtitles.entity.jockey.trades"
   },
-  "entity.jockey.step": {
-    "sounds": [
-      "modid:path/to/file"
-    ],
-    "subtitle": "subtitles.entity.jockey.steps"
-  },
   "entity.jackalope.hurt": {
     "sounds": [
        "mob/rabbit/hurt1",
@@ -162,12 +156,6 @@
       "mob/horse/leather"
     ],
     "subtitle": "subtitles.entity.sabertooth.saddled"
-  },
-  "entity.sabertooth.step": {
-    "sounds": [
-      "modid:path/to/file"
-    ],
-    "subtitle": "subtitles.entity.sabertooth.steps"
   },
   "entity.spear.throw": {
     "sounds": [
