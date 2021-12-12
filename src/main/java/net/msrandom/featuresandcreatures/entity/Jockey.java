@@ -132,65 +132,63 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMoun
     public MerchantOffers getOffers() {
         if (this.offers == null) {
             this.offers = new MerchantOffers();
-            if (!level.isClientSide) {
-                for (int i = 0; i < 7; ++i) {
-                    List<EffectInstance> effects = new ArrayList<>();
-                    int price = random.nextInt(8) + 5;
-                    int effectCount = generateEffectCount();
-                    TradeType type = generateTradeType();
+            for (int i = 0; i < 7; ++i) {
+                List<EffectInstance> effects = new ArrayList<>();
+                int price = random.nextInt(8) + 5;
+                int effectCount = generateEffectCount();
+                TradeType type = generateTradeType();
 
-                    int amount;
-                    switch (type) {
-                        case ARROWS_16:
-                            amount = 16;
-                            break;
-                        case ARROWS_32:
-                            amount = 32;
-                            break;
-                        default:
-                            amount = 1;
-                    }
-
-                    Predicate<Effect> blacklisted = FnCConfig.getInstance().getJockeyEffectBlacklist()::contains;
-
-                    Set<Effect> effectsSet = ForgeRegistries.POTIONS.getValues()
-                            .stream()
-                            .filter(blacklisted.negate())
-                            .collect(Collectors.toSet());
-
-                    for (int j = 0; j < effectCount; ++j) {
-                        Effect effect = getRandomElement(random, effectsSet);
-                        if (effect == null) effect = Effects.REGENERATION;
-                        effectsSet.remove(effect);
-                        effects.add(new EffectInstance(effect, 1800, generatePotionStrength(effectCount)));
-                    }
-
-                    Item item;
-                    String translationKey;
-                    switch (type) {
-                        case DRINK: {
-                            item = Items.POTION;
-                            translationKey = POTION_TRANSLATION_KEY;
-                            break;
-                        }
-                        case SPLASH: {
-                            item = Items.SPLASH_POTION;
-                            translationKey = POTION_TRANSLATION_KEY;
-                            break;
-                        }
-                        case LINGERING: {
-                            item = Items.LINGERING_POTION;
-                            translationKey = POTION_TRANSLATION_KEY;
-                            break;
-                        }
-                        default: {
-                            item = Items.TIPPED_ARROW;
-                            translationKey = ARROW_TRANSLATION_KEY;
-                        }
-                    }
-
-                    offers.add(new MerchantOffer(new ItemStack(Items.DIAMOND, price), ItemStack.EMPTY, PotionUtils.setCustomEffects(new ItemStack(item, amount), effects).setHoverName(new TranslationTextComponent(translationKey)), Integer.MAX_VALUE, 0, 1));
+                int amount;
+                switch (type) {
+                    case ARROWS_16:
+                        amount = 16;
+                        break;
+                    case ARROWS_32:
+                        amount = 32;
+                        break;
+                    default:
+                        amount = 1;
                 }
+
+                Predicate<Effect> blacklisted = FnCConfig.getInstance().getJockeyEffectBlacklist()::contains;
+
+                Set<Effect> effectsSet = ForgeRegistries.POTIONS.getValues()
+                        .stream()
+                        .filter(blacklisted.negate())
+                        .collect(Collectors.toSet());
+
+                for (int j = 0; j < effectCount; ++j) {
+                    Effect effect = getRandomElement(random, effectsSet);
+                    if (effect == null) effect = Effects.REGENERATION;
+                    effectsSet.remove(effect);
+                    effects.add(new EffectInstance(effect, 1800, generatePotionStrength(effectCount)));
+                }
+
+                Item item;
+                String translationKey;
+                switch (type) {
+                    case DRINK: {
+                        item = Items.POTION;
+                        translationKey = POTION_TRANSLATION_KEY;
+                        break;
+                    }
+                    case SPLASH: {
+                        item = Items.SPLASH_POTION;
+                        translationKey = POTION_TRANSLATION_KEY;
+                        break;
+                    }
+                    case LINGERING: {
+                        item = Items.LINGERING_POTION;
+                        translationKey = POTION_TRANSLATION_KEY;
+                        break;
+                    }
+                    default: {
+                        item = Items.TIPPED_ARROW;
+                        translationKey = ARROW_TRANSLATION_KEY;
+                    }
+                }
+
+                offers.add(new MerchantOffer(new ItemStack(Items.DIAMOND, price), ItemStack.EMPTY, PotionUtils.setCustomEffects(new ItemStack(item, amount), effects).setHoverName(new TranslationTextComponent(translationKey)), Integer.MAX_VALUE, 0, 1));
             }
         }
         return offers;
