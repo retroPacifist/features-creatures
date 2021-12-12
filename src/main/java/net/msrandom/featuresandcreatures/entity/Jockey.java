@@ -5,23 +5,26 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.merchant.IMerchant;
+import net.minecraft.entity.monster.SlimeEntity;
+import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.*;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
+import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
+import net.msrandom.featuresandcreatures.mixin.SlimeSizeInvoker;
 import net.msrandom.featuresandcreatures.util.FnCConfig;
 import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -348,6 +351,16 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMoun
         data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
     }
 
+
+    @Override
+    public void rideTick() {
+        super.rideTick();
+        if (this.getVehicle() instanceof CreatureEntity) {
+            CreatureEntity creatureentity = (CreatureEntity)this.getVehicle();
+            this.yBodyRot = creatureentity.yBodyRot;
+        }
+    }
+
     @Override
     public AnimationFactory getFactory() {
         return this.factory;
@@ -377,5 +390,33 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMoun
         LINGERING,
         ARROWS_16,
         ARROWS_32
+    }
+
+    public static LivingEntity getMountEntity(World world, BlockPos pos) {
+        Biome.Category biome = world.getBiome(pos).getBiomeCategory();
+        switch (biome) {
+            case ICY:
+                Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
+                if (sabertooth != null) sabertooth.setSaddled(true);
+                return sabertooth;
+            case SWAMP:
+                SlimeEntity slime = EntityType.SLIME.create(world);
+                if (slime != null) ((SlimeSizeInvoker) slime).callSetSize(2, true);
+                return slime;
+            case EXTREME_HILLS:
+                Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
+                if (jackalope != null) jackalope.setSaddled(true);
+                return jackalope;
+            case PLAINS:
+                HorseEntity horse = EntityType.HORSE.create(world);
+                if (horse != null) {
+                    horse.equipSaddle(SoundCategory.NEUTRAL);
+                }
+                return horse;
+            default:
+                Boar boar = FnCEntities.BOAR.get().create(world);
+                if (boar != null) boar.setSaddled(true);
+                return boar;
+        }
     }
 }

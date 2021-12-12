@@ -9,6 +9,10 @@
   "minVersion": "0.8",
   "mixins": [
     "LivingEntityMixin",
-    "SlimeSizeInvoker"
+    "SlimeSizeInvoker",
+    "entity.MixinWolfEntity",
+    "server.MixinIServerWorldInfo",
+    "server.MixinServerLevel",
+    "server.MixinServerWorldInfo"
   ]
 }
