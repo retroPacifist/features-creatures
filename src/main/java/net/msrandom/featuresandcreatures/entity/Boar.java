@@ -37,7 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class Boar extends AbstractAngryEntity implements IAngerable, AgingMountEntity, IRideable {
+public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable, IRideable {
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT);
     private static final DataParameter<Boolean> DATA_SADDLE_ID = EntityDataManager.defineId(Boar.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> DATA_BOOST_TIME = EntityDataManager.defineId(Boar.class, DataSerializers.INT);

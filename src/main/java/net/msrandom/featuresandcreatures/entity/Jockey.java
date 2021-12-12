@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMountEntity, IRangedAttackMob {
+public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatable, IRangedAttackMob {
     private static final String POTION_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.potion";
     private static final String ARROW_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.arrow";
 
@@ -74,9 +74,10 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMoun
         int size = random.nextInt(collection.size());
         int i = 0;
         for (T t : collection) {
-            if (i++ == size) {
+            if (i == size) {
                 return t;
             }
+            i++;
         }
         return null;
     }

@@ -38,7 +38,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 
-public class Jackalope extends AnimalEntity implements AgingMountEntity {
+public class Jackalope extends AnimalEntity implements IAnimatable {
 
     private static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(Jackalope.class, DataSerializers.BOOLEAN);
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT, Items.GOLDEN_CARROT);
