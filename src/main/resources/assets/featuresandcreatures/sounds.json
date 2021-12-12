@@ -47,7 +47,9 @@
   },
   "entity.jockey.hurt": {
     "sounds": [
-      "subtitles.entity.generic.hurt"
+      "damage/hit1",
+      "damage/hit2",
+      "damage/hit3"
     ],
     "subtitle": "subtitles.entity.jockey.hurts"
   },
@@ -79,7 +81,7 @@
   },
   "entity.jockey.step": {
     "sounds": [
-      "mob/generic/step"
+      "modid:path/to/file"
     ],
     "subtitle": "subtitles.entity.jockey.steps"
   },
@@ -163,7 +165,7 @@
   },
   "entity.sabertooth.step": {
     "sounds": [
-      "mob/generic/step"
+      "modid:path/to/file"
     ],
     "subtitle": "subtitles.entity.sabertooth.steps"
   },
@@ -208,7 +210,7 @@
   },
   "entity.antler_headdress.charge": {
     "sounds": [
-      "block.note_block.chime"
+      "random/click"
     ],
     "subtitle": "subtitles.entity.antler_headdress.charging"
   },
