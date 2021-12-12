@@ -1,9 +1,7 @@
 package net.msrandom.featuresandcreatures.entity.spawner;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.monster.CaveSpiderEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -54,13 +52,12 @@ public class JockeySpawner implements ISpecialSpawner {
                 jockey.moveTo(position.getX(), position.getY(), position.getZ());
                 jockey.finalizeSpawn(world, world.getCurrentDifficultyAt(position), SpawnReason.NATURAL, null, null);
 
-                mount(world, position, jockey);
 
-
-                world.addFreshEntity(jockey);
-                fnCSpawnerLevelContext.setJockeySpawnCoolDown(72000L);
-                this.jockeySpawnCoolDown = fnCSpawnerLevelContext.getJockeySpawnCoolDown();
-                return 1;
+                if (handleMount(world, jockey) && world.addFreshEntity(jockey)) {
+                    fnCSpawnerLevelContext.setJockeySpawnCoolDown(72000L);
+                    this.jockeySpawnCoolDown = fnCSpawnerLevelContext.getJockeySpawnCoolDown();
+                    return 1;
+                }
             }
         } else {
             fnCSpawnerLevelContext.setJockeySpawnCoolDown(this.jockeySpawnCoolDown--);
@@ -68,17 +65,10 @@ public class JockeySpawner implements ISpecialSpawner {
         return 0;
     }
 
-    private static void mount(ServerWorld world, BlockPos position, Jockey jockey) {
-        if (jockey.blockPosition().getY() < 30) {
-            CaveSpiderEntity caveSpiderEntity = EntityType.CAVE_SPIDER.create(world);
-            caveSpiderEntity.moveTo(jockey.getX(), jockey.getY(), jockey.getZ(), jockey.yRot, 0.0F);
-            caveSpiderEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(position), SpawnReason.NATURAL, null, null);
-            jockey.startRiding(caveSpiderEntity);
-        } else {
-            final LivingEntity mountEntity = Jockey.getMountEntity(world, jockey.blockPosition());
-            mountEntity.moveTo(jockey.position());
-            jockey.startRiding(mountEntity);
-            world.addFreshEntity(mountEntity);
-        }
+    private static boolean handleMount(ServerWorld world, Jockey jockey) {
+        final MobEntity mountEntity = Jockey.getMountEntity(world, jockey);
+        mountEntity.moveTo(jockey.position());
+        jockey.startRiding(mountEntity);
+        return world.addFreshEntity(mountEntity);
     }
 }

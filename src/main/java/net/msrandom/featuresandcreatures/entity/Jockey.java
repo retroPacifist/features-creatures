@@ -14,7 +14,6 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.*;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -61,7 +60,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMoun
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0D ,60, 10.0F));
+        this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0D, 60, 10.0F));
         this.goalSelector.addGoal(2, new SwimGoal(this));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 0.35D));
         this.goalSelector.addGoal(4, new LookAtWithoutMovingGoal(this, PlayerEntity.class, 3.0F, 1.0F));
@@ -154,7 +153,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMoun
 
                     Predicate<Effect> blacklisted = FnCConfig.getInstance().getJockeyEffectBlacklist()::contains;
 
-                    Set<Effect> effectsSet =ForgeRegistries.POTIONS.getValues()
+                    Set<Effect> effectsSet = ForgeRegistries.POTIONS.getValues()
                             .stream()
                             .filter(blacklisted.negate())
                             .collect(Collectors.toSet());
@@ -281,7 +280,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMoun
         offer.increaseUses();
         this.ambientSoundTime = -this.getAmbientSoundInterval();
         if (this.tradingPlayer instanceof ServerPlayerEntity) {
-            FnCTriggers.JOCKEY_TRADE.trigger((ServerPlayerEntity)this.tradingPlayer, this, offer.getResult());
+            FnCTriggers.JOCKEY_TRADE.trigger((ServerPlayerEntity) this.tradingPlayer, this, offer.getResult());
         }
     }
 
@@ -356,7 +355,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMoun
     public void rideTick() {
         super.rideTick();
         if (this.getVehicle() instanceof CreatureEntity) {
-            CreatureEntity creatureentity = (CreatureEntity)this.getVehicle();
+            CreatureEntity creatureentity = (CreatureEntity) this.getVehicle();
             this.yBodyRot = creatureentity.yBodyRot;
         }
     }
@@ -370,16 +369,16 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMoun
     public void performRangedAttack(LivingEntity jockey, float v) {
         Vector3d vector3d = jockey.getDeltaMovement();
         double d0 = jockey.getX() + vector3d.x - this.getX();
-        double d1 = jockey.getEyeY() - (double)1.1F - this.getY();
+        double d1 = jockey.getEyeY() - (double) 1.1F - this.getY();
         double d2 = jockey.getZ() + vector3d.z - this.getZ();
         float f = MathHelper.sqrt(d0 * d0 + d2 * d2);
         Potion potion = Potions.HARMING;
         PotionEntity potionentity = new PotionEntity(this.level, this);
         potionentity.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
         potionentity.xRot -= -20.0F;
-        potionentity.shoot(d0, d1 + (double)(f * 0.2F), d2, 0.75F, 8.0F);
+        potionentity.shoot(d0, d1 + (double) (f * 0.2F), d2, 0.75F, 8.0F);
         if (!this.isSilent()) {
-            this.level.playSound((PlayerEntity)null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
+            this.level.playSound((PlayerEntity) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
         }
         this.level.addFreshEntity(potionentity);
     }
@@ -392,8 +391,12 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, AgingMoun
         ARROWS_32
     }
 
-    public static LivingEntity getMountEntity(World world, BlockPos pos) {
-        Biome.Category biome = world.getBiome(pos).getBiomeCategory();
+    public static MobEntity getMountEntity(World world, Jockey jockey) {
+        if (jockey.getY() < 30) {
+            return EntityType.CAVE_SPIDER.create(world);
+        }
+
+        Biome.Category biome = world.getBiome(jockey.blockPosition()).getBiomeCategory();
         switch (biome) {
             case ICY:
                 Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
