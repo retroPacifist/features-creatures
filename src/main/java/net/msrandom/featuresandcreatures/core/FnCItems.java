@@ -24,4 +24,5 @@ public class FnCItems {
     public static final RegistryObject<Item> ANTLER_HEADDRESS = REGISTRAR.register("antler_headdress", () -> new AntlerHeaddressItem(EquipmentSlotType.HEAD, new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> SABERTOOTH_FANG = REGISTRAR.register("sabertooth_fang", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> SPEAR = REGISTRAR.register("spear", () -> new SpearItem(new Item.Properties().durability(200).tab(TAB)));
+    public static final RegistryObject<Item> DOWSING_ROD = REGISTRAR.register("dowsing_rod", () -> new Item(new Item.Properties().tab(TAB)));
 }

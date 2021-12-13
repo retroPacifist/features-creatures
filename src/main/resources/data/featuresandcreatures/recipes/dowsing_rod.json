@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    " B ",
+    "B B"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:diamond"
+    },
+    "C": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "featuresandcreatures:dowsing_rod"
+  }
+}
