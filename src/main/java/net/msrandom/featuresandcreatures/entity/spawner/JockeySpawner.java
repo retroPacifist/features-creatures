@@ -96,7 +96,7 @@ public class JockeySpawner implements ISpecialSpawner {
         private BlockPos pos;
 
         public Context(CompoundNBT nbt) {
-            this(nbt.getUUID("uuid"), nbt.getLong("jockeySpawnCoolDown"), Util.fromCompound(nbt.getCompound("pos")));
+            this(nbt.contains("uuid") ? nbt.getUUID("uuid") : null, nbt.contains("jockeySpawnCoolDown") ? nbt.getLong("jockeySpawnCoolDown") : 72000L, nbt.contains("pos") ? Util.fromCompound(nbt.getCompound("pos")) : null);
         }
 
         public Context(@Nullable UUID uuid, long jockeySpawnCoolDown, @Nullable BlockPos pos) {
@@ -142,5 +142,6 @@ public class JockeySpawner implements ISpecialSpawner {
             compoundNBT.putLong("jockeySpawnCoolDown", this.jockeySpawnCoolDown);
             return compoundNBT;
         }
+
     }
 }
