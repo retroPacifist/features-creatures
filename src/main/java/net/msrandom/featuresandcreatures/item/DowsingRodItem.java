@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
 
@@ -44,7 +45,7 @@ public class DowsingRodItem extends Item {
 
                     if (playerForward.dot(playerToJockey.normalize()) > 0.99) {
                         // Pointing at jockey
-                        ((PlayerEntity) entity).playNotifySound(SoundEvents.NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1f, 1f);
+                        ((PlayerEntity) entity).playNotifySound(FnCSounds.DOWSING_ROD_LOCATES, SoundCategory.PLAYERS, 1f, 1f);
                     }
                 }
             }

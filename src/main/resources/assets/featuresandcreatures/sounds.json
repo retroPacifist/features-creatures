@@ -204,5 +204,11 @@
       "entity/itemframe/remove_item4"
     ],
     "subtitle": "subtitles.entity.featuresandcreatures.desaddle"
+  },
+  "item.dowsing_rod.locates": {
+    "sounds": [
+      "note/pling"
+    ],
+    "subtitle": "subtitles.item.dowsing_rod.locates"
   }
 }
