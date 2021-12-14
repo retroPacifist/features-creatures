@@ -23,7 +23,7 @@ public class JockeySpawner implements ISpecialSpawner {
 
     @Override
     public int tick(ServerWorld world, boolean spawnFriendlies, boolean spawnEnemies) {
-        Context context = ((FnCSpawnerLevelContext) world).jockeyContext();
+        Context context = ((FnCSpawnerLevelContext) world.getLevelData()).jockeyContext();
 
         if (world.dimension() != World.OVERWORLD || context.getUuid() != null) {
             return 0;
