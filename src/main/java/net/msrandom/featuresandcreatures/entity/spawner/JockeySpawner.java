@@ -16,66 +16,67 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class JockeySpawner implements ISpecialSpawner {
-   public static final int MAX_OFFSET = 10;
+    public static final int MAX_OFFSET = 10;
 
-    private final Context fnCSpawnerLevelContext;
-    private long jockeySpawnCoolDown;
-
-    public JockeySpawner(Context fnCSpawnerLevelContext) {
-        this.fnCSpawnerLevelContext = fnCSpawnerLevelContext;
-        this.jockeySpawnCoolDown = fnCSpawnerLevelContext.getJockeySpawnCoolDown();
+    public JockeySpawner() {
     }
 
     @Override
     public int tick(ServerWorld world, boolean spawnFriendlies, boolean spawnEnemies) {
-        if (world.dimension() != World.OVERWORLD || fnCSpawnerLevelContext.getUuid() != null) {
+        Context context = ((FnCSpawnerLevelContext) world).jockeyContext();
+
+        if (world.dimension() != World.OVERWORLD || context.getUuid() != null) {
             return 0;
         }
 
+        long jockeySpawnCoolDown = context.getJockeySpawnCoolDown();
         if (jockeySpawnCoolDown <= 0) {
-//            if (world.random.nextDouble() < 0.5) {
-//                fnCSpawnerLevelContext.setJockeySpawnCoolDown(72000L);
-//                jockeySpawnCoolDown = fnCSpawnerLevelContext.getJockeySpawnCoolDown();
-//                return 0;
-//            }
+            attemptSpawnJockey(world, context, 1.0);
+        } else {
+            context.setJockeySpawnCoolDown(jockeySpawnCoolDown - 1);
+        }
+        return 0;
+    }
 
-            ServerPlayerEntity player = world.getRandomPlayer();
-            if (player != null) {
-                BlockPos position = player.blockPosition().offset(world.random.nextInt(MAX_OFFSET) - (MAX_OFFSET / 2), world.random.nextInt(MAX_OFFSET) - (MAX_OFFSET / 2), world.random.nextInt(MAX_OFFSET) - (MAX_OFFSET / 2));
+    private static int attemptSpawnJockey(ServerWorld world, Context context, double successChance) {
+        if (world.random.nextDouble() > successChance) {
+            context.setJockeySpawnCoolDown(72000L);
+            return 0;
+        }
 
-                // Prevent suffocating
-                for (BlockPos blockPos : BlockPos.betweenClosed(position.offset(-2, 0, -2), position.offset(2, 3, 2))) {
-                    if (!world.isEmptyBlock(blockPos)) {
-                        return 0;
-                    }
-                }
+        ServerPlayerEntity player = world.getRandomPlayer();
+        if (player != null) {
+            BlockPos position = player.blockPosition().offset(world.random.nextInt(MAX_OFFSET) - (MAX_OFFSET / 2), world.random.nextInt(MAX_OFFSET) - (MAX_OFFSET / 2), world.random.nextInt(MAX_OFFSET) - (MAX_OFFSET / 2));
 
-                // Floor finder
-                for (BlockPos blockPos : BlockPos.betweenClosed(position.offset(-1, -1, -1), position.offset(1, -1, 1))) {
-                    if (world.isEmptyBlock(blockPos) && !world.getFluidState(blockPos).isEmpty()) {
-                        return 0;
-                    }
-                }
-
-                Jockey jockey = FnCEntities.JOCKEY.get().create(world);
-                if (jockey == null) {
+            // Prevent suffocating
+            for (BlockPos blockPos : BlockPos.betweenClosed(position.offset(-2, 0, -2), position.offset(2, 3, 2))) {
+                if (!world.isEmptyBlock(blockPos)) {
                     return 0;
                 }
+            }
 
-                jockey.moveTo(position.getX(), position.getY(), position.getZ());
-                jockey.finalizeSpawn(world, world.getCurrentDifficultyAt(position), SpawnReason.NATURAL, null, null);
-
-
-                if (handleMount(world, jockey) && world.addFreshEntity(jockey)) {
-                    fnCSpawnerLevelContext.setUuid(jockey.getUUID());
-                    fnCSpawnerLevelContext.setJockeySpawnCoolDown(-1);
-                    fnCSpawnerLevelContext.setPos(jockey.blockPosition());
-                    jockeySpawnCoolDown = fnCSpawnerLevelContext.getJockeySpawnCoolDown();
-                    return 1;
+            // Floor finder
+            for (BlockPos blockPos : BlockPos.betweenClosed(position.offset(-1, -1, -1), position.offset(1, -1, 1))) {
+                if (world.isEmptyBlock(blockPos) && !world.getFluidState(blockPos).isEmpty()) {
+                    return 0;
                 }
             }
-        } else {
-            fnCSpawnerLevelContext.setJockeySpawnCoolDown(jockeySpawnCoolDown--);
+
+            Jockey jockey = FnCEntities.JOCKEY.get().create(world);
+            if (jockey == null) {
+                return 0;
+            }
+
+            jockey.moveTo(position.getX(), position.getY(), position.getZ());
+            jockey.finalizeSpawn(world, world.getCurrentDifficultyAt(position), SpawnReason.NATURAL, null, null);
+
+
+            if (handleMount(world, jockey) && world.addFreshEntity(jockey)) {
+                context.setUuid(jockey.getUUID());
+                context.setJockeySpawnCoolDown(-1);
+                context.setPos(jockey.blockPosition());
+                return 1;
+            }
         }
         return 0;
     }

@@ -10,7 +10,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.spawner.ISpecialSpawner;
 import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraft.world.storage.SaveFormat;
-import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,7 +35,7 @@ public class MixinServerLevel {
     private void addFnCSpawners(MinecraftServer p_i241885_1_, Executor p_i241885_2_, SaveFormat.LevelSave p_i241885_3_, IServerWorldInfo serverWorldInfo, RegistryKey<World> worldRegistryKey, DimensionType p_i241885_6_, IChunkStatusListener p_i241885_7_, ChunkGenerator p_i241885_8_, boolean p_i241885_9_, long p_i241885_10_, List<ISpecialSpawner> spawners, boolean p_i241885_13_, CallbackInfo ci) {
         this.customSpawners = new ArrayList<>(this.customSpawners);
         if (worldRegistryKey == World.OVERWORLD) {
-            this.customSpawners.add(new JockeySpawner(((FnCSpawnerLevelContext) serverWorldInfo).jockeyContext()));
+            this.customSpawners.add(new JockeySpawner());
         }
     }
 }
