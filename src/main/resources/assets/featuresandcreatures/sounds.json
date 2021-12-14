@@ -15,7 +15,7 @@
     ],
     "subtitle": "subtitles.entity.boar.ambient"
   },
-  "entity.boar.die": {
+  "entity.boar.death": {
     "sounds": [
       "mob/pig/death"
     ],
@@ -53,13 +53,7 @@
     ],
     "subtitle": "subtitles.entity.jockey.hurts"
   },
-  "entity.jockey.ambient": {
-    "sounds": [
-      "modid:path/to/file"
-    ],
-    "subtitle": "subtitles.entity.jockey.ambient"
-  },
-  "entity.jockey.die": {
+  "entity.jockey.death": {
     "sounds": [
       "damage/hit1",
       "damage/hit2",
@@ -72,12 +66,6 @@
       "random/bow"
     ],
     "subtitle": "subtitles.entity.jockey.attack"
-  },
-  "entity.jockey.trade": {
-    "sounds": [
-      "modid:path/to/file"
-    ],
-    "subtitle": "subtitles.entity.jockey.trades"
   },
   "entity.jackalope.hurt": {
     "sounds": [
@@ -97,7 +85,7 @@
     ],
     "subtitle": "subtitles.entity.jackalope.ambient"
   },
-  "entity.jackalope.die": {
+  "entity.jackalope.death": {
     "sounds": [
       "mob/rabbit/bunnymurder"
     ],
@@ -135,7 +123,7 @@
     ],
     "subtitle": "subtitles.entity.sabertooth.ambient"
   },
-  "entity.sabertooth.die": {
+  "entity.sabertooth.death": {
     "sounds": [
       "mob/cat/ocelot/death1",
       "mob/cat/ocelot/death2",
@@ -208,31 +196,13 @@
     ],
     "subtitle": "subtitles.entity.antler_headdress.finished_charging"
   },
-  "entity.boar.desaddles": {
+  "entity.saddled.desaddle": {
     "sounds": [
       "entity/itemframe/remove_item1",
       "entity/itemframe/remove_item2",
       "entity/itemframe/remove_item3",
       "entity/itemframe/remove_item4"
     ],
-    "subtitle": "subtitles.entity.boar.desaddles"
-  },
-  "entity.sabertooth.desaddle": {
-    "sounds": [
-      "entity/itemframe/remove_item1",
-      "entity/itemframe/remove_item2",
-      "entity/itemframe/remove_item3",
-      "entity/itemframe/remove_item4"
-    ],
-    "subtitle": "subtitles.entity.sabertooth.desaddle"
-  },
-  "entity.jackalope.desaddle": {
-    "sounds": [
-      "entity/itemframe/remove_item1",
-      "entity/itemframe/remove_item2",
-      "entity/itemframe/remove_item3",
-      "entity/itemframe/remove_item4"
-    ],
-    "subtitle": "subtitles.entity.jackalope.desaddle"
+    "subtitle": "subtitles.entity.featuresandcreatures.desaddle"
   }
 }

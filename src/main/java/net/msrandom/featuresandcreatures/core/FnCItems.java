@@ -10,19 +10,21 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
 import net.msrandom.featuresandcreatures.item.SpearItem;
+import net.msrandom.featuresandcreatures.util.FnCRegistrar;
 
 public class FnCItems {
-    public static final DeferredRegister<Item> REGISTRAR = DeferredRegister.create(ForgeRegistries.ITEMS, FeaturesAndCreatures.MOD_ID);
-    public static final RegistryObject<Item> MEGA_POTION = REGISTRAR.register("mega_potion", () -> new Item(new Item.Properties()));
+    public static final FnCRegistrar<Item> REGISTRAR = new FnCRegistrar<>(ForgeRegistries.ITEMS);
     public static final ItemGroup TAB = new ItemGroup(FeaturesAndCreatures.MOD_ID) {
         @Override
         public ItemStack makeIcon() {
-            return FnCItems.MEGA_POTION.get().getDefaultInstance();
+            return FnCItems.MEGA_POTION.getDefaultInstance();
         }
     };
-    public static final RegistryObject<Item> ANTLER = REGISTRAR.register("antler", () -> new Item(new Item.Properties().tab(TAB)));
-    public static final RegistryObject<Item> ANTLER_HEADDRESS = REGISTRAR.register("antler_headdress", () -> new AntlerHeaddressItem(EquipmentSlotType.HEAD, new Item.Properties().tab(TAB)));
-    public static final RegistryObject<Item> SABERTOOTH_FANG = REGISTRAR.register("sabertooth_fang", () -> new Item(new Item.Properties().tab(TAB)));
-    public static final RegistryObject<Item> SPEAR = REGISTRAR.register("spear", () -> new SpearItem(new Item.Properties().durability(200).tab(TAB)));
-    public static final RegistryObject<Item> DOWSING_ROD = REGISTRAR.register("dowsing_rod", () -> new Item(new Item.Properties().tab(TAB)));
+
+    public static final Item MEGA_POTION = REGISTRAR.add("mega_potion", new Item(new Item.Properties()));
+    public static final Item ANTLER = REGISTRAR.add("antler", new Item(new Item.Properties().tab(TAB)));
+    public static final Item ANTLER_HEADDRESS = REGISTRAR.add("antler_headdress", new AntlerHeaddressItem(EquipmentSlotType.HEAD, new Item.Properties().tab(TAB)));
+    public static final Item SABERTOOTH_FANG = REGISTRAR.add("sabertooth_fang", new Item(new Item.Properties().tab(TAB)));
+    public static final Item SPEAR = REGISTRAR.add("spear", new SpearItem(new Item.Properties().durability(200).tab(TAB)));
+    public static final Item DOWSING_ROD = REGISTRAR.add("dowsing_rod", new Item(new Item.Properties().tab(TAB)));
 }

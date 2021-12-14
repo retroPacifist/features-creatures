@@ -7,12 +7,20 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Mod.EventBusSubscriber(value = {Dist.CLIENT}, modid = FeaturesAndCreatures.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class FnCRenderEvents {
@@ -36,6 +44,21 @@ public class FnCRenderEvents {
                     RenderSystem.enableBlend();
                     event.setCanceled(true);
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void getTooltips(ItemTooltipEvent event) {
+        // Hacky workaround for vanilla potion duration bug. May break if mods add any tooltips before index 1
+        // -Potential solution to that would be figuring out the proper start index by comparing the would-be tooltip.
+        ItemStack itemStack = event.getItemStack();
+        if (itemStack.getItem() == Items.LINGERING_POTION || itemStack.getItem() == Items.TIPPED_ARROW) {
+            List<ITextComponent> newList = new ArrayList<>();
+            PotionUtils.addPotionTooltip(itemStack, newList, 1f);
+            List<ITextComponent> list = event.getToolTip();
+            for (int i = 0; i < newList.size(); ++i) {
+                list.set(i + 1, newList.get(i));
             }
         }
     }

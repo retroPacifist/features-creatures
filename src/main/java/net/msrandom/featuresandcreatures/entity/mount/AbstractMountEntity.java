@@ -14,8 +14,11 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -79,7 +82,8 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
             if (!isSaddled()) {
                 ItemStack itemStack = playerEntity.getItemInHand(hand);
                 if (itemStack.getItem() == Items.SADDLE) {
-                    return sidedOperation(serverWorld -> {
+                    return sidedOperation(level -> {
+                        level.playSound(null, this.getX(), this.getY() + getDimensions(getPose()).height / 3, this.getZ(), getSaddleSound(), getSoundSource(), 1, 1);
                         setSaddled(true);
                         if (!playerEntity.abilities.instabuild) {
                             itemStack.shrink(1);
@@ -87,7 +91,8 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
                     });
                 }
             } else if (playerEntity.isCrouching()) {
-                return sidedOperation(serverWorld -> {
+                return sidedOperation(level -> {
+                    level.playSound(null, this.getX(), this.getY() + getDimensions(getPose()).height / 3, this.getZ(), FnCSounds.ENTITY_DESADDLE, getSoundSource(), 1, 1);
                     ItemStack itemStack1 = new ItemStack(Items.SADDLE);
                     if (!playerEntity.inventory.add(itemStack1)) {
                         playerEntity.drop(itemStack1, false);
@@ -99,9 +104,11 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
         return super.mobInteract(playerEntity, hand);
     }
 
-    protected ActionResultType sidedOperation(Consumer<ServerWorld> consumer) {
+    protected abstract SoundEvent getSaddleSound();
+
+    protected ActionResultType sidedOperation(Consumer<World> consumer) {
         if (!level.isClientSide) {
-            consumer.accept((ServerWorld) level);
+            consumer.accept(level);
             return ActionResultType.SUCCESS;
         } else {
             return ActionResultType.CONSUME;

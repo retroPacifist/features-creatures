@@ -24,7 +24,9 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
+import net.msrandom.featuresandcreatures.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
 import net.msrandom.featuresandcreatures.mixin.SlimeSizeInvoker;
@@ -74,20 +76,17 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         this.goalSelector.addGoal(4, new LookAtWithoutMovingGoal(this, PlayerEntity.class, 3.0F, 1.0F));
         this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(0, new UseItemGoal<>(this, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING), SoundEvents.GENERIC_DRINK, entity -> this.getHealth() <= 6));
         this.targetSelector.addGoal(7, new HurtByTargetGoal(this));
-        this.goalSelector.addGoal(0, new UseItemGoal<>(this, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING), SoundEvents.GENERIC_DRINK, (entity) -> {
-            return this.getHealth() <= 6;
-        }));
     }
 
     private static <T> T getRandomElement(Random random, Collection<T> collection) {
         int size = random.nextInt(collection.size());
         int i = 0;
         for (T t : collection) {
-            if (i == size) {
+            if (i++ == size) {
                 return t;
             }
-            i++;
         }
         return null;
     }
@@ -205,14 +204,14 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
 
     private TradeType generateTradeType() {
         TradeType type;
-        int typeChance = random.nextInt(100);
-        if (typeChance < 10) {
+        int typeChance = random.nextInt(20);
+        if (typeChance < 2) {
             type = TradeType.ARROWS_32;
-        } else if (typeChance < 25) {
+        } else if (typeChance < 5) {
             type = TradeType.ARROWS_16;
-        } else if (typeChance < 40) {
+        } else if (typeChance < 8) {
             type = TradeType.LINGERING;
-        } else if (typeChance < 60) {
+        } else if (typeChance < 12) {
             type = TradeType.SPLASH;
         } else {
             type = TradeType.DRINK;
@@ -222,10 +221,10 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
 
     private int generateEffectCount() {
         int effectCount;
-        int effectCountChance = random.nextInt(100);
-        if (effectCountChance < 15) {
+        int effectCountChance = random.nextInt(20);
+        if (effectCountChance < 3) {
             effectCount = 3;
-        } else if (effectCountChance < 40) {
+        } else if (effectCountChance < 8) {
             effectCount = 2;
         } else {
             effectCount = 1;
@@ -318,6 +317,16 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         ++timeAlive;
     }
 
+    @Override
+    protected SoundEvent getHurtSound(DamageSource p_184601_1_) {
+        return FnCSounds.JOCKEY_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return FnCSounds.JOCKEY_DEATH;
+    }
+
     private void trackedGlobalJockey() {
         JockeySpawner.Context context = ((FnCSpawnerLevelContext) this.level.getLevelData()).jockeyContext();
         if (context != null) {
@@ -347,8 +356,8 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
-    public boolean removeWhenFarAway(double p_213397_1_) {
-        return timeAlive >= 48000;
+    public boolean removeWhenFarAway(double distance) {
+        return timeAlive >= 48000 && (FnCConfig.getInstance().namedJockeyDespawn() || !hasCustomName());
     }
 
     @Override
@@ -382,7 +391,6 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
     }
 
-
     @Override
     public void rideTick() {
         super.rideTick();
@@ -410,19 +418,12 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         potionentity.xRot -= -20.0F;
         potionentity.shoot(d0, d1 + (double) (f * 0.2F), d2, 0.75F, 8.0F);
         if (!this.isSilent()) {
-            this.level.playSound((PlayerEntity) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), FnCSounds.JOCKEY_ATTACK, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
         }
         this.level.addFreshEntity(potionentity);
     }
 
-    public enum TradeType {
-        DRINK,
-        SPLASH,
-        LINGERING,
-        ARROWS_16,
-        ARROWS_32
-    }
-
+    @Nullable
     public static MobEntity getMountEntity(World world, Jockey jockey) {
         if (jockey.getY() < 30) {
             return EntityType.CAVE_SPIDER.create(world);
@@ -431,7 +432,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         Biome.Category biome = world.getBiome(jockey.blockPosition()).getBiomeCategory();
         switch (biome) {
             case ICY:
-                Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
+                Sabertooth sabertooth = FnCEntities.SABERTOOTH.create(world);
                 if (sabertooth != null) sabertooth.setSaddled(true);
                 return sabertooth;
             case SWAMP:
@@ -439,7 +440,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 if (slime != null) ((SlimeSizeInvoker) slime).callSetSize(2, true);
                 return slime;
             case EXTREME_HILLS:
-                Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
+                Jackalope jackalope = FnCEntities.JACKALOPE.create(world);
                 if (jackalope != null) jackalope.setSaddled(true);
                 return jackalope;
             case PLAINS:
@@ -449,7 +450,15 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 }
                 return horse;
             default:
-                return createEntity(FnCEntities.BOAR.get(), world, boarEntity -> boarEntity.setSaddled(true));
+                return createEntity(FnCEntities.BOAR, world, boarEntity -> boarEntity.setSaddled(true));
         }
+    }
+
+    public enum TradeType {
+        DRINK,
+        SPLASH,
+        LINGERING,
+        ARROWS_16,
+        ARROWS_32
     }
 }

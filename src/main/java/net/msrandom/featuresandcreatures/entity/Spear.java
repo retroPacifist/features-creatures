@@ -11,29 +11,28 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCItems;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class Spear extends AbstractArrowEntity {
     private boolean dealtDamage;
-    private ItemStack thrownStack = new ItemStack(FnCItems.SPEAR.get());
+    private ItemStack thrownStack = new ItemStack(FnCItems.SPEAR);
 
     public Spear(EntityType<? extends AbstractArrowEntity> type, World worldIn) {
         super(type, worldIn);
     }
 
     public Spear(World worldIn, LivingEntity thrower, ItemStack stack) {
-        super(FnCEntities.SPEAR.get(), thrower, worldIn);
+        super(FnCEntities.SPEAR, thrower, worldIn);
         this.thrownStack = stack.copy();
-
     }
 
     protected ItemStack getPickupItem() {
@@ -63,7 +62,7 @@ public class Spear extends AbstractArrowEntity {
         Entity entity1 = this.getOwner();
         DamageSource damagesource = DamageSource.trident(this, (Entity) (entity1 == null ? this : entity1));
         this.dealtDamage = true;
-        SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
+        SoundEvent soundevent = FnCSounds.SPEAR_ATTACK;
         if (entity.hurt(damagesource, f)) {
             if (entity.getType() == EntityType.ENDERMAN) {
                 return;

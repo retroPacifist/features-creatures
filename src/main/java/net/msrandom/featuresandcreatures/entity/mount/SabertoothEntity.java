@@ -3,8 +3,10 @@ package net.msrandom.featuresandcreatures.entity.mount;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -20,6 +22,11 @@ public final class SabertoothEntity extends AbstractAngryMountEntity {
     @Override
     protected void registerAdditionalGoals() {
 
+    }
+
+    @Override
+    protected SoundEvent getSaddleSound() {
+        return FnCSounds.SABERTOOTH_SADDLE;
     }
 
     @Override

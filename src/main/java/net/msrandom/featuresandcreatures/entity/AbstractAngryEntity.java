@@ -13,6 +13,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -20,7 +21,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAnimatable {
+public abstract class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAnimatable {
 
     private static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(AbstractAngryEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> DATA_STANDING_ID = EntityDataManager.defineId(AbstractAngryEntity.class, DataSerializers.BOOLEAN);
@@ -75,17 +76,19 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
         if (player.isHolding(Items.SADDLE) && !this.isBaby()) {
             this.setSaddled(true);
             if (!player.isCreative()) {
-                player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.PIG_SADDLE, SoundCategory.AMBIENT, 1, 1);
+                player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), getSaddleSound(), SoundCategory.AMBIENT, 1, 1);
                 player.getItemInHand(hand).shrink(1);
             }
         }
         if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()) {
             this.setSaddled(false);
             player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY() + 0.3f, this.getZ(), Items.SADDLE.getDefaultInstance()));
-            player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundCategory.AMBIENT, 1, 1);
+            player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), FnCSounds.ENTITY_DESADDLE, SoundCategory.AMBIENT, 1, 1);
         }
         return ActionResultType.SUCCESS;
     }
+
+    protected abstract SoundEvent getSaddleSound();
 
     public void addAdditionalSaveData(CompoundNBT nbt) {
         super.addAdditionalSaveData(nbt);
@@ -101,8 +104,6 @@ public class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAn
             --this.warningSoundTicks;
         }
     }
-
-
 
     @Nullable
     @Override

@@ -1,7 +1,11 @@
 package net.msrandom.featuresandcreatures.item;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -20,6 +24,7 @@ import net.minecraft.world.World;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
 import net.msrandom.featuresandcreatures.network.AntlerHeaddressChargePacket;
 import net.msrandom.featuresandcreatures.network.NetworkHandler;
@@ -37,7 +42,7 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
             SoundEvents.ARMOR_EQUIP_LEATHER,
             0.0F,
             0.0F,
-            () -> Ingredient.of(FnCItems.ANTLER.get())
+            () -> Ingredient.of(FnCItems.ANTLER)
     );
 
     private static final String DATA_PREFIX = "AntlerHeaddress";
@@ -72,17 +77,17 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
                     charge++;
                 }
                 if (charge == Math.round(getMaxCharge() * 0.01f) || charge == getMaxCharge() / 4 || charge == getMaxCharge() / 2) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.LEVER_CLICK, SoundCategory.AMBIENT, 1, charge / 50F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_CHARGE, SoundCategory.AMBIENT, 1, charge / 50F, false);
                 } else if (charge == Math.round(getMaxCharge() * 0.75f)) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIPWIRE_CLICK_ON, SoundCategory.AMBIENT, 2, 1.5F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_CHARGE, SoundCategory.AMBIENT, 2, 1.5F, false);
                 } else if (charge == getMaxCharge()) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_CHIME, SoundCategory.AMBIENT, 30, charge / 15F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_FINISH_CHARGE, SoundCategory.AMBIENT, 30, charge / 15F, false);
                 }
 
                 if (!isCharging && charge > 0) {
                     NetworkHandler.SIMPLE_CHANNEL.sendToServer(new AntlerHeaddressChargePacket(charge));
                     handleCharge(player, charge);
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_ATTACK_STRONG, SoundCategory.AMBIENT, 30, 1, false);
                     charge = 0;
                 }
 
@@ -147,5 +152,9 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
             if (!player.level.isClientSide)
                 player.getPersistentData().putInt(LAST_CHARGE, charge);
         }
+    }
+
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlotType slot) {
+        return ImmutableMultimap.of();
     }
 }

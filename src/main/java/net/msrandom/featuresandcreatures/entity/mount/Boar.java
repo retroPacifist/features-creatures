@@ -1,6 +1,7 @@
 package net.msrandom.featuresandcreatures.entity.mount;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IRideable;
@@ -13,10 +14,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -31,10 +34,10 @@ import static net.msrandom.featuresandcreatures.FeaturesAndCreatures.createEntit
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public final class BoarEntity extends AbstractAngryMountEntity implements IRideable {
+public final class Boar extends AbstractAngryMountEntity implements IRideable {
     private static final Ingredient FOODS = Ingredient.of(Items.CARROT);
 
-    public BoarEntity(EntityType<? extends BoarEntity> entityType, World world) {
+    public Boar(EntityType<? extends Boar> entityType, World world) {
         super(entityType, world);
     }
 
@@ -56,7 +59,7 @@ public final class BoarEntity extends AbstractAngryMountEntity implements IRidea
     @Override
     public ActionResultType mobInteract(PlayerEntity playerEntity, Hand hand) {
         if (!playerEntity.isCrouching() && !isFood(playerEntity.getItemInHand(hand)) && isSaddled() && !isVehicle() && !playerEntity.isSecondaryUseActive()) {
-            return sidedOperation(serverWorld -> playerEntity.startRiding(this));
+            return sidedOperation(level -> playerEntity.startRiding(this));
         }
         return super.mobInteract(playerEntity, hand);
     }
@@ -99,18 +102,28 @@ public final class BoarEntity extends AbstractAngryMountEntity implements IRidea
     @Nullable
     @Override
     public AgeableEntity getBreedOffspring(ServerWorld serverWorld, AgeableEntity entity) {
-        return createEntity(FnCEntities.BOAR.get(), serverWorld, boarEntity -> boarEntity.setAge(-24000));
+        return createEntity(FnCEntities.BOAR, serverWorld, boarEntity -> boarEntity.setAge(-24000));
     }
 
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.PIG_AMBIENT;
+        return FnCSounds.BOAR_AMBIENT;
     }
 
     protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.PIG_HURT;
+        return FnCSounds.BOAR_HURT;
     }
 
     protected SoundEvent getDeathSound() {
-        return SoundEvents.PIG_DEATH;
+        return FnCSounds.BOAR_DEATH;
+    }
+
+    @Override
+    protected SoundEvent getSaddleSound() {
+        return FnCSounds.BOAR_SADDLE;
+    }
+
+    @Override
+    protected void playStepSound(BlockPos p_180429_1_, BlockState p_180429_2_) {
+        this.playSound(FnCSounds.BOAR_STEP, 0.15F, 1.0F);
     }
 }

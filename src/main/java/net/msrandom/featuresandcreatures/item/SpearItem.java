@@ -20,9 +20,9 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.entity.Spear;
 
 import java.util.Map;
@@ -75,7 +75,7 @@ public class SpearItem extends Item implements IVanishable {
                         spear.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                     }
                     world.addFreshEntity(spear);
-                    world.playSound(null, spear, SoundEvents.TRIDENT_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    world.playSound(null, spear, FnCSounds.SPEAR_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     if (!playerentity.abilities.instabuild) {
                         playerentity.inventory.removeItem(stack);
                     }

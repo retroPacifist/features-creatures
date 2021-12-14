@@ -1,7 +1,9 @@
 package net.msrandom.featuresandcreatures.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.IAngerable;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.BreedGoal;
@@ -13,11 +15,10 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -42,7 +43,6 @@ public class Sabertooth extends AbstractAngryEntity implements IAngerable, IAnim
                 .add(Attributes.ATTACK_DAMAGE, 4.0F);
     }
 
-
     @Override
     public boolean isFood(ItemStack stack) {
         return FOOD_ITEMS.test(stack);
@@ -57,32 +57,28 @@ public class Sabertooth extends AbstractAngryEntity implements IAngerable, IAnim
     }
 
     protected SoundEvent getAmbientSound() {
-        return this.isBaby() ? SoundEvents.POLAR_BEAR_AMBIENT_BABY : SoundEvents.POLAR_BEAR_AMBIENT;
+        return FnCSounds.SABERTOOTH_AMBIENT;
     }
 
     protected SoundEvent getHurtSound(DamageSource p_184601_1_) {
-        return SoundEvents.POLAR_BEAR_HURT;
+        return FnCSounds.SABERTOOTH_HURT;
     }
 
     protected SoundEvent getDeathSound() {
-        return SoundEvents.POLAR_BEAR_DEATH;
+        return FnCSounds.SABERTOOTH_DEATH;
     }
 
-    protected void playStepSound(BlockPos p_180429_1_, BlockState p_180429_2_) {
-        this.playSound(SoundEvents.POLAR_BEAR_STEP, 0.15F, 1.0F);
+    @Override
+    protected SoundEvent getSaddleSound() {
+        return FnCSounds.SABERTOOTH_SADDLE;
     }
 
     @Nullable
     @Override
     public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity entity) {
-        Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
-        sabertooth.setBaby(true);
+        Sabertooth sabertooth = FnCEntities.SABERTOOTH.create(world);
+        if (sabertooth != null) sabertooth.setBaby(true);
         return sabertooth;
-    }
-
-    @Override
-    public SoundEvent getWarningSound() {
-        return SoundEvents.POLAR_BEAR_WARNING;
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {

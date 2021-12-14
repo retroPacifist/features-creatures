@@ -28,6 +28,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -191,22 +192,22 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     }
 
     protected SoundEvent getJumpSound() {
-        return SoundEvents.RABBIT_JUMP;
+        return FnCSounds.JACKALOPE_STEP;
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.RABBIT_AMBIENT;
+        return FnCSounds.JACKALOPE_AMBIENT;
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource p_184601_1_) {
-        return SoundEvents.RABBIT_HURT;
+        return FnCSounds.JACKALOPE_HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.RABBIT_DEATH;
+        return FnCSounds.JACKALOPE_DEATH;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -228,8 +229,8 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     @Nullable
     @Override
     public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity entity) {
-        Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
-        jackalope.setAge(-24000);
+        Jackalope jackalope = FnCEntities.JACKALOPE.create(world);
+        if (jackalope != null) jackalope.setAge(-24000);
         return jackalope;
     }
 
@@ -255,6 +256,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
         super.mobInteract(player, hand);
         if (player.isHolding(Items.SADDLE)) {
+            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.JACKALOPE_SADDLE, SoundCategory.AMBIENT, 1, 1);
             this.setSaddled(true);
             if (!player.isCreative()) {
                 player.getItemInHand(hand).shrink(1);
@@ -263,7 +265,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()) {
             this.setSaddled(false);
             player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY() + 0.3f, this.getZ(), Items.SADDLE.getDefaultInstance()));
-            player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundCategory.AMBIENT, 1, 1);
+            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.ENTITY_DESADDLE, SoundCategory.AMBIENT, 1, 1);
         }
         return ActionResultType.SUCCESS;
     }
