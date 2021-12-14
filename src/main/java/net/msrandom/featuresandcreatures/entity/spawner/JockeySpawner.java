@@ -4,13 +4,13 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.spawner.ISpecialSpawner;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.entity.Jockey;
-import net.msrandom.featuresandcreatures.util.Util;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -97,7 +97,7 @@ public class JockeySpawner implements ISpecialSpawner {
         private BlockPos pos;
 
         public Context(CompoundNBT nbt) {
-            this(nbt.contains("uuid") ? nbt.getUUID("uuid") : null, nbt.contains("jockeySpawnCoolDown") ? nbt.getLong("jockeySpawnCoolDown") : 72000L, nbt.contains("pos") ? Util.fromCompound(nbt.getCompound("pos")) : null);
+            this(nbt.contains("uuid") ? nbt.getUUID("uuid") : null, nbt.contains("jockeySpawnCoolDown") ? nbt.getLong("jockeySpawnCoolDown") : 72000L, nbt.contains("pos") ? NBTUtil.readBlockPos(nbt.getCompound("pos")) : null);
         }
 
         public Context(@Nullable UUID uuid, long jockeySpawnCoolDown, @Nullable BlockPos pos) {
@@ -138,7 +138,7 @@ public class JockeySpawner implements ISpecialSpawner {
                 compoundNBT.putUUID("uuid", this.uuid);
             }
             if (pos != null) {
-                compoundNBT.put("pos", Util.posToCompound(pos));
+                compoundNBT.put("pos", NBTUtil.writeBlockPos(pos));
             }
             compoundNBT.putLong("jockeySpawnCoolDown", this.jockeySpawnCoolDown);
             return compoundNBT;
