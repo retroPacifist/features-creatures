@@ -2,8 +2,10 @@ package net.msrandom.featuresandcreatures;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -39,6 +41,7 @@ public class FeaturesAndCreatures {
         bus.addListener(this::commonSetup);
         bus.addListener(this::clientSetup);
         bus.addListener(this::registerAttributes);
+        bus.addListener(this::registerModels);
         FnCEntities.REGISTRAR.initialize();
         FnCItems.REGISTRAR.initialize();
         FnCSounds.REGISTRAR.initialize();
@@ -66,6 +69,14 @@ public class FeaturesAndCreatures {
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SPEAR, SpearRenderer::new);
         GeoArmorRenderer.registerArmorRenderer(AntlerHeaddressItem.class, new AntlerHeaddressRenderer());
 
+        ItemModelsProperties.register(
+                FnCItems.SPEAR,
+                new ResourceLocation(MOD_ID, "throwing"),
+                (stack, level, entity) -> entity != null && entity.getUseItem() == stack ? 1f : 0f
+        );
+    }
+
+    private void registerModels(ModelRegistryEvent event) {
         BuiltInGuiTextureRenderer.register(FnCItems.SPEAR);
     }
 

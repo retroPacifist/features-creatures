@@ -8,6 +8,8 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
+import net.msrandom.featuresandcreatures.client.renderer.entity.SpearRenderer;
+import net.msrandom.featuresandcreatures.client.renderer.item.SpearItemRenderer;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
 import net.msrandom.featuresandcreatures.item.DowsingRodItem;
 import net.msrandom.featuresandcreatures.item.SpearItem;
@@ -26,6 +28,6 @@ public class FnCItems {
     public static final Item ANTLER = REGISTRAR.add("antler", new Item(new Item.Properties().tab(TAB)));
     public static final Item ANTLER_HEADDRESS = REGISTRAR.add("antler_headdress", new AntlerHeaddressItem(EquipmentSlotType.HEAD, new Item.Properties().tab(TAB)));
     public static final Item SABERTOOTH_FANG = REGISTRAR.add("sabertooth_fang", new Item(new Item.Properties().tab(TAB)));
-    public static final Item SPEAR = REGISTRAR.add("spear", new SpearItem(new Item.Properties().durability(200).tab(TAB)));
+    public static final Item SPEAR = REGISTRAR.add("spear", new SpearItem(new Item.Properties().durability(200).tab(TAB).setISTER(() -> SpearItemRenderer::new)));
     public static final Item DOWSING_ROD = REGISTRAR.add("dowsing_rod", new DowsingRodItem(new Item.Properties().tab(TAB)));
 }

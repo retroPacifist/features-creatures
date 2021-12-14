@@ -28,12 +28,10 @@ import net.msrandom.featuresandcreatures.entity.Spear;
 import java.util.Map;
 
 public class SpearItem extends Item implements IVanishable {
-    private final Multimap<Attribute, AttributeModifier> spearAttributes;
+    private final Multimap<Attribute, AttributeModifier> spearAttributes = ImmutableMultimap.of();
 
     public SpearItem(Properties properties) {
         super(properties);
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        this.spearAttributes = builder.build();
     }
 
     public boolean canAttackBlock(BlockState state, World world, BlockPos pos, PlayerEntity player) {

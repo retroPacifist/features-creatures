@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class JockeySpawner implements ISpecialSpawner {
-    private static final long COOLDOWN = 100; //72000L;
+    private static final long COOLDOWN = 72000L;
     public static final int MAX_OFFSET = 10;
     private int spawnChance;
 
