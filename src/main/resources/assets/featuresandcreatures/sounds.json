@@ -217,22 +217,22 @@
     ],
     "subtitle": "subtitles.entity.boar.desaddles"
   },
-  "entity.sabertooth.desaddles": {
+  "entity.sabertooth.desaddle": {
     "sounds": [
       "entity/itemframe/remove_item1",
       "entity/itemframe/remove_item2",
       "entity/itemframe/remove_item3",
       "entity/itemframe/remove_item4"
     ],
-    "subtitle": "subtitles.entity.sabertooth.desaddles"
+    "subtitle": "subtitles.entity.sabertooth.desaddle"
   },
-  "entity.jackalope.desaddles": {
+  "entity.jackalope.desaddle": {
     "sounds": [
       "entity/itemframe/remove_item1",
       "entity/itemframe/remove_item2",
       "entity/itemframe/remove_item3",
       "entity/itemframe/remove_item4"
     ],
-    "subtitle": "subtitles.entity.jackalope.desaddles"
+    "subtitle": "subtitles.entity.jackalope.desaddle"
   }
 }
