@@ -1,5 +1,9 @@
 package net.msrandom.featuresandcreatures;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -15,18 +19,21 @@ import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
-import net.msrandom.featuresandcreatures.entity.Boar;
 import net.msrandom.featuresandcreatures.entity.Jackalope;
 import net.msrandom.featuresandcreatures.entity.Jockey;
 import net.msrandom.featuresandcreatures.entity.Sabertooth;
+import net.msrandom.featuresandcreatures.entity.mount.BoarEntity;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressRenderer;
 import net.msrandom.featuresandcreatures.network.NetworkHandler;
 import net.msrandom.featuresandcreatures.util.FnCConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
+
+import java.util.function.Consumer;
 
 @Mod(FeaturesAndCreatures.MOD_ID)
 public class FeaturesAndCreatures {
@@ -60,7 +67,7 @@ public class FeaturesAndCreatures {
 
     public void registerRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JOCKEY.get(), JockeyRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.BOAR.get(), BoarRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.BOAR.get(), BoarEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JACKALOPE.get(), JackalopeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SABERTOOTH.get(), SabertoothRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SPEAR.get(), SpearRenderer::new);
@@ -71,8 +78,20 @@ public class FeaturesAndCreatures {
 
     private void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(FnCEntities.JOCKEY.get(), Jockey.createJockeyAttributes().build());
-        event.put(FnCEntities.BOAR.get(), Boar.createAttributes().build());
+        event.put(FnCEntities.BOAR.get(), BoarEntity.createBoarAttributes().build());
         event.put(FnCEntities.JACKALOPE.get(), Jackalope.createAttributes().build());
         event.put(FnCEntities.SABERTOOTH.get(), Sabertooth.createAttributes().build());
+    }
+
+    public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, World world, Consumer<T> consumer) {
+        T entity = entityType.create(world);
+        if (entity != null) {
+            consumer.accept(entity);
+        }
+        return entity;
+    }
+
+    public static ResourceLocation createResourceLocation(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 }

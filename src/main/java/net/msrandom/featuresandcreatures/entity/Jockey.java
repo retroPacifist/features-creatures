@@ -44,6 +44,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static net.msrandom.featuresandcreatures.FeaturesAndCreatures.createEntity;
+
 public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatable, IRangedAttackMob {
     private static final String POTION_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.potion";
     private static final String ARROW_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.arrow";
@@ -447,9 +449,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 }
                 return horse;
             default:
-                Boar boar = FnCEntities.BOAR.get().create(world);
-                if (boar != null) boar.setSaddled(true);
-                return boar;
+                return createEntity(FnCEntities.BOAR.get(), world, boarEntity -> boarEntity.setSaddled(true));
         }
     }
 }

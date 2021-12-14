@@ -157,9 +157,7 @@ public class Boar extends AbstractAngryEntity implements IAngerable, IAnimatable
 
     @Override
     public Boar getBreedOffspring(ServerWorld world, AgeableEntity mate) {
-        Boar boar = FnCEntities.BOAR.get().create(world);
-        boar.setAge(-24000);
-        return boar;
+        return null;
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {

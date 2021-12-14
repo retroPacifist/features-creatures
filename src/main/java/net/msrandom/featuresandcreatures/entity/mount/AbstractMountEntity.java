@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.entity;
+package net.msrandom.featuresandcreatures.entity.mount;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.EntityType;
@@ -18,6 +18,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
@@ -25,7 +30,10 @@ import java.util.function.Consumer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class AbstractMountEntity extends AnimalEntity implements IAnimatable {
-    private static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(AbstractMountEntity.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Integer> ANIMATION_TIME = EntityDataManager.defineId(AbstractMountEntity.class, DataSerializers.INT);
+    protected static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(AbstractMountEntity.class, DataSerializers.BOOLEAN);
+
+    protected final AnimationFactory animationFactory = new AnimationFactory(this);
 
     protected AbstractMountEntity(EntityType<? extends AbstractMountEntity> entityType, World world) {
         super(entityType, world);
@@ -35,28 +43,33 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.addGoal(0, new SwimGoal(this));
-        goalSelector.addGoal(1, new PanicGoal(this, 1.32D));
         goalSelector.addGoal(2, new FollowParentGoal(this, 1.25D));
         goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
         goalSelector.addGoal(4, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         goalSelector.addGoal(5, new LookRandomlyGoal(this));
+        registerAdditionalGoals();
     }
+
+    protected abstract void registerAdditionalGoals();
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
+        entityData.define(ANIMATION_TIME, 0);
         entityData.define(SADDLED, false);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundNBT compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
+        setAnimationTime(compoundNBT.getInt("AnimationTime"));
         setSaddled(compoundNBT.getBoolean("Saddled"));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundNBT compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
+        compoundNBT.putInt("AnimationTime", getAnimationTime());
         compoundNBT.putBoolean("Saddled", isSaddled());
     }
 
@@ -86,7 +99,7 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
         return super.mobInteract(playerEntity, hand);
     }
 
-    private ActionResultType sidedOperation(Consumer<ServerWorld> consumer) {
+    protected ActionResultType sidedOperation(Consumer<ServerWorld> consumer) {
         if (!level.isClientSide) {
             consumer.accept((ServerWorld) level);
             return ActionResultType.SUCCESS;
@@ -97,7 +110,7 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
 
     @Override
     public boolean isFood(ItemStack itemStack) {
-        return super.isFood(itemStack);
+        return getFoods().test(itemStack);
     }
 
     public abstract @NotNull Ingredient getFoods();
@@ -105,11 +118,31 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
     @Override
     public float getScale() {
         float scale = super.getScale();
-        return isBaby() ? scale * 1.75F : scale;
+        return isBaby() ? scale * 2.25F : scale;
+    }
+
+    @Override
+    public void registerControllers(AnimationData data) {
+        data.addAnimationController(new AnimationController<>(this, "controller", 0, this::getPlayState));
+    }
+
+    protected abstract <T extends IAnimatable> PlayState getPlayState(AnimationEvent<T> event);
+
+    @Override
+    public AnimationFactory getFactory() {
+        return animationFactory;
+    }
+
+    public int getAnimationTime() {
+        return entityData.get(ANIMATION_TIME);
     }
 
     public boolean isSaddled() {
         return entityData.get(SADDLED);
+    }
+
+    public void setAnimationTime(int i) {
+        entityData.set(ANIMATION_TIME, i);
     }
 
     public void setSaddled(boolean saddled) {
