@@ -3,11 +3,13 @@ package net.msrandom.featuresandcreatures.item;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -18,6 +20,7 @@ import net.minecraft.world.World;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
+import net.msrandom.featuresandcreatures.core.FnCTriggers;
 import net.msrandom.featuresandcreatures.network.AntlerHeaddressChargePacket;
 import net.msrandom.featuresandcreatures.network.NetworkHandler;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -68,7 +71,6 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
                 if (isCharging && charge <= getMaxCharge()) {
                     charge++;
                 }
-
                 if (charge == Math.round(getMaxCharge() * 0.01f) || charge == getMaxCharge() / 4 || charge == getMaxCharge() / 2) {
                     world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.LEVER_CLICK, SoundCategory.AMBIENT, 1, charge / 50F, false);
                 } else if (charge == Math.round(getMaxCharge() * 0.75f)) {
@@ -91,6 +93,8 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
             Vector3d pushDirection = player.getDeltaMovement().normalize();
             int damageTimer = data.contains(DAMAGE_TIMER) ? data.getInt(DAMAGE_TIMER) : 30;
             int charge = data.getInt(LAST_CHARGE);
+            ServerPlayerEntity serverplayerentity = (ServerPlayerEntity) entity;
+            usedHeaddress(serverplayerentity, world, stack);
             AxisAlignedBB aabb = new AxisAlignedBB(player.blockPosition());
             for (LivingEntity victim : world.getEntitiesOfClass(LivingEntity.class, aabb)) {
                 if (victim != entity) {
@@ -111,6 +115,13 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
             data.putInt(DAMAGE_TIMER, damageTimer);
         }
         super.inventoryTick(stack, world, entity, p_77663_4_, p_77663_5_);
+    }
+
+    public static void usedHeaddress(ServerPlayerEntity entity, World world, ItemStack stack) {
+        if (!world.isClientSide) {
+            FnCTriggers.USE_ANTLER.trigger(entity, stack);
+        }
+        entity.awardStat(Stats.ITEM_USED.get(stack.getItem()));
     }
 
     public float getDamageAmount(int oldCharge) {

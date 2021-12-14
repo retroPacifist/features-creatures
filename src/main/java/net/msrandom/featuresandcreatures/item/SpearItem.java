@@ -85,7 +85,6 @@ public class SpearItem extends Item implements IVanishable {
         }
     }
 
-
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         if (itemstack.getDamageValue() >= itemstack.getMaxDamage() - 1) {

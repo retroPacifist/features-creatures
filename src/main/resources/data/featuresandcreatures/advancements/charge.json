@@ -1,0 +1,20 @@
+{
+  "parent": "featuresandcreatures:root",
+  "display": {
+    "icon": {
+      "item": "featuresandcreatures:antler"
+    },
+    "title": "CHARGE!!",
+    "frame": "challenge",
+    "description": "Use the Antler Headdress",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "featuresandcreatures:used_headdress",
+      "conditions": {}
+    }
+  }
+}
