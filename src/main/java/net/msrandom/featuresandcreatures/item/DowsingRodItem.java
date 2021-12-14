@@ -23,6 +23,8 @@ public class DowsingRodItem extends Item {
     public void inventoryTick(ItemStack stack, World level, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, level, entity, slot, selected);
         if (level.isClientSide && selected && entity instanceof PlayerEntity && entity.tickCount % 20 == 0) {
+            PlayerEntity player = (PlayerEntity) entity;
+            if (!player.getOffhandItem().isEmpty()) return;
             JockeySpawner.Context context = ((FnCSpawnerLevelContext) level.getLevelData()).jockeyContext();
             if (context != null) {
                 BlockPos pos = context.getPos();
@@ -45,7 +47,7 @@ public class DowsingRodItem extends Item {
 
                     if (playerForward.dot(playerToJockey.normalize()) > 0.99) {
                         // Pointing at jockey
-                        ((PlayerEntity) entity).playNotifySound(FnCSounds.DOWSING_ROD_LOCATES, SoundCategory.PLAYERS, 1f, 1f);
+                        player.playNotifySound(FnCSounds.DOWSING_ROD_LOCATES, SoundCategory.PLAYERS, 1f, 1f);
                     }
                 }
             }
