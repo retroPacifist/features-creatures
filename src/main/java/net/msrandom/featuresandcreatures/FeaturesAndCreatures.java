@@ -47,7 +47,6 @@ public class FeaturesAndCreatures {
 
         //GeckoLib
         GeckoLib.initialize();
-
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

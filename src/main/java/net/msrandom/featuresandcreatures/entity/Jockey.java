@@ -57,7 +57,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
 
     private PlayerEntity tradingPlayer;
     private MerchantOffers offers;
-    private BlockPos lastBLockPos = BlockPos.ZERO;
+    private BlockPos lastBlockPos = BlockPos.ZERO;
 
     public Jockey(EntityType<? extends Jockey> p_i48575_1_, World p_i48575_2_) {
         super(p_i48575_1_, p_i48575_2_);
@@ -330,12 +330,12 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     private void trackedGlobalJockey() {
         JockeySpawner.Context context = ((FnCSpawnerLevelContext) this.level.getLevelData()).jockeyContext();
         if (context != null) {
-            if (!this.lastBLockPos.equals(this.blockPosition())) {
+            if (!this.lastBlockPos.equals(this.blockPosition())) {
                 final UUID uuid = context.getUuid();
                 if (uuid != null && uuid.equals(this.uuid)) {
                     context.setPos(this.blockPosition());
                     NetworkHandler.sendToAllClients(((ServerWorld) this.level).players(), new JockeyPosPacket(this.blockPosition()));
-                    this.lastBLockPos = this.blockPosition();
+                    this.lastBlockPos = this.blockPosition();
                 }
             }
         }
