@@ -12,8 +12,7 @@ import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -48,7 +47,6 @@ public final class BoarEntity extends AbstractAngryMountEntity implements IRidea
 
     @Override
     protected void registerAdditionalGoals() {
-        goalSelector.addGoal(1, new MountAttackGoal<>(this));
         goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, FOODS));
         goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT_ON_A_STICK), false));
         goalSelector.addGoal(2, new PanicGoal(this, 1.42D));
@@ -102,5 +100,17 @@ public final class BoarEntity extends AbstractAngryMountEntity implements IRidea
     @Override
     public AgeableEntity getBreedOffspring(ServerWorld serverWorld, AgeableEntity entity) {
         return createEntity(FnCEntities.BOAR.get(), serverWorld, boarEntity -> boarEntity.setAge(-24000));
+    }
+
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.PIG_AMBIENT;
+    }
+
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.PIG_HURT;
+    }
+
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.PIG_DEATH;
     }
 }

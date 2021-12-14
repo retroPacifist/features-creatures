@@ -4,12 +4,16 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.world.Difficulty;
+import net.minecraft.util.RangedInteger;
+import net.minecraft.util.TickRangeConverter;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import org.jetbrains.annotations.Nullable;
@@ -21,12 +25,20 @@ import java.util.UUID;
 @MethodsReturnNonnullByDefault
 public abstract class AbstractAngryMountEntity extends AbstractMountEntity implements IAngerable {
     protected static final DataParameter<Boolean> ATTACKING = EntityDataManager.defineId(AbstractAngryMountEntity.class, DataSerializers.BOOLEAN);
+    protected static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
 
     private int remainingPersistentAngerTime;
     private UUID persistentAngerTarget;
 
     protected AbstractAngryMountEntity(EntityType<? extends AbstractAngryMountEntity> entityType, World world) {
         super(entityType, world);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        goalSelector.addGoal(1, new MountAttackGoal<>(this));
+        targetSelector.addGoal(2, new HuntDownPlayerGoal(this));
     }
 
     @Override
@@ -68,7 +80,7 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
 
     @Override
     public boolean canAttack(LivingEntity livingEntity) {
-        return level.getDifficulty() != Difficulty.PEACEFUL;
+        return true;
     }
 
     @Override
@@ -94,7 +106,7 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
 
     @Override
     public void startPersistentAngerTimer() {
-
+        setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.randomValue(random));
     }
 
     public boolean isAttacking() {
@@ -103,6 +115,18 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
 
     public void setAttacking(boolean attacking) {
         entityData.set(ATTACKING, attacking);
+    }
+
+    protected static final class HuntDownPlayerGoal extends NearestAttackableTargetGoal<PlayerEntity> {
+
+        public HuntDownPlayerGoal(MobEntity mobEntity) {
+            super(mobEntity, PlayerEntity.class, 20, true, true, null);
+        }
+
+        @Override
+        public boolean canUse() {
+            return super.canUse();
+        }
     }
 
     protected static final class MountAttackGoal<T extends AbstractAngryMountEntity> extends MeleeAttackGoal {
@@ -114,8 +138,20 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
         }
 
         @Override
-        protected void checkAndPerformAttack(LivingEntity livingEntity, double time) {
-            super.checkAndPerformAttack(livingEntity, time);
+        protected void checkAndPerformAttack(LivingEntity livingEntity, double attackTime) {
+            double attackReachRqr = getAttackReachSqr(livingEntity);
+            if (isTimeToAttack()) {
+                if (attackTime <= attackReachRqr) {
+                    resetAttackCooldown();
+                    entity.doHurtTarget(livingEntity);
+                    entity.setAttacking(true);
+                } else if (attackTime < attackReachRqr * 2.0D) {
+                    resetAttackCooldown();
+                    entity.setAttacking(true);
+                }
+            } else {
+                entity.setAttacking(!(attackTime < attackReachRqr * 2.0D));
+            }
         }
 
         @Override
