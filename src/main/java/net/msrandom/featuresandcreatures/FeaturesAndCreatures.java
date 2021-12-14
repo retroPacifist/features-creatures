@@ -1,7 +1,5 @@
 package net.msrandom.featuresandcreatures;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -11,27 +9,20 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.msrandom.featuresandcreatures.entity.Boar;
-import net.msrandom.featuresandcreatures.client.renderer.entity.BoarRenderer;
-import net.msrandom.featuresandcreatures.entity.Jackalope;
-import net.msrandom.featuresandcreatures.client.renderer.entity.JackalopeRenderer;
-import net.msrandom.featuresandcreatures.entity.Jockey;
-import net.msrandom.featuresandcreatures.client.renderer.entity.JockeyRenderer;
-import net.msrandom.featuresandcreatures.entity.Sabertooth;
-import net.msrandom.featuresandcreatures.client.renderer.entity.SabertoothRenderer;
-import net.msrandom.featuresandcreatures.client.renderer.entity.SpearRenderer;
-import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
-import net.msrandom.featuresandcreatures.item.AntlerHeaddressRenderer;
+import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
+import net.msrandom.featuresandcreatures.client.renderer.entity.*;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
-import net.msrandom.featuresandcreatures.network.AntlerHeaddressChargePacket;
-import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
+import net.msrandom.featuresandcreatures.entity.Boar;
+import net.msrandom.featuresandcreatures.entity.Jackalope;
+import net.msrandom.featuresandcreatures.entity.Jockey;
+import net.msrandom.featuresandcreatures.entity.Sabertooth;
+import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
+import net.msrandom.featuresandcreatures.item.AntlerHeaddressRenderer;
+import net.msrandom.featuresandcreatures.network.NetworkHandler;
 import net.msrandom.featuresandcreatures.util.FnCConfig;
-import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib3.GeckoLib;
@@ -42,12 +33,6 @@ public class FeaturesAndCreatures {
     private static final String NETWORK_VERSION = "1";
     public static final String MOD_ID = "featuresandcreatures";
     public static final Logger LOGGER = LogManager.getLogger();
-    public static final SimpleChannel NETWORK_CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(MOD_ID, "network"),
-            () -> NETWORK_VERSION,
-            NETWORK_VERSION::equals,
-            NETWORK_VERSION::equals
-    );
 
     public FeaturesAndCreatures() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -62,11 +47,10 @@ public class FeaturesAndCreatures {
         //GeckoLib
         GeckoLib.initialize();
 
-        AntlerHeaddressChargePacket.register(0, NETWORK_CHANNEL);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        CapabilityManager.INSTANCE.register(WorldJockeyCapability.class, new WorldJockeyCapability.Storage(), () -> new WorldJockeyCapability(null));
+        NetworkHandler.init();
     }
 
     private void clientSetup(FMLClientSetupEvent event) {

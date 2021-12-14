@@ -19,6 +19,7 @@ import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
 import net.msrandom.featuresandcreatures.network.AntlerHeaddressChargePacket;
+import net.msrandom.featuresandcreatures.network.NetworkHandler;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -77,7 +78,7 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
                 }
 
                 if (!isCharging && charge > 0) {
-                    FeaturesAndCreatures.NETWORK_CHANNEL.sendToServer(new AntlerHeaddressChargePacket(charge));
+                    NetworkHandler.SIMPLE_CHANNEL.sendToServer(new AntlerHeaddressChargePacket(charge));
                     handleCharge(player, charge);
                     world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
                     charge = 0;

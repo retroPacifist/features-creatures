@@ -14,18 +14,23 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.*;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
+import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
+import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
 import net.msrandom.featuresandcreatures.mixin.SlimeSizeInvoker;
+import net.msrandom.featuresandcreatures.network.JockeyPosPacket;
+import net.msrandom.featuresandcreatures.network.NetworkHandler;
 import net.msrandom.featuresandcreatures.util.FnCConfig;
-import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -48,6 +53,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
 
     private PlayerEntity tradingPlayer;
     private MerchantOffers offers;
+    private BlockPos lastBLockPos = BlockPos.ZERO;
 
     public Jockey(EntityType<? extends Jockey> p_i48575_1_, World p_i48575_2_) {
         super(p_i48575_1_, p_i48575_2_);
@@ -304,13 +310,38 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     @Override
     public void tick() {
         super.tick();
+        if (!this.level.isClientSide) {
+            trackedGlobalJockey();
+        }
         ++timeAlive;
     }
 
+    private void trackedGlobalJockey() {
+        JockeySpawner.Context context = ((FnCSpawnerLevelContext) this.level.getLevelData()).jockeyContext();
+        if (context != null) {
+            if (!this.lastBLockPos.equals(this.blockPosition())) {
+                final UUID uuid = context.getUuid();
+                if (uuid != null && uuid.equals(this.uuid)) {
+                    context.setPos(this.blockPosition());
+                    NetworkHandler.sendToAllClients(((ServerWorld) this.level).players(), new JockeyPosPacket(this.blockPosition()));
+                    this.lastBLockPos = this.blockPosition();
+                }
+            }
+        }
+    }
+
     @Override
-    public void remove(boolean keepData) {
-        super.remove(keepData);
-        level.getCapability(WorldJockeyCapability.capability).ifPresent(capability -> capability.setSpawned(false));
+    public void die(DamageSource damageSource) {
+        final FnCSpawnerLevelContext levelData = (FnCSpawnerLevelContext) this.level.getLevelData();
+        final JockeySpawner.Context context = levelData.jockeyContext();
+        if (context != null) {
+            final UUID jockeyUUID = context.getUuid();
+            if (jockeyUUID != null && jockeyUUID.equals(this.uuid)) {
+                context.setUuid(null);
+                context.setPos(null);
+            }
+        }
+        super.die(damageSource);
     }
 
     @Override

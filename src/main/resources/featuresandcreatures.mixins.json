@@ -4,13 +4,15 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "featuresandcreatures.refmap.json",
   "client": [
-    "ItemRendererMixin"
+    "ItemRendererMixin",
+    "client.MixinClientWorldInfo"
   ],
   "minVersion": "0.8",
   "mixins": [
+    "MixinIWorldInfo",
     "SlimeSizeInvoker",
     "entity.MixinWolfEntity",
-    "server.MixinIServerWorldInfo",
+    "server.MixinPlayerList",
     "server.MixinServerLevel",
     "server.MixinServerWorldInfo"
   ]
