@@ -44,6 +44,8 @@ public class FnCSounds {
 
     public static SoundEvent ENTITY_DESADDLE = createSound("entity.saddled.desaddle");
 
+    public static SoundEvent DOWSING_ROD_LOCATES = createSound("item.dowsing_rod.locates");
+
     public static SoundEvent createSound(String location) {
         return REGISTRAR.add(
                 location.replace('.', '_'),
