@@ -1,7 +1,6 @@
 package net.msrandom.featuresandcreatures.client.renderer.entity;
 
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.entity.Jockey;
 import net.msrandom.featuresandcreatures.client.model.JockeyModel;

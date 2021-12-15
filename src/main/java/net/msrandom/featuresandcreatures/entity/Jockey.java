@@ -52,7 +52,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class Jockey extends CreatureEntity implements Npc, Merchant, IAnimatable, RangedAttackMob {
+public class Jockey extends LivingEntity implements Npc, Merchant, IAnimatable, RangedAttackMob {
     private static final String POTION_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.potion";
     private static final String ARROW_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.arrow";
 
