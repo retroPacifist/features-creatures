@@ -1,20 +1,21 @@
 package net.msrandom.featuresandcreatures.item;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import com.mojang.math.Vector3d;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
@@ -25,7 +26,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.item.GeoArmorItem;
 
 public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
-    private static final IArmorMaterial MATERIAL = new FnCArmorMaterial(
+    private static final ArmorMaterial MATERIAL = new FnCArmorMaterial(
             new ResourceLocation(FeaturesAndCreatures.MOD_ID, "headdress"),
             new int[]{0, 111, 111, 37},
             new int[]{0, 0, 0, 0},
@@ -43,7 +44,7 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
     private static final String DAMAGE_TIMER = DATA_PREFIX + "DamageTimer";
     private final AnimationFactory factory = new AnimationFactory(this);
 
-    public AntlerHeaddressItem(EquipmentSlotType slot, Properties builder) {
+    public AntlerHeaddressItem(EquipmentSlot slot, Properties builder) {
         super(MATERIAL, slot, builder);
     }
 
@@ -57,9 +58,9 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
-        PlayerEntity player = (PlayerEntity) entity;
-        CompoundNBT data = player.getPersistentData();
+    public void inventoryTick(ItemStack stack, Level world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
+        Player player = (Player) entity;
+        CompoundTag data = player.getPersistentData();
         if (world.isClientSide) {
             int charge = data.getInt(CURRENT_CHARGE);
             boolean isCharging = FnCKeybinds.CHARGE_ANTLER.isDown();
@@ -69,17 +70,17 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
                 }
 
                 if (charge == Math.round(getMaxCharge() * 0.01f) || charge == getMaxCharge() / 4 || charge == getMaxCharge() / 2) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.LEVER_CLICK, SoundCategory.AMBIENT, 1, charge / 50F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.LEVER_CLICK, SoundSource.AMBIENT, 1, charge / 50F, false);
                 } else if (charge == Math.round(getMaxCharge() * 0.75f)) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIPWIRE_CLICK_ON, SoundCategory.AMBIENT, 2, 1.5F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIPWIRE_CLICK_ON, SoundSource.AMBIENT, 2, 1.5F, false);
                 } else if (charge == getMaxCharge()) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_CHIME, SoundCategory.AMBIENT, 30, charge / 15F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_CHIME, SoundSource.AMBIENT, 30, charge / 15F, false);
                 }
 
                 if (!isCharging && charge > 0) {
                     FeaturesAndCreatures.NETWORK_CHANNEL.sendToServer(new AntlerHeaddressChargePacket(charge));
                     handleCharge(player, charge);
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundSource.AMBIENT, 30, 1, false);
                     charge = 0;
                 }
 
@@ -87,10 +88,10 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
             }
         } else if (data.getBoolean(IS_DAMAGING)) {
             // I changed this to use the motion, rather than the player's look direction, since it makes more sense to push them in the player's charge direction
-            Vector3d pushDirection = player.getDeltaMovement().normalize();
+            Vec3 pushDirection = player.getDeltaMovement().normalize();
             int damageTimer = data.contains(DAMAGE_TIMER) ? data.getInt(DAMAGE_TIMER) : 30;
             int charge = data.getInt(LAST_CHARGE);
-            AxisAlignedBB aabb = new AxisAlignedBB(player.blockPosition());
+            AABB aabb = new AABB(player.blockPosition());
             for (LivingEntity victim : world.getEntitiesOfClass(LivingEntity.class, aabb)) {
                 if (victim != entity) {
                     if (getDamageAmount(charge) < 1) {
@@ -120,9 +121,9 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
         return 200;
     }
 
-    public void handleCharge(PlayerEntity player, int charge) {
+    public void handleCharge(Player player, int charge) {
         player.getCooldowns().addCooldown(this, 40);
-        Vector3d look = player.getLookAngle();
+        Vec3 look = player.getLookAngle();
         if (charge > Math.round(getMaxCharge() * 0.37f)) {
             double amount = charge / (getMaxCharge() * 0.37);
             player.push(look.x * amount, 0.1, look.z * amount);

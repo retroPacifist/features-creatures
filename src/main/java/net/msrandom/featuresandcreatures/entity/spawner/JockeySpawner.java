@@ -4,8 +4,8 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.Level;
+import net.minecraft.world.server.ServerLevel;
 import net.minecraft.world.spawner.ISpecialSpawner;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.entity.Jockey;
@@ -21,8 +21,8 @@ public class JockeySpawner implements ISpecialSpawner {
     }
 
     @Override
-    public int tick(ServerWorld world, boolean spawnFriendlies, boolean spawnEnemies) {
-        if (world.dimension() != World.OVERWORLD) {
+    public int tick(ServerLevel world, boolean spawnFriendlies, boolean spawnEnemies) {
+        if (world.dimension() != Level.OVERWORLD) {
             return 0;
         }
         if (jockeySpawnCoolDown <= 0) {
@@ -65,7 +65,7 @@ public class JockeySpawner implements ISpecialSpawner {
         return 0;
     }
 
-    private static boolean handleMount(ServerWorld world, Jockey jockey) {
+    private static boolean handleMount(ServerLevel world, Jockey jockey) {
         final MobEntity mountEntity = Jockey.getMountEntity(world, jockey);
         mountEntity.moveTo(jockey.position());
         jockey.startRiding(mountEntity);

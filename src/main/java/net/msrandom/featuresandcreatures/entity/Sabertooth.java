@@ -1,22 +1,24 @@
 package net.msrandom.featuresandcreatures.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.BreedGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.BreedGoal;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -28,16 +30,16 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 
-public class Sabertooth extends AbstractAngryEntity implements IAngerable, IAnimatable {
+public class Sabertooth extends AbstractAngryEntity implements NeutralMob, IAnimatable {
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.SALMON, Items.COD, Items.MUTTON);
     private final AnimationFactory factory = new AnimationFactory(this);
 
-    public Sabertooth(EntityType<? extends Sabertooth> type, World world) {
+    public Sabertooth(EntityType<? extends Sabertooth> type, Level world) {
         super(type, world);
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 12.0D)
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 12.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
                 .add(Attributes.ATTACK_DAMAGE, 4.0F);
     }
@@ -53,7 +55,7 @@ public class Sabertooth extends AbstractAngryEntity implements IAngerable, IAnim
         super.registerGoals();
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, FOOD_ITEMS));
         this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 10, true, true, null));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Sheep.class, 10, true, true, null));
     }
 
     protected SoundEvent getAmbientSound() {
@@ -74,7 +76,7 @@ public class Sabertooth extends AbstractAngryEntity implements IAngerable, IAnim
 
     @Nullable
     @Override
-    public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity entity) {
+    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
         Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
         sabertooth.setBaby(true);
         return sabertooth;

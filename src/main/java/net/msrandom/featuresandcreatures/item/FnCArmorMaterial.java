@@ -1,15 +1,15 @@
 package net.msrandom.featuresandcreatures.item;
 
 import com.google.common.base.Suppliers;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
 
-public class FnCArmorMaterial implements IArmorMaterial {
+public class FnCArmorMaterial implements ArmorMaterial {
     private final ResourceLocation name;
     private final int[] durabilityAmount;
     private final int[] damageReductionAmountArray;
@@ -31,14 +31,15 @@ public class FnCArmorMaterial implements IArmorMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(EquipmentSlotType slot) {
+    public int getDurabilityForSlot(EquipmentSlot slot) {
         return durabilityAmount[slot.getIndex()];
     }
 
     @Override
-    public int getDefenseForSlot(EquipmentSlotType slot) {
+    public int getDefenseForSlot(EquipmentSlot slot) {
         return damageReductionAmountArray[slot.getIndex()];
     }
+
 
     @Override
     public int getEnchantmentValue() {

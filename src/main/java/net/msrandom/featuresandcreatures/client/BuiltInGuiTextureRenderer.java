@@ -1,10 +1,10 @@
 package net.msrandom.featuresandcreatures.client;
 
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.model.ForgeModelBakery;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ public class BuiltInGuiTextureRenderer {
 
     public static void register(Item item) {
         if (item.getRegistryName() == null) return;
-        ModelLoader.addSpecialModel(new ResourceLocation(item.getRegistryName().getNamespace(), "item/" + item.getRegistryName().getPath() + "_in_hand"));
+        ForgeModelBakery.addSpecialModel(new ResourceLocation(item.getRegistryName().getNamespace(), "item/" + item.getRegistryName().getPath() + "_in_hand"));
         MODELS.put(item, null);
     }
 

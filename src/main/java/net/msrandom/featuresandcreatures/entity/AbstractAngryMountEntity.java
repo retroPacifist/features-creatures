@@ -1,37 +1,35 @@
 package net.msrandom.featuresandcreatures.entity;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IAngerable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public abstract class AbstractAngryMountEntity extends AbstractMountEntity implements IAngerable {
+public abstract class AbstractAngryMountEntity extends AbstractMountEntity implements NeutralMob {
     private int remainingPersistentAngerTime;
     private UUID persistentAngerTarget;
 
-    protected AbstractAngryMountEntity(EntityType<? extends AbstractAngryMountEntity> entityType, World world) {
+    protected AbstractAngryMountEntity(EntityType<? extends AbstractAngryMountEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void readAdditionalSaveData(CompoundTag compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         if (!level.isClientSide) {
-            readPersistentAngerSaveData((ServerWorld) level, compoundNBT) ;
+            readPersistentAngerSaveData((ServerLevel) level, compoundNBT) ;
         }
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void addAdditionalSaveData(CompoundTag compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
         addPersistentAngerSaveData(compoundNBT);
     }

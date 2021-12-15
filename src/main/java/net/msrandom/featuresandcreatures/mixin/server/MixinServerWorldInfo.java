@@ -3,7 +3,7 @@ package net.msrandom.featuresandcreatures.mixin.server;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.world.WorldSettings;
@@ -33,15 +33,15 @@ public class MixinServerWorldInfo implements FnCSpawnerLevelContext {
     }
 
     @Inject(method = "parse", at = @At("RETURN"))
-    private static void parseFnC(Dynamic<INBT> nbtDynamic, DataFixer p_237369_1_, int p_237369_2_, CompoundNBT nbt, WorldSettings p_237369_4_, VersionData p_237369_5_, DimensionGeneratorSettings p_237369_6_, Lifecycle p_237369_7_, CallbackInfoReturnable<ServerWorldInfo> cir) {
-        CompoundNBT featuresAndCreatures = (CompoundNBT) nbtDynamic.get("featuresAndCreatures").orElseEmptyMap().getValue();
+    private static void parseFnC(Dynamic<INBT> nbtDynamic, DataFixer p_237369_1_, int p_237369_2_, CompoundTag nbt, WorldSettings p_237369_4_, VersionData p_237369_5_, DimensionGeneratorSettings p_237369_6_, Lifecycle p_237369_7_, CallbackInfoReturnable<ServerWorldInfo> cir) {
+        CompoundTag featuresAndCreatures = (CompoundTag) nbtDynamic.get("featuresAndCreatures").orElseEmptyMap().getValue();
         ((FnCSpawnerLevelContext) cir.getReturnValue()).setJockeySpawnCoolDown(featuresAndCreatures.getLong("jockeySpawnCoolDown"));
     }
 
 
     @Inject(method = "setTagData", at = @At("RETURN"))
-    private void saveFnC(DynamicRegistries p_237370_1_, CompoundNBT nbt, CompoundNBT p_237370_3_, CallbackInfo ci) {
-        CompoundNBT featuresAndCreatures = new CompoundNBT();
+    private void saveFnC(DynamicRegistries p_237370_1_, CompoundTag nbt, CompoundTag p_237370_3_, CallbackInfo ci) {
+        CompoundTag featuresAndCreatures = new CompoundTag();
         featuresAndCreatures.putLong("jockeySpawnCoolDown", this.jockeySpawnCoolDown);
         nbt.put("featuresAndCreatures", featuresAndCreatures);
     }

@@ -4,7 +4,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.Level;
 import net.msrandom.featuresandcreatures.entity.Sabertooth;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(WolfEntity.class)
 public abstract class MixinWolfEntity extends TameableEntity {
 
-    protected MixinWolfEntity(EntityType<? extends TameableEntity> entityType, World world) {
+    protected MixinWolfEntity(EntityType<? extends TameableEntity> entityType, Level world) {
         super(entityType, world);
     }
 

@@ -1,13 +1,9 @@
 package net.msrandom.featuresandcreatures.util;
 
-import net.minecraft.nbt.ByteNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 
@@ -23,9 +19,9 @@ public class WorldJockeyCapability implements ICapabilitySerializable<ByteNBT> {
     private boolean isSpawned;
     private long spawnAttemptTime;
 
-    private World world;
+    private Level world;
 
-    public WorldJockeyCapability(World world) {
+    public WorldJockeyCapability(Level world) {
         this.world = world;
     }
 

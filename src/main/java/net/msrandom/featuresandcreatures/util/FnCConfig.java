@@ -1,7 +1,7 @@
 package net.msrandom.featuresandcreatures.util;
 
-import net.minecraft.potion.Effect;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,7 +27,7 @@ public final class FnCConfig {
         jockeyEffects = builder.defineListAllowEmpty(Collections.singletonList("jockeyEffectBlacklist"), Collections::emptyList, effect -> effect instanceof String && ForgeRegistries.ENTITIES.containsKey(new ResourceLocation((String) effect)));
     }
 
-    public Set<Effect> getJockeyEffectBlacklist() {
+    public Set<Potion> getJockeyEffectBlacklist() {
         return jockeyEffects.get().stream()
                 .map(ResourceLocation::new)
                 .filter(ForgeRegistries.POTIONS::containsKey)

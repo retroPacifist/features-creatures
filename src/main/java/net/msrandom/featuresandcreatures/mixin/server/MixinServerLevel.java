@@ -5,7 +5,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.chunk.listener.IChunkStatusListener;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.ServerLevel;
 import net.minecraft.world.spawner.ISpecialSpawner;
 import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraft.world.storage.SaveFormat;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-@Mixin(ServerWorld.class)
+@Mixin(ServerLevel.class)
 public class MixinServerLevel {
 
     @Mutable

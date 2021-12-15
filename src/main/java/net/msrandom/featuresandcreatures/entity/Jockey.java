@@ -1,24 +1,37 @@
 package net.msrandom.featuresandcreatures.entity;
 
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.merchant.IMerchant;
-import net.minecraft.entity.monster.SlimeEntity;
-import net.minecraft.entity.passive.horse.HorseEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.PotionEntity;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.*;
-import net.minecraft.util.*;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import com.mojang.math.Vector3d;
+import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
+import net.minecraft.world.entity.ai.goal.UseItemGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.monster.RangedAttackMob;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.npc.Npc;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.trading.Merchant;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
@@ -39,17 +52,17 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatable, IRangedAttackMob {
+public class Jockey extends CreatureEntity implements Npc, Merchant, IAnimatable, RangedAttackMob {
     private static final String POTION_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.potion";
     private static final String ARROW_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.arrow";
 
     private final AnimationFactory factory = new AnimationFactory(this);
     private int timeAlive = 0;
 
-    private PlayerEntity tradingPlayer;
+    private Player tradingPlayer;
     private MerchantOffers offers;
 
-    public Jockey(EntityType<? extends Jockey> p_i48575_1_, World p_i48575_2_) {
+    public Jockey(EntityType<? extends Jockey> p_i48575_1_, Level p_i48575_2_) {
         super(p_i48575_1_, p_i48575_2_);
     }
 
@@ -63,8 +76,8 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0D, 60, 10.0F));
         this.goalSelector.addGoal(2, new SwimGoal(this));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 0.35D));
-        this.goalSelector.addGoal(4, new LookAtWithoutMovingGoal(this, PlayerEntity.class, 3.0F, 1.0F));
-        this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(4, new LookAtWithoutMovingGoal(this, Player.class, 3.0F, 1.0F));
+        this.goalSelector.addGoal(5, new LookAtGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
         this.targetSelector.addGoal(7, new HurtByTargetGoal(this));
         this.goalSelector.addGoal(0, new UseItemGoal<>(this, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING), SoundEvents.GENERIC_DRINK, (entity) -> {
@@ -99,7 +112,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         return null;
     }
 
-    public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType mobInteract(Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         if (!(itemstack.getItem() instanceof SpawnEggItem) && this.isAlive() && tradingPlayer == null) {
             if (!this.getOffers().isEmpty()) {
@@ -120,12 +133,12 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
 
     @Nullable
     @Override
-    public PlayerEntity getTradingPlayer() {
+    public Player getTradingPlayer() {
         return tradingPlayer;
     }
 
     @Override
-    public void setTradingPlayer(@Nullable PlayerEntity player) {
+    public void setTradingPlayer(@Nullable Player player) {
         this.tradingPlayer = player;
     }
 
@@ -151,16 +164,16 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                         amount = 1;
                 }
 
-                Predicate<Effect> blacklisted = FnCConfig.getInstance().getJockeyEffectBlacklist()::contains;
+                Predicate<MobEffect> blacklisted = FnCConfig.getInstance().getJockeyEffectBlacklist()::contains;
 
-                Set<Effect> effectsSet = ForgeRegistries.POTIONS.getValues()
+                Set<MobEffect> effectsSet = ForgeRegistries.POTIONS.getValues()
                         .stream()
                         .filter(blacklisted.negate())
                         .collect(Collectors.toSet());
 
                 for (int j = 0; j < effectCount; ++j) {
-                    Effect effect = getRandomElement(random, effectsSet);
-                    if (effect == null) effect = Effects.REGENERATION;
+                    MobEffect effect = getRandomElement(random, effectsSet);
+                    if (effect == null) effect = MobEffects.REGENERATION;
                     effectsSet.remove(effect);
                     effects.add(new EffectInstance(effect, 1800, generatePotionStrength(effectCount)));
                 }
@@ -288,7 +301,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
-    public World getLevel() {
+    public Level getLevel() {
         return level;
     }
 
@@ -319,13 +332,13 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT p_213281_1_) {
+    public void addAdditionalSaveData(CompoundTag p_213281_1_) {
         super.addAdditionalSaveData(p_213281_1_);
         p_213281_1_.putInt("TimeAlive", timeAlive);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT p_70037_1_) {
+    public void readAdditionalSaveData(CompoundTag p_70037_1_) {
         super.readAdditionalSaveData(p_70037_1_);
         timeAlive = p_70037_1_.getInt("TimeAlive");
     }
@@ -370,14 +383,14 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         double d0 = jockey.getX() + vector3d.x - this.getX();
         double d1 = jockey.getEyeY() - (double) 1.1F - this.getY();
         double d2 = jockey.getZ() + vector3d.z - this.getZ();
-        float f = MathHelper.sqrt(d0 * d0 + d2 * d2);
+        float f = Mth.sqrt(d0 * d0 + d2 * d2);
         Potion potion = Potions.HARMING;
         PotionEntity potionentity = new PotionEntity(this.level, this);
         potionentity.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
         potionentity.xRot -= -20.0F;
         potionentity.shoot(d0, d1 + (double) (f * 0.2F), d2, 0.75F, 8.0F);
         if (!this.isSilent()) {
-            this.level.playSound((PlayerEntity) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
+            this.level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
         }
         this.level.addFreshEntity(potionentity);
     }
@@ -390,19 +403,19 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         ARROWS_32
     }
 
-    public static MobEntity getMountEntity(World world, Jockey jockey) {
+    public static Mob getMountEntity(Level world, Jockey jockey) {
         if (jockey.getY() < 30) {
             return EntityType.CAVE_SPIDER.create(world);
         }
 
-        Biome.Category biome = world.getBiome(jockey.blockPosition()).getBiomeCategory();
+        Biome.BiomeCategory biome = world.getBiome(jockey.blockPosition()).getBiomeCategory();
         switch (biome) {
             case ICY:
                 Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
                 if (sabertooth != null) sabertooth.setSaddled(true);
                 return sabertooth;
             case SWAMP:
-                SlimeEntity slime = EntityType.SLIME.create(world);
+                Slime slime = EntityType.SLIME.create(world);
                 if (slime != null) ((SlimeSizeInvoker) slime).callSetSize(2, true);
                 return slime;
             case EXTREME_HILLS:
@@ -410,9 +423,9 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 if (jackalope != null) jackalope.setSaddled(true);
                 return jackalope;
             case PLAINS:
-                HorseEntity horse = EntityType.HORSE.create(world);
+                Horse horse = EntityType.HORSE.create(world);
                 if (horse != null) {
-                    horse.equipSaddle(SoundCategory.NEUTRAL);
+                    horse.equipSaddle(SoundSource.NEUTRAL);
                 }
                 return horse;
             default:

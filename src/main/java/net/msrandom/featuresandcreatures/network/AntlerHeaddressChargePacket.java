@@ -1,12 +1,12 @@
 package net.msrandom.featuresandcreatures.network;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.simple.SimpleChannel;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
 
 import java.util.Optional;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 public class AntlerHeaddressChargePacket {
     private final int charge;
 
-    private AntlerHeaddressChargePacket(PacketBuffer buffer) {
+    private AntlerHeaddressChargePacket(FriendlyByteBuf buffer) {
         charge = buffer.readVarInt();
     }
 
@@ -23,15 +23,15 @@ public class AntlerHeaddressChargePacket {
         this.charge = charge;
     }
 
-    private void write(PacketBuffer buffer) {
+    private void write(FriendlyByteBuf buffer) {
         buffer.writeVarInt(charge);
     }
 
     private void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         contextSupplier.get().enqueueWork(() -> {
-            ServerPlayerEntity player = contextSupplier.get().getSender();
+            ServerPlayer player = contextSupplier.get().getSender();
             if (player != null) {
-                Item item = player.getItemBySlot(EquipmentSlotType.HEAD).getItem();
+                Item item = player.getItemBySlot(EquipmentSlot.HEAD).getItem();
                 // Check cooldown again, in case the player is cheating
                 if (item instanceof AntlerHeaddressItem && !player.getCooldowns().isOnCooldown(item)) {
                     ((AntlerHeaddressItem) item).handleCharge(player, charge);
