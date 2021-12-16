@@ -37,7 +37,7 @@ public final class Boar extends AbstractAngryMountEntity implements IRideable {
             FnCSounds.BOAR_SADDLE);
     private static final Ingredient FOODS = Ingredient.of(Items.CARROT);
     private static final String WALK_ANIMATION = "animation.boar.walk";
-    private static final String ATTACK_ANIMATION = "animation.boar.walk";
+    private static final String ATTACK_ANIMATION = "animation.boar.attack";
 
     public Boar(EntityType<? extends Boar> entityType, World world) {
         super(entityType, world);

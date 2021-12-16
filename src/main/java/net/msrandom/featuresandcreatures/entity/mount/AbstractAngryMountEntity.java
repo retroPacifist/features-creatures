@@ -17,6 +17,7 @@ import net.minecraft.util.TickRangeConverter;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.msrandom.featuresandcreatures.entity.mount.goal.MountAttackGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -153,47 +154,6 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
         @Override
         public boolean canUse() {
             return super.canUse();
-        }
-    }
-
-    protected static final class MountAttackGoal<T extends AbstractAngryMountEntity> extends MeleeAttackGoal {
-        private final T entity;
-
-        public MountAttackGoal(T entity) {
-            super(entity, 1.24D, true);
-            this.entity = entity;
-        }
-
-        @Override
-        protected void checkAndPerformAttack(LivingEntity livingEntity, double attackTime) {
-            if (entity.canAttack(livingEntity) && !entity.isBaby()) {
-                double attackReachRqr = getAttackReachSqr(livingEntity);
-                if (isTimeToAttack()) {
-                    if (attackTime <= attackReachRqr) {
-                        resetAttackCooldown();
-                        entity.doHurtTarget(livingEntity);
-                        entity.setAttacking(true);
-                    } else if (attackTime < attackReachRqr * 2.0D) {
-                        resetAttackCooldown();
-                        entity.setAttacking(true);
-                    }
-                } else {
-                    entity.setAttacking(!(attackTime < attackReachRqr * 2.0D));
-                }
-            } else {
-                entity.setAttacking(false);
-            }
-        }
-
-        @Override
-        public void stop() {
-            entity.setAttacking(false);
-            super.stop();
-        }
-
-        @Override
-        protected double getAttackReachSqr(LivingEntity livingEntity) {
-            return super.getAttackReachSqr(livingEntity);
         }
     }
 }

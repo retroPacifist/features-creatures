@@ -25,7 +25,7 @@ public final class Sabertooth extends AbstractAngryMountEntity {
             FnCSounds.SABERTOOTH_SADDLE);
     private static final Ingredient FOODS = Ingredient.of(Items.SALMON, Items.COD, Items.MUTTON);
     private static final String WALK_ANIMATION = "animation.sabertooth.walk";
-    private static final String ATTACK_ANIMATION = "animation.sabertooth.walk";
+    private static final String ATTACK_ANIMATION = "animation.sabertooth.attack";
 
     public Sabertooth(EntityType<? extends Sabertooth> entityType, World world) {
         super(entityType, world);
