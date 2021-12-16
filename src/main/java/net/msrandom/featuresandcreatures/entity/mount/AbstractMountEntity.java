@@ -73,6 +73,11 @@ public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity i
     }
 
     @Override
+    public float getScale() {
+        return isBaby() ? 0.825F : 1.0F;
+    }
+
+    @Override
     public ActionResultType mobInteract(PlayerEntity playerEntity, Hand hand) {
         if (!isBaby()) {
             if (!isSaddled()) {
@@ -119,12 +124,6 @@ public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity i
     }
 
     public abstract @NotNull Ingredient getFoods();
-
-    @Override
-    public float getScale() {
-        float scale = super.getScale();
-        return isBaby() ? scale * 2.25F : scale;
-    }
 
     @Override
     public void registerControllers(AnimationData data) {

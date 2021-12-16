@@ -14,9 +14,9 @@ public final class MountAttackGoal<T extends AbstractAngryMountEntity> extends M
     }
 
     @Override
-    protected void checkAndPerformAttack(@NotNull LivingEntity livingEntity, double maxDistance) {
-        double distanceBetween = getAttackReachSqr(livingEntity);
-        if (distanceBetween <= maxDistance && isTimeToAttack()) {
+    protected void checkAndPerformAttack(@NotNull LivingEntity livingEntity, double entityDistance) {
+        double attackRange = getAttackReachSqr(livingEntity);
+        if (entityDistance <= attackRange && isTimeToAttack()) {
             resetAttackCooldown();
             entity.setAttacking(true);
             entity.doHurtTarget(livingEntity);
