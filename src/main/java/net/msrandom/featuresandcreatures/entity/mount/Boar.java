@@ -7,13 +7,13 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IRideable;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -22,11 +22,6 @@ import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -35,7 +30,14 @@ import static net.msrandom.featuresandcreatures.FeaturesAndCreatures.createEntit
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public final class Boar extends AbstractAngryMountEntity implements IRideable {
+    private static final SoundsProvider SOUNDS_PROVIDER = SoundsProvider.create(
+            FnCSounds.BOAR_AMBIENT,
+            FnCSounds.BOAR_HURT,
+            FnCSounds.BOAR_DEATH,
+            FnCSounds.BOAR_SADDLE);
     private static final Ingredient FOODS = Ingredient.of(Items.CARROT);
+    private static final String WALK_ANIMATION = "animation.boar.walk";
+    private static final String ATTACK_ANIMATION = "animation.boar.walk";
 
     public Boar(EntityType<? extends Boar> entityType, World world) {
         super(entityType, world);
@@ -50,16 +52,14 @@ public final class Boar extends AbstractAngryMountEntity implements IRideable {
 
     @Override
     protected void registerAdditionalGoals() {
-        goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, FOODS));
-        goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT_ON_A_STICK), false));
+        goalSelector.addGoal(3, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT_ON_A_STICK), false));
         goalSelector.addGoal(2, new PanicGoal(this, 1.42D));
-        goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
     }
 
     @Override
     public ActionResultType mobInteract(PlayerEntity playerEntity, Hand hand) {
         if (!playerEntity.isCrouching() && !isFood(playerEntity.getItemInHand(hand)) && isSaddled() && !isVehicle() && !playerEntity.isSecondaryUseActive()) {
-            return sidedOperation(level -> playerEntity.startRiding(this));
+            return sidedOperation(() -> playerEntity.startRiding(this));
         }
         return super.mobInteract(playerEntity, hand);
     }
@@ -70,21 +70,36 @@ public final class Boar extends AbstractAngryMountEntity implements IRideable {
     }
 
     @Override
-    protected <T extends IAnimatable> PlayState getPlayState(AnimationEvent<T> event) {
-        AnimationController<?> controller = event.getController();
-        controller.transitionLengthTicks = 0;
-        int animationTime = getAnimationTime();
-        if (event.isMoving() && animationTime <= 0) {
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.boar.walk", true));
-            return PlayState.CONTINUE;
-        } else if (animationTime > 0) {
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.boar.attack", true));
-            return PlayState.CONTINUE;
-        } else {
-            return PlayState.STOP;
-        }
+    protected @NotNull String getWalkAnimation() {
+        return WALK_ANIMATION;
     }
 
+    @Override
+    protected @NotNull String getAttackAnimation() {
+        return ATTACK_ANIMATION;
+    }
+
+    @Override
+    protected @NotNull SoundsProvider getSoundsProvider() {
+        return SOUNDS_PROVIDER;
+    }
+
+    @Override
+    protected void playStepSound(BlockPos blockPos, BlockState blockState) {
+        playSound(FnCSounds.BOAR_STEP, 0.15F, 1.0F);
+    }
+
+    @Override
+    public @Nullable AgeableEntity getBreedOffspring(ServerWorld serverWorld, AgeableEntity entity) {
+        return createEntity(FnCEntities.BOAR, serverWorld, boarEntity -> boarEntity.setAge(-24000));
+    }
+
+    @Override
+    protected double getBreedWalkSpeed() {
+        return 0.8D;
+    }
+
+    // IRideable
     @Override
     public boolean boost() {
         return false;
@@ -97,33 +112,5 @@ public final class Boar extends AbstractAngryMountEntity implements IRideable {
     @Override
     public float getSteeringSpeed() {
         return 0;
-    }
-
-    @Nullable
-    @Override
-    public AgeableEntity getBreedOffspring(ServerWorld serverWorld, AgeableEntity entity) {
-        return createEntity(FnCEntities.BOAR, serverWorld, boarEntity -> boarEntity.setAge(-24000));
-    }
-
-    protected SoundEvent getAmbientSound() {
-        return FnCSounds.BOAR_AMBIENT;
-    }
-
-    protected SoundEvent getHurtSound(DamageSource source) {
-        return FnCSounds.BOAR_HURT;
-    }
-
-    protected SoundEvent getDeathSound() {
-        return FnCSounds.BOAR_DEATH;
-    }
-
-    @Override
-    protected SoundEvent getSaddleSound() {
-        return FnCSounds.BOAR_SADDLE;
-    }
-
-    @Override
-    protected void playStepSound(BlockPos p_180429_1_, BlockState p_180429_2_) {
-        this.playSound(FnCSounds.BOAR_STEP, 0.15F, 1.0F);
     }
 }

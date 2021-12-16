@@ -14,9 +14,16 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.RangedInteger;
 import net.minecraft.util.TickRangeConverter;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
@@ -79,8 +86,28 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
     }
 
     @Override
+    protected <T extends IAnimatable> PlayState getPlayState(AnimationEvent<T> event) {
+        AnimationController<?> animationController = event.getController();
+        animationController.transitionLengthTicks = 0;
+        int attackingAnimationTime = getAnimationTime();
+        if (event.isMoving() && attackingAnimationTime <= 0) {
+            animationController.setAnimation(new AnimationBuilder().addAnimation(getWalkAnimation(), true));
+            return PlayState.CONTINUE;
+        } else if (attackingAnimationTime > 0) {
+            animationController.setAnimation(new AnimationBuilder().addAnimation(getAttackAnimation(), true));
+            return PlayState.CONTINUE;
+        } else {
+            return PlayState.STOP;
+        }
+    }
+
+    protected abstract @NotNull String getWalkAnimation();
+
+    protected abstract @NotNull String getAttackAnimation();
+
+    @Override
     public boolean canAttack(LivingEntity livingEntity) {
-        return true;
+        return livingEntity.isAlive() && level.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
@@ -139,18 +166,22 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
 
         @Override
         protected void checkAndPerformAttack(LivingEntity livingEntity, double attackTime) {
-            double attackReachRqr = getAttackReachSqr(livingEntity);
-            if (isTimeToAttack()) {
-                if (attackTime <= attackReachRqr) {
-                    resetAttackCooldown();
-                    entity.doHurtTarget(livingEntity);
-                    entity.setAttacking(true);
-                } else if (attackTime < attackReachRqr * 2.0D) {
-                    resetAttackCooldown();
-                    entity.setAttacking(true);
+            if (entity.canAttack(livingEntity) && !entity.isBaby()) {
+                double attackReachRqr = getAttackReachSqr(livingEntity);
+                if (isTimeToAttack()) {
+                    if (attackTime <= attackReachRqr) {
+                        resetAttackCooldown();
+                        entity.doHurtTarget(livingEntity);
+                        entity.setAttacking(true);
+                    } else if (attackTime < attackReachRqr * 2.0D) {
+                        resetAttackCooldown();
+                        entity.setAttacking(true);
+                    }
+                } else {
+                    entity.setAttacking(!(attackTime < attackReachRqr * 2.0D));
                 }
             } else {
-                entity.setAttacking(!(attackTime < attackReachRqr * 2.0D));
+                entity.setAttacking(false);
             }
         }
 

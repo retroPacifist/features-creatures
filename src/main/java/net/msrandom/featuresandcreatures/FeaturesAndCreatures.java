@@ -84,7 +84,7 @@ public class FeaturesAndCreatures {
         event.put(FnCEntities.JOCKEY, Jockey.createJockeyAttributes().build());
         event.put(FnCEntities.BOAR, Boar.createBoarAttributes().build());
         event.put(FnCEntities.JACKALOPE, Jackalope.createAttributes().build());
-        event.put(FnCEntities.SABERTOOTH, Sabertooth.createAttributes().build());
+        event.put(FnCEntities.SABERTOOTH, Sabertooth.createSabertoothAttributes().build());
     }
 
     public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, World world, Consumer<T> consumer) {
