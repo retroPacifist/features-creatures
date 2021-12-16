@@ -39,7 +39,7 @@ public final class BoarEntityModel extends AbstractMountModel<Boar> {
 
     @Override
     public @NotNull ResourceLocation getRegularTexture(Boar boarEntity) {
-        return boarEntity.isAttacking() ? ANGRY_TEXTURE : TEXTURE;
+        return boarEntity.isAngry() ? ANGRY_TEXTURE : TEXTURE;
     }
 
     @Override

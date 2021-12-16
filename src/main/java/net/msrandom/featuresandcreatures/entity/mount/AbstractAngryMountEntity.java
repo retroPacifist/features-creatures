@@ -1,20 +1,23 @@
 package net.msrandom.featuresandcreatures.entity.mount;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.ResetAngerGoal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.RangedInteger;
 import net.minecraft.util.TickRangeConverter;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.entity.mount.goal.MountAttackGoal;
-import net.msrandom.featuresandcreatures.entity.mount.goal.NearestPlayerTargetGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -30,9 +33,9 @@ import java.util.UUID;
 @MethodsReturnNonnullByDefault
 public abstract class AbstractAngryMountEntity extends AbstractMountEntity implements IAngerable {
     protected static final DataParameter<Boolean> ATTACKING = EntityDataManager.defineId(AbstractAngryMountEntity.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Integer> REMAINING_PERSISTENT_ANGER_TIME = EntityDataManager.defineId(AbstractAngryMountEntity.class, DataSerializers.INT);
     protected static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
 
-    private int remainingPersistentAngerTime;
     private UUID persistentAngerTarget;
 
     protected AbstractAngryMountEntity(EntityType<? extends AbstractAngryMountEntity> entityType, World world) {
@@ -43,20 +46,22 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.addGoal(1, new MountAttackGoal<>(this));
-        targetSelector.addGoal(1, new NearestPlayerTargetGoal(this));
+        targetSelector.addGoal(5, new ResetAngerGoal<>(this, false));
+        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
     }
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         entityData.define(ATTACKING, false);
+        entityData.define(REMAINING_PERSISTENT_ANGER_TIME, 0);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundNBT compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         if (!level.isClientSide) {
-            readPersistentAngerSaveData((ServerWorld) level, compoundNBT) ;
+            readPersistentAngerSaveData((ServerWorld) level, compoundNBT);
         }
         setAttacking(compoundNBT.getBoolean("Attacking"));
     }
@@ -66,6 +71,18 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
         super.addAdditionalSaveData(compoundNBT);
         addPersistentAngerSaveData(compoundNBT);
         compoundNBT.putBoolean("Attacking", isAttacking());
+    }
+
+    @Override
+    public boolean hurt(DamageSource damageSource, float amount) {
+        if (!level.isClientSide) {
+            @Nullable Entity entity = damageSource.getEntity();
+            if (entity != null) {
+                startPersistentAngerTimer();
+                setPersistentAngerTarget(entity.getUUID());
+            }
+        }
+        return super.hurt(damageSource, amount);
     }
 
     @Override
@@ -105,17 +122,17 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
 
     @Override
     public boolean canAttack(LivingEntity livingEntity) {
-        return livingEntity.isAlive() && level.getDifficulty() != Difficulty.PEACEFUL;
+        return true;
     }
 
     @Override
     public int getRemainingPersistentAngerTime() {
-        return remainingPersistentAngerTime;
+        return entityData.get(REMAINING_PERSISTENT_ANGER_TIME);
     }
 
     @Override
     public void setRemainingPersistentAngerTime(int i) {
-        remainingPersistentAngerTime = i;
+        entityData.set(REMAINING_PERSISTENT_ANGER_TIME, i);
     }
 
     @Nullable
