@@ -42,13 +42,13 @@
     "firstperson_righthand": {
       "rotation": [
         3,
-        -26,
-        7
+        -154,
+        180
       ],
       "translation": [
-        20,
-        -5.75,
-        1.25
+        0,
+        -2.5,
+        -2.25
       ],
       "scale": [
         1,

@@ -52,8 +52,8 @@
       "translation": [-8, 0, 9.25]
     },
     "firstperson_righthand": {
-      "rotation": [-36, -180, 0],
-      "translation": [-5.75, -8.5, -1.5]
+      "rotation": [-36, -180, 180],
+      "translation": [22.75, 4.5, -11.5]
     },
     "firstperson_lefthand": {
       "rotation": [-36, -180, 0],
