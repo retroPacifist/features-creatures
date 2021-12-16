@@ -42,7 +42,7 @@
   "subtitles.entity.spear.hits": "Spear hits",
   "subtitles.entity.spear.lands": "Spear lands",
   "subtitles.entity.antler_headdress.charging": "Player charges",
-  "subtitles.entity.antler_headdress.finish_charge": "Player finishes charging",
+  "subtitles.entity.antler_headdress.finished_charging": "Player finishes charging",
   "subtitles.entity.antler_headdress.hit_strong": "Player charges forward",
   "subtitles.item.dowsing_rod.locates": "Dowsing rod pings",
   "advancementRoot.description": "A world of creatures big and small.",

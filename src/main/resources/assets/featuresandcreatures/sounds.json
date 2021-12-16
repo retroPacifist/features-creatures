@@ -190,7 +190,7 @@
     ],
     "subtitle": "subtitles.entity.antler_headdress.charging"
   },
-  "entity.antler_headdress.finish_charge": {
+  "entity.antler_headdress.finished_charging": {
     "sounds": [
       "note/icechime"
     ],

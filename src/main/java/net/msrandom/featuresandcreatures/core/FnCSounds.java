@@ -40,7 +40,7 @@ public class FnCSounds {
 
     public static SoundEvent ANTLER_HEADDRESS_ATTACK_STRONG = createSound("entity.antler_headdress.attack_strong");
     public static SoundEvent ANTLER_HEADDRESS_CHARGE = createSound("entity.antler_headdress.charge");
-    public static SoundEvent ANTLER_HEADDRESS_FINISH_CHARGE = createSound("entity.antler_headdress.finish_charge");
+    public static SoundEvent ANTLER_HEADDRESS_FINISHED_CHARGING = createSound("entity.antler_headdress.finished_charging");
 
     public static SoundEvent ENTITY_DESADDLE = createSound("entity.saddled.desaddle");
 
