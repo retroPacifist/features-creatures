@@ -4,10 +4,6 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -18,6 +14,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.entity.mount.goal.MountAttackGoal;
+import net.msrandom.featuresandcreatures.entity.mount.goal.NearestPlayerTargetGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -46,7 +43,7 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.addGoal(1, new MountAttackGoal<>(this));
-        targetSelector.addGoal(2, new HuntDownPlayerGoal(this));
+        targetSelector.addGoal(1, new NearestPlayerTargetGoal(this));
     }
 
     @Override
@@ -143,17 +140,5 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
 
     public void setAttacking(boolean attacking) {
         entityData.set(ATTACKING, attacking);
-    }
-
-    protected static final class HuntDownPlayerGoal extends NearestAttackableTargetGoal<PlayerEntity> {
-
-        public HuntDownPlayerGoal(MobEntity mobEntity) {
-            super(mobEntity, PlayerEntity.class, 20, true, true, null);
-        }
-
-        @Override
-        public boolean canUse() {
-            return super.canUse();
-        }
     }
 }
