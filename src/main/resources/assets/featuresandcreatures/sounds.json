@@ -147,10 +147,7 @@
   },
   "entity.spear.throw": {
     "sounds": [
-      "random/bowhit1",
-      "random/bowhit2",
-      "random/bowhit3",
-      "random/bowhit4"
+      "random/bow"
     ],
     "subtitle": "subtitles.entity.spear.thrown"
   },
