@@ -438,7 +438,10 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         } else if (this.isAttacking()) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.jockey.potion", true));
             return PlayState.CONTINUE;
-        }else{
+        }else if (this.isHolding(Items.POTION)) {
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.jockey.drink", true));
+            return PlayState.CONTINUE;
+        } else{
             return PlayState.STOP;
         }
     }

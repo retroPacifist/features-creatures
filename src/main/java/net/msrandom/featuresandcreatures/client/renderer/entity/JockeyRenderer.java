@@ -33,8 +33,8 @@ public class JockeyRenderer extends GeoEntityRenderer<Jockey> {
             stack.pushPose();
             stack.mulPose(Vector3f.XP.rotationDegrees(15));
             stack.mulPose(Vector3f.YP.rotationDegrees(0));
-            stack.mulPose(Vector3f.ZP.rotationDegrees(3F));
-            stack.translate(0.1D, 0.4D, -0.27D);
+            stack.mulPose(Vector3f.ZP.rotationDegrees(3.5f));
+            stack.translate(0.02D, 0.4D, -0.36D);
             stack.scale(0.70f, 0.70f, 0.70f);
             Minecraft.getInstance().getItemRenderer().renderStatic(mainHand, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, packedLightIn, packedOverlayIn, stack, this.rtb);
             stack.popPose();
