@@ -29,7 +29,6 @@ import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
-import net.msrandom.featuresandcreatures.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
@@ -109,7 +108,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
 
     public static boolean isRiding(Jockey jockey) {
         Entity entity = jockey.getVehicle();
-        return entity instanceof Jackalope || entity instanceof Boar;
+        return entity instanceof LivingEntity;
     }
 
     @Override
