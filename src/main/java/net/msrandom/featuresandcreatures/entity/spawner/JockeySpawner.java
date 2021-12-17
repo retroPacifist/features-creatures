@@ -75,7 +75,7 @@ public class JockeySpawner implements ISpecialSpawner {
 
             // Floor finder
             for (BlockPos blockPos : BlockPos.betweenClosed(position.offset(-1, -1, -1), position.offset(1, -1, 1))) {
-                if (world.isEmptyBlock(blockPos) && !world.getFluidState(blockPos).isEmpty()) {
+                if (world.isEmptyBlock(blockPos) && world.getFluidState(blockPos).isEmpty()) {
                     return 0;
                 }
             }
