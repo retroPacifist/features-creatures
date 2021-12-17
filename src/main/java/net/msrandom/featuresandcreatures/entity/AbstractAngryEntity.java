@@ -44,7 +44,6 @@ public abstract class AbstractAngryEntity extends AnimalEntity implements IAnger
         this.goalSelector.addGoal(4, new RandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
-        this.targetSelector.addGoal(1, new CallForHelpGoal());
         this.targetSelector.addGoal(2, new AbstractAngryEntity.AttackPlayerGoal());
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
         this.targetSelector.addGoal(5, new ResetAngerGoal<>(this, false));

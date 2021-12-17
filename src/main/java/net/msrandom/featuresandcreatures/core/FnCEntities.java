@@ -8,9 +8,9 @@ import net.minecraft.item.SpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.entity.Jackalope;
 import net.msrandom.featuresandcreatures.entity.Jockey;
-import net.msrandom.featuresandcreatures.entity.Sabertooth;
 import net.msrandom.featuresandcreatures.entity.Spear;
 import net.msrandom.featuresandcreatures.entity.mount.Boar;
+import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.util.FnCRegistrar;
 
 public class FnCEntities {

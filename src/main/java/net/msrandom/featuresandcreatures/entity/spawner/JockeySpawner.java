@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class JockeySpawner implements ISpecialSpawner {
-    private static final long COOLDOWN = 72000L;
+    private static final long COOLDOWN = 100L;
     public static final int MAX_OFFSET = 10;
     private int spawnChance;
 
@@ -75,7 +75,7 @@ public class JockeySpawner implements ISpecialSpawner {
 
             // Floor finder
             for (BlockPos blockPos : BlockPos.betweenClosed(position.offset(-1, -1, -1), position.offset(1, -1, 1))) {
-                if (world.isEmptyBlock(blockPos) && !world.getFluidState(blockPos).isEmpty()) {
+                if (world.isEmptyBlock(blockPos) && world.getFluidState(blockPos).isEmpty()) {
                     return 0;
                 }
             }

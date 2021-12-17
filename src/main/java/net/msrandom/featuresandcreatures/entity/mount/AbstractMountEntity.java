@@ -3,7 +3,6 @@ package net.msrandom.featuresandcreatures.entity.mount;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -13,11 +12,10 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -28,11 +26,10 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class AbstractMountEntity extends AnimalEntity implements IAnimatable {
+public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity implements IAnimatable {
     protected static final DataParameter<Integer> ANIMATION_TIME = EntityDataManager.defineId(AbstractMountEntity.class, DataSerializers.INT);
     protected static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(AbstractMountEntity.class, DataSerializers.BOOLEAN);
 
@@ -46,8 +43,10 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.addGoal(0, new SwimGoal(this));
+        goalSelector.addGoal(1, new BreedGoal(this, getBreedWalkSpeed()));
         goalSelector.addGoal(2, new FollowParentGoal(this, 1.25D));
         goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, getFoods()));
         goalSelector.addGoal(4, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         goalSelector.addGoal(5, new LookRandomlyGoal(this));
         registerAdditionalGoals();
@@ -77,13 +76,18 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
     }
 
     @Override
+    public float getScale() {
+        return isBaby() ? 0.825F : 1.0F;
+    }
+
+    @Override
     public ActionResultType mobInteract(PlayerEntity playerEntity, Hand hand) {
         if (!isBaby()) {
             if (!isSaddled()) {
                 ItemStack itemStack = playerEntity.getItemInHand(hand);
                 if (itemStack.getItem() == Items.SADDLE) {
-                    return sidedOperation(level -> {
-                        level.playSound(null, this.getX(), this.getY() + getDimensions(getPose()).height / 3, this.getZ(), getSaddleSound(), getSoundSource(), 1, 1);
+                    return sidedOperation(() -> {
+                        playSaddledSound(getSoundsProvider().saddled);
                         setSaddled(true);
                         if (!playerEntity.abilities.instabuild) {
                             itemStack.shrink(1);
@@ -91,8 +95,8 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
                     });
                 }
             } else if (playerEntity.isCrouching()) {
-                return sidedOperation(level -> {
-                    level.playSound(null, this.getX(), this.getY() + getDimensions(getPose()).height / 3, this.getZ(), FnCSounds.ENTITY_DESADDLE, getSoundSource(), 1, 1);
+                return sidedOperation(() -> {
+                    playSaddledSound(FnCSounds.ENTITY_DESADDLE);
                     ItemStack itemStack1 = new ItemStack(Items.SADDLE);
                     if (!playerEntity.inventory.add(itemStack1)) {
                         playerEntity.drop(itemStack1, false);
@@ -104,11 +108,13 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
         return super.mobInteract(playerEntity, hand);
     }
 
-    protected abstract SoundEvent getSaddleSound();
+    protected void playSaddledSound(SoundEvent soundEvent) {
+        level.playSound(null, getX(), getY() + getDimensions(getPose()).height / 3.0D, getZ(), soundEvent, getSoundSource(), 1, 1);
+    }
 
-    protected ActionResultType sidedOperation(Consumer<World> consumer) {
+    protected ActionResultType sidedOperation(Runnable runnable) {
         if (!level.isClientSide) {
-            consumer.accept(level);
+            runnable.run();
             return ActionResultType.SUCCESS;
         } else {
             return ActionResultType.CONSUME;
@@ -123,16 +129,11 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
     public abstract @NotNull Ingredient getFoods();
 
     @Override
-    public float getScale() {
-        float scale = super.getScale();
-        return isBaby() ? scale * 2.25F : scale;
-    }
-
-    @Override
     public void registerControllers(AnimationData data) {
         data.addAnimationController(new AnimationController<>(this, "controller", 0, this::getPlayState));
     }
 
+    @SuppressWarnings("NullableProblems")
     protected abstract <T extends IAnimatable> PlayState getPlayState(AnimationEvent<T> event);
 
     @Override
@@ -154,5 +155,9 @@ public abstract class AbstractMountEntity extends AnimalEntity implements IAnima
 
     public void setSaddled(boolean saddled) {
         entityData.set(SADDLED, saddled);
+    }
+
+    protected double getBreedWalkSpeed() {
+        return 1.25D;
     }
 }

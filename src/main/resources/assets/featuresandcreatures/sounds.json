@@ -147,10 +147,7 @@
   },
   "entity.spear.throw": {
     "sounds": [
-      "random/bowhit1",
-      "random/bowhit2",
-      "random/bowhit3",
-      "random/bowhit4"
+      "random/bow"
     ],
     "subtitle": "subtitles.entity.spear.thrown"
   },
@@ -190,7 +187,7 @@
     ],
     "subtitle": "subtitles.entity.antler_headdress.charging"
   },
-  "entity.antler_headdress.finish_charge": {
+  "entity.antler_headdress.finished_charging": {
     "sounds": [
       "note/icechime"
     ],

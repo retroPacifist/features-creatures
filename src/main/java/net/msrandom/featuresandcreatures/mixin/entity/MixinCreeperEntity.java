@@ -5,7 +5,7 @@ import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.world.World;
-import net.msrandom.featuresandcreatures.entity.Sabertooth;
+import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

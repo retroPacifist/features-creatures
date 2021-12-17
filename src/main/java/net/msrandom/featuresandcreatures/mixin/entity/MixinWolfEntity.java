@@ -5,7 +5,7 @@ import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.world.World;
-import net.msrandom.featuresandcreatures.entity.Sabertooth;
+import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

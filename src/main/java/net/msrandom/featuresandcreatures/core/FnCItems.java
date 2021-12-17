@@ -26,7 +26,7 @@ public class FnCItems {
 
     public static final Item MEGA_POTION = REGISTRAR.add("mega_potion", new Item(new Item.Properties()));
     public static final Item ANTLER = REGISTRAR.add("antler", new Item(new Item.Properties().tab(TAB)));
-    public static final Item ANTLER_HEADDRESS = REGISTRAR.add("antler_headdress", new AntlerHeaddressItem(EquipmentSlotType.HEAD, new Item.Properties().tab(TAB)));
+    public static final Item ANTLER_HEADDRESS = REGISTRAR.add("antler_headdress", new AntlerHeaddressItem(EquipmentSlotType.HEAD, new Item.Properties().tab(TAB).durability(-1)));
     public static final Item SABERTOOTH_FANG = REGISTRAR.add("sabertooth_fang", new Item(new Item.Properties().tab(TAB)));
     public static final Item SPEAR = REGISTRAR.add("spear", new SpearItem(new Item.Properties().durability(200).tab(TAB).setISTER(() -> SpearItemRenderer::new)));
     public static final Item DOWSING_ROD = REGISTRAR.add("dowsing_rod", new DowsingRodItem(new Item.Properties().tab(TAB)));

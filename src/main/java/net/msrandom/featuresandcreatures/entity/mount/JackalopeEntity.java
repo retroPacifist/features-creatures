@@ -3,10 +3,8 @@ package net.msrandom.featuresandcreatures.entity.mount;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.msrandom.featuresandcreatures.core.FnCSounds;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -25,11 +23,6 @@ public final class JackalopeEntity extends AbstractMountEntity {
     }
 
     @Override
-    protected SoundEvent getSaddleSound() {
-        return FnCSounds.JACKALOPE_SADDLE;
-    }
-
-    @Override
     public @NotNull Ingredient getFoods() {
         return null;
     }
@@ -43,6 +36,11 @@ public final class JackalopeEntity extends AbstractMountEntity {
     @Nullable
     @Override
     public AgeableEntity getBreedOffspring(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
+        return null;
+    }
+
+    @Override
+    protected @NotNull SoundsProvider getSoundsProvider() {
         return null;
     }
 }

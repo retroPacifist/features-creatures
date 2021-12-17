@@ -12,6 +12,9 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +29,7 @@ import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
-import net.msrandom.featuresandcreatures.entity.mount.Boar;
+import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
 import net.msrandom.featuresandcreatures.mixin.SlimeSizeInvoker;
@@ -53,11 +56,17 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     private static final String ARROW_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.arrow";
 
     private final AnimationFactory factory = new AnimationFactory(this);
-    private int timeAlive = 0;
 
     private PlayerEntity tradingPlayer;
+    private PlayerEntity followingPlayer;
     private MerchantOffers offers;
     private BlockPos lastBlockPos = BlockPos.ZERO;
+    private static final DataParameter<Boolean> ATTACKING = EntityDataManager.defineId(Jockey.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> ATTACK_TIMER = EntityDataManager.defineId(Jockey.class, DataSerializers.INT);
+    private static final DataParameter<Integer> TIME_ALIVE = EntityDataManager.defineId(Jockey.class, DataSerializers.INT);
+    private static final EntityPredicate TARGETING = (new EntityPredicate()).range(32.0D).allowInvulnerable().allowSameTeam().allowNonAttackable().allowUnseeable();
+
+
 
     public Jockey(EntityType<? extends Jockey> p_i48575_1_, World p_i48575_2_) {
         super(p_i48575_1_, p_i48575_2_);
@@ -68,14 +77,25 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
+    protected void defineSynchedData() {
+        this.entityData.define(ATTACKING, false);
+        this.entityData.define(ATTACK_TIMER, 10);
+        this.entityData.define(TIME_ALIVE, 0);
+        super.defineSynchedData();
+    }
+
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0D, 60, 10.0F));
         this.goalSelector.addGoal(2, new SwimGoal(this));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 0.35D));
+        this.goalSelector.addGoal(4, new FollowPlayerGoal(this,  12, 0.6F));
+        this.goalSelector.addGoal(4, new MountFollowPlayerGoal(this,  12, 1.2F));
         this.goalSelector.addGoal(4, new LookAtWithoutMovingGoal(this, PlayerEntity.class, 3.0F, 1.0F));
         this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(4, new MoveTowardsRestrictionGoal(this, 0.35D));
         this.goalSelector.addGoal(0, new UseItemGoal<>(this, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING), SoundEvents.GENERIC_DRINK, entity -> this.getHealth() <= 6));
         this.targetSelector.addGoal(7, new HurtByTargetGoal(this));
     }
@@ -93,7 +113,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
 
     public static boolean isRiding(Jockey jockey) {
         Entity entity = jockey.getVehicle();
-        return entity instanceof Jackalope || entity instanceof Boar;
+        return entity instanceof LivingEntity;
     }
 
     @Override
@@ -134,6 +154,32 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     @Override
     public void setTradingPlayer(@Nullable PlayerEntity player) {
         this.tradingPlayer = player;
+    }
+
+    public boolean isAttacking() {
+        return this.entityData.get(ATTACKING);
+    }
+
+    public void setAttacking(boolean attack) {
+        this.entityData.set(ATTACKING, attack);
+    }
+
+    public int getAttackTimer() {
+        return this.entityData.get(ATTACK_TIMER);
+
+    }
+
+    public void setAttackTimer(int attackTimer) {
+        this.entityData.set(ATTACK_TIMER, attackTimer);
+    }
+
+    public int getTimeAlive() {
+        return this.entityData.get(TIME_ALIVE);
+
+    }
+
+    public void setTimeAlive(int time) {
+        this.entityData.set(TIME_ALIVE, time);
     }
 
     @Override
@@ -314,7 +360,18 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         if (!this.level.isClientSide) {
             trackedGlobalJockey();
         }
-        ++timeAlive;
+        setTimeAlive(getTimeAlive() + 1);
+        if (isAttacking()){
+            this.setAttackTimer(this.getAttackTimer() - 1);
+            if (getAttackTimer() <= 0){
+                setAttacking(false);
+                setAttackTimer(10);
+            }
+        }
+        if (isRiding(this)) {
+            if (this.getVehicle() instanceof MobEntity)
+            ((MobEntity) this.getVehicle()).setTarget(this.getTarget());
+        }
     }
 
     @Override
@@ -357,19 +414,24 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
 
     @Override
     public boolean removeWhenFarAway(double distance) {
-        return timeAlive >= 48000 && (FnCConfig.getInstance().namedJockeyDespawn() || !hasCustomName());
+        return getTimeAlive() >= 48000 && (FnCConfig.getInstance().namedJockeyDespawn() || !hasCustomName());
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT p_213281_1_) {
-        super.addAdditionalSaveData(p_213281_1_);
-        p_213281_1_.putInt("TimeAlive", timeAlive);
+    public void addAdditionalSaveData(CompoundNBT nbt) {
+        super.addAdditionalSaveData(nbt);
+        nbt.putInt("TimeAlive", getTimeAlive());
+        nbt.putBoolean("Attacking", isAttacking());
+        nbt.putInt("AttackTimer", getAttackTimer());
+
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT p_70037_1_) {
-        super.readAdditionalSaveData(p_70037_1_);
-        timeAlive = p_70037_1_.getInt("TimeAlive");
+    public void readAdditionalSaveData(CompoundNBT nbt) {
+        super.readAdditionalSaveData(nbt);
+        setTimeAlive(nbt.getInt("TimeAlive"));
+        setAttacking(nbt.getBoolean("Attacking"));
+        setAttackTimer(nbt.getInt("AttackTimer"));
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -378,10 +440,16 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         if (this.isOnGround() && event.isMoving()) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.jockey.walk", true));
             return PlayState.CONTINUE;
-        } else if (isRiding(this)) {
+        } else if (this.isAttacking()) {
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.jockey.potion", true));
+            return PlayState.CONTINUE;
+        }else if (this.isHolding(Items.POTION)) {
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.jockey.drink", true));
+            return PlayState.CONTINUE;
+        } if (isRiding(this)) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.jockey.sit", true));
             return PlayState.CONTINUE;
-        } else {
+        } else{
             return PlayState.STOP;
         }
     }
@@ -406,11 +474,12 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
-    public void performRangedAttack(LivingEntity jockey, float v) {
-        Vector3d vector3d = jockey.getDeltaMovement();
-        double d0 = jockey.getX() + vector3d.x - this.getX();
-        double d1 = jockey.getEyeY() - (double) 1.1F - this.getY();
-        double d2 = jockey.getZ() + vector3d.z - this.getZ();
+    public void performRangedAttack(LivingEntity target, float v) {
+        this.setAttacking(true);
+        Vector3d vector3d = target.getDeltaMovement();
+        double d0 = target.getX() + vector3d.x - this.getX();
+        double d1 = target.getEyeY() - (double) 1.1F - this.getY();
+        double d2 = target.getZ() + vector3d.z - this.getZ();
         float f = MathHelper.sqrt(d0 * d0 + d2 * d2);
         Potion potion = Potions.HARMING;
         PotionEntity potionentity = new PotionEntity(this.level, this);
@@ -447,6 +516,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 HorseEntity horse = EntityType.HORSE.create(world);
                 if (horse != null) {
                     horse.equipSaddle(SoundCategory.NEUTRAL);
+                    horse.setBaby(true);
                 }
                 return horse;
             default:
@@ -460,5 +530,91 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         LINGERING,
         ARROWS_16,
         ARROWS_32
+    }
+
+    public static class FollowPlayerGoal extends Goal{
+
+        public Jockey jockey;
+        public double distance;
+        public float speed;
+
+
+        public FollowPlayerGoal(Jockey jockey, double distance, float speed) {
+            this.jockey = jockey;
+            this.distance = distance;
+            this.speed = speed;
+        }
+
+        @Override
+        public boolean canUse() {
+            return jockey.isAlive();
+        }
+
+        @Override
+        public void start() {
+            super.start();
+        }
+
+        @Override
+        public void stop() {
+            this.jockey.getNavigation().stop();
+            super.stop();
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            this.jockey.followingPlayer = this.jockey.level.getNearestPlayer(TARGETING, this.jockey);
+            if (this.jockey.followingPlayer == null) return;
+            if (this.jockey.distanceToSqr(this.jockey.followingPlayer) < distance) {
+                this.jockey.getNavigation().stop();
+            } else {
+                this.jockey.getNavigation().moveTo(this.jockey.followingPlayer, speed);
+            }
+        }
+    }
+
+    public static class MountFollowPlayerGoal extends Goal{
+
+        public Jockey jockey;
+        public double distance;
+        public float speed;
+        public MobEntity mount;
+
+
+        public MountFollowPlayerGoal(Jockey jockey, double distance, float speed) {
+            this.jockey = jockey;
+            this.distance = distance;
+            this.speed = speed;
+        }
+
+        @Override
+        public boolean canUse() {
+            return isRiding(jockey);
+        }
+
+        @Override
+        public void start() {
+            mount = (MobEntity) jockey.getVehicle();
+            super.start();
+        }
+
+        @Override
+        public void stop() {
+            this.jockey.getNavigation().stop();
+            super.stop();
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            this.jockey.followingPlayer = this.jockey.level.getNearestPlayer(TARGETING, this.jockey);
+            if (this.jockey.followingPlayer == null) return;
+            if (this.mount.distanceToSqr(this.jockey.followingPlayer) < distance) {
+                this.mount.getNavigation().stop();
+            } else {
+                this.mount.getNavigation().moveTo(this.jockey.followingPlayer, speed);
+            }
+        }
     }
 }

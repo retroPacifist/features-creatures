@@ -81,7 +81,7 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
                 } else if (charge == Math.round(getMaxCharge() * 0.75f)) {
                     world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_CHARGE, SoundCategory.AMBIENT, 2, 1.5F, false);
                 } else if (charge == getMaxCharge()) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_FINISH_CHARGE, SoundCategory.AMBIENT, 30, charge / 15F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_FINISHED_CHARGING, SoundCategory.AMBIENT, 30, charge / 15F, false);
                 }
 
                 if (!isCharging && charge > 0) {

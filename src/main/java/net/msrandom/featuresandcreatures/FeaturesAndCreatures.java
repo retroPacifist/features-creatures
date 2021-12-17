@@ -20,8 +20,8 @@ import net.msrandom.featuresandcreatures.client.renderer.entity.*;
 import net.msrandom.featuresandcreatures.core.*;
 import net.msrandom.featuresandcreatures.entity.Jackalope;
 import net.msrandom.featuresandcreatures.entity.Jockey;
-import net.msrandom.featuresandcreatures.entity.Sabertooth;
 import net.msrandom.featuresandcreatures.entity.mount.Boar;
+import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressRenderer;
 import net.msrandom.featuresandcreatures.network.NetworkHandler;
@@ -84,7 +84,7 @@ public class FeaturesAndCreatures {
         event.put(FnCEntities.JOCKEY, Jockey.createJockeyAttributes().build());
         event.put(FnCEntities.BOAR, Boar.createBoarAttributes().build());
         event.put(FnCEntities.JACKALOPE, Jackalope.createAttributes().build());
-        event.put(FnCEntities.SABERTOOTH, Sabertooth.createAttributes().build());
+        event.put(FnCEntities.SABERTOOTH, Sabertooth.createSabertoothAttributes().build());
     }
 
     public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, World world, Consumer<T> consumer) {
