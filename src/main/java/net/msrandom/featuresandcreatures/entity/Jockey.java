@@ -58,11 +58,14 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     private final AnimationFactory factory = new AnimationFactory(this);
 
     private PlayerEntity tradingPlayer;
+    private PlayerEntity followingPlayer;
     private MerchantOffers offers;
     private BlockPos lastBlockPos = BlockPos.ZERO;
     private static final DataParameter<Boolean> ATTACKING = EntityDataManager.defineId(Jockey.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> ATTACK_TIMER = EntityDataManager.defineId(Jockey.class, DataSerializers.INT);
     private static final DataParameter<Integer> TIME_ALIVE = EntityDataManager.defineId(Jockey.class, DataSerializers.INT);
+    private static final EntityPredicate TARGETING = (new EntityPredicate()).range(32.0D).allowInvulnerable().allowSameTeam().allowNonAttackable().allowUnseeable();
+
 
 
     public Jockey(EntityType<? extends Jockey> p_i48575_1_, World p_i48575_2_) {
@@ -362,6 +365,13 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 setAttacking(false);
                 setAttackTimer(10);
             }
+        }
+        this.followingPlayer = this.level.getNearestPlayer(TARGETING, this);
+        if (this.followingPlayer == null) return;
+        if (this.distanceToSqr(this.followingPlayer) < 12D) {
+            this.getNavigation().stop();
+        } else {
+            this.getNavigation().moveTo(this.followingPlayer, 1);
         }
     }
 
