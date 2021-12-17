@@ -12,6 +12,9 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -54,11 +57,14 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     private static final String ARROW_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.arrow";
 
     private final AnimationFactory factory = new AnimationFactory(this);
-    private int timeAlive = 0;
 
     private PlayerEntity tradingPlayer;
     private MerchantOffers offers;
     private BlockPos lastBlockPos = BlockPos.ZERO;
+    private static final DataParameter<Boolean> ATTACKING = EntityDataManager.defineId(Jockey.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> ATTACK_TIMER = EntityDataManager.defineId(Jockey.class, DataSerializers.INT);
+    private static final DataParameter<Integer> TIME_ALIVE = EntityDataManager.defineId(Jockey.class, DataSerializers.INT);
+
 
     public Jockey(EntityType<? extends Jockey> p_i48575_1_, World p_i48575_2_) {
         super(p_i48575_1_, p_i48575_2_);
@@ -66,6 +72,14 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
 
     public static AttributeModifierMap.MutableAttribute createJockeyAttributes() {
         return createMobAttributes().add(Attributes.MAX_HEALTH, 12.0);
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        this.entityData.define(ATTACKING, false);
+        this.entityData.define(ATTACK_TIMER, 10);
+        this.entityData.define(TIME_ALIVE, 0);
+        super.defineSynchedData();
     }
 
     @Override
@@ -136,6 +150,32 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     @Override
     public void setTradingPlayer(@Nullable PlayerEntity player) {
         this.tradingPlayer = player;
+    }
+
+    public boolean isAttacking() {
+        return this.entityData.get(ATTACKING);
+    }
+
+    public void setAttacking(boolean attack) {
+        this.entityData.set(ATTACKING, attack);
+    }
+
+    public int getAttackTimer() {
+        return this.entityData.get(ATTACK_TIMER);
+
+    }
+
+    public void setAttackTimer(int attackTimer) {
+        this.entityData.set(ATTACK_TIMER, attackTimer);
+    }
+
+    public int getTimeAlive() {
+        return this.entityData.get(TIME_ALIVE);
+
+    }
+
+    public void setTimeAlive(int time) {
+        this.entityData.set(TIME_ALIVE, time);
     }
 
     @Override
@@ -316,7 +356,15 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         if (!this.level.isClientSide) {
             trackedGlobalJockey();
         }
-        ++timeAlive;
+        setTimeAlive(getTimeAlive() + 1);
+        if (isAttacking()){
+            this.setAttackTimer(this.getAttackTimer() - 1);
+            if (getAttackTimer() <= 0){
+                setAttacking(false);
+                setAttackTimer(10);
+            }
+        }
+        System.out.println(getAttackTimer());
     }
 
     @Override
@@ -359,19 +407,24 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
 
     @Override
     public boolean removeWhenFarAway(double distance) {
-        return timeAlive >= 48000 && (FnCConfig.getInstance().namedJockeyDespawn() || !hasCustomName());
+        return getTimeAlive() >= 48000 && (FnCConfig.getInstance().namedJockeyDespawn() || !hasCustomName());
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT p_213281_1_) {
-        super.addAdditionalSaveData(p_213281_1_);
-        p_213281_1_.putInt("TimeAlive", timeAlive);
+    public void addAdditionalSaveData(CompoundNBT nbt) {
+        super.addAdditionalSaveData(nbt);
+        nbt.putInt("TimeAlive", getTimeAlive());
+        nbt.putBoolean("Attacking", isAttacking());
+        nbt.putInt("AttackTimer", getAttackTimer());
+
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT p_70037_1_) {
-        super.readAdditionalSaveData(p_70037_1_);
-        timeAlive = p_70037_1_.getInt("TimeAlive");
+    public void readAdditionalSaveData(CompoundNBT nbt) {
+        super.readAdditionalSaveData(nbt);
+        setTimeAlive(nbt.getInt("TimeAlive"));
+        setAttacking(nbt.getBoolean("Attacking"));
+        setAttackTimer(nbt.getInt("AttackTimer"));
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -383,7 +436,10 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         } else if (isRiding(this)) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.jockey.sit", true));
             return PlayState.CONTINUE;
-        } else {
+        } else if (this.isAttacking()) {
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.jockey.potion", true));
+            return PlayState.CONTINUE;
+        }else{
             return PlayState.STOP;
         }
     }
@@ -408,11 +464,12 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
-    public void performRangedAttack(LivingEntity jockey, float v) {
-        Vector3d vector3d = jockey.getDeltaMovement();
-        double d0 = jockey.getX() + vector3d.x - this.getX();
-        double d1 = jockey.getEyeY() - (double) 1.1F - this.getY();
-        double d2 = jockey.getZ() + vector3d.z - this.getZ();
+    public void performRangedAttack(LivingEntity target, float v) {
+        this.setAttacking(true);
+        Vector3d vector3d = target.getDeltaMovement();
+        double d0 = target.getX() + vector3d.x - this.getX();
+        double d1 = target.getEyeY() - (double) 1.1F - this.getY();
+        double d2 = target.getZ() + vector3d.z - this.getZ();
         float f = MathHelper.sqrt(d0 * d0 + d2 * d2);
         Potion potion = Potions.HARMING;
         PotionEntity potionentity = new PotionEntity(this.level, this);
