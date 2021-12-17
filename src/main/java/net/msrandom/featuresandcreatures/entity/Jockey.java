@@ -90,6 +90,8 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.0D, 60, 10.0F));
         this.goalSelector.addGoal(2, new SwimGoal(this));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 0.35D));
+        this.goalSelector.addGoal(4, new FollowPlayerGoal(this,  12, 0.6F));
+        this.goalSelector.addGoal(4, new MountFollowPlayerGoal(this,  12, 1.2F));
         this.goalSelector.addGoal(4, new LookAtWithoutMovingGoal(this, PlayerEntity.class, 3.0F, 1.0F));
         this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
@@ -366,13 +368,6 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 setAttackTimer(10);
             }
         }
-        this.followingPlayer = this.level.getNearestPlayer(TARGETING, this);
-        if (this.followingPlayer == null) return;
-        if (this.distanceToSqr(this.followingPlayer) < 12D) {
-            this.getNavigation().stop();
-        } else {
-            this.getNavigation().moveTo(this.followingPlayer, 0.4);
-        }
         if (isRiding(this)) {
             if (this.getVehicle() instanceof MobEntity)
             ((MobEntity) this.getVehicle()).setTarget(null);
@@ -521,6 +516,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 HorseEntity horse = EntityType.HORSE.create(world);
                 if (horse != null) {
                     horse.equipSaddle(SoundCategory.NEUTRAL);
+                    horse.setBaby(true);
                 }
                 return horse;
             default:
@@ -534,5 +530,91 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         LINGERING,
         ARROWS_16,
         ARROWS_32
+    }
+
+    public static class FollowPlayerGoal extends Goal{
+
+        public Jockey jockey;
+        public double distance;
+        public float speed;
+
+
+        public FollowPlayerGoal(Jockey jockey, double distance, float speed) {
+            this.jockey = jockey;
+            this.distance = distance;
+            this.speed = speed;
+        }
+
+        @Override
+        public boolean canUse() {
+            return jockey.isAlive();
+        }
+
+        @Override
+        public void start() {
+            super.start();
+        }
+
+        @Override
+        public void stop() {
+            this.jockey.getNavigation().stop();
+            super.stop();
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            this.jockey.followingPlayer = this.jockey.level.getNearestPlayer(TARGETING, this.jockey);
+            if (this.jockey.followingPlayer == null) return;
+            if (this.jockey.distanceToSqr(this.jockey.followingPlayer) < distance) {
+                this.jockey.getNavigation().stop();
+            } else {
+                this.jockey.getNavigation().moveTo(this.jockey.followingPlayer, speed);
+            }
+        }
+    }
+
+    public static class MountFollowPlayerGoal extends Goal{
+
+        public Jockey jockey;
+        public double distance;
+        public float speed;
+        public MobEntity mount;
+
+
+        public MountFollowPlayerGoal(Jockey jockey, double distance, float speed) {
+            this.jockey = jockey;
+            this.distance = distance;
+            this.speed = speed;
+        }
+
+        @Override
+        public boolean canUse() {
+            return isRiding(jockey);
+        }
+
+        @Override
+        public void start() {
+            mount = (MobEntity) jockey.getVehicle();
+            super.start();
+        }
+
+        @Override
+        public void stop() {
+            this.jockey.getNavigation().stop();
+            super.stop();
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            this.jockey.followingPlayer = this.jockey.level.getNearestPlayer(TARGETING, this.jockey);
+            if (this.jockey.followingPlayer == null) return;
+            if (this.mount.distanceToSqr(this.jockey.followingPlayer) < distance) {
+                this.mount.getNavigation().stop();
+            } else {
+                this.mount.getNavigation().moveTo(this.jockey.followingPlayer, speed);
+            }
+        }
     }
 }
