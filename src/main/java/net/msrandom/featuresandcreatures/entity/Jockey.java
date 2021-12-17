@@ -371,10 +371,11 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         if (this.distanceToSqr(this.followingPlayer) < 12D) {
             this.getNavigation().stop();
         } else {
-            this.getNavigation().moveTo(this.followingPlayer, 1);
+            this.getNavigation().moveTo(this.followingPlayer, 0.4);
         }
         if (isRiding(this)) {
-            this.getVehicle().isAlliedTo(followingPlayer);
+            if (this.getVehicle() instanceof MobEntity)
+            ((MobEntity) this.getVehicle()).setTarget(null);
         }
     }
 
