@@ -87,10 +87,8 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
                 if (!isCharging && charge > 0) {
                     NetworkHandler.SIMPLE_CHANNEL.sendToServer(new AntlerHeaddressChargePacket(charge));
                     handleCharge(player, charge);
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_ATTACK_STRONG, SoundCategory.AMBIENT, 30, 1, false);
                     charge = 0;
                 }
-
                 data.putInt(CURRENT_CHARGE, charge);
             }
         } else if (data.getBoolean(IS_DAMAGING)) {

@@ -364,7 +364,6 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 setAttackTimer(10);
             }
         }
-        System.out.println(getAttackTimer());
     }
 
     @Override
