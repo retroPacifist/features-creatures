@@ -14,6 +14,7 @@ import static net.msrandom.featuresandcreatures.FeaturesAndCreatures.createResou
 public final class BoarEntityModel extends AbstractMountModel<Boar> {
     private static final ResourceLocation MODEL = createResourceLocation("geo/boar.geo.json");
     private static final ResourceLocation SADDLED_TEXTURE = createResourceLocation("textures/entity/boar_saddle.png");
+    private static final ResourceLocation SADDLED_ANGRY_TEXTURE = createResourceLocation("textures/entity/boar_saddle_angry.png");
     private static final ResourceLocation ANGRY_TEXTURE = createResourceLocation("textures/entity/boar_angry.png");
     private static final ResourceLocation TEXTURE = createResourceLocation("textures/entity/boar.png");
     private static final ResourceLocation ANIMATION = createResourceLocation("animations/boar.animation.json");
@@ -34,7 +35,7 @@ public final class BoarEntityModel extends AbstractMountModel<Boar> {
 
     @Override
     public @NotNull ResourceLocation getSaddledTexture(Boar boarEntity) {
-        return SADDLED_TEXTURE;
+        return boarEntity.isAngry() ? SADDLED_ANGRY_TEXTURE : SADDLED_TEXTURE;
     }
 
     @Override
