@@ -14,7 +14,9 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -85,7 +87,7 @@ public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity i
                 ItemStack itemStack = playerEntity.getItemInHand(hand);
                 if (itemStack.getItem() == Items.SADDLE) {
                     return sidedOperation(() -> {
-                        playSaddledSound();
+                        playSaddledSound(getSoundsProvider().saddled);
                         setSaddled(true);
                         if (!playerEntity.abilities.instabuild) {
                             itemStack.shrink(1);
@@ -94,7 +96,7 @@ public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity i
                 }
             } else if (playerEntity.isCrouching()) {
                 return sidedOperation(() -> {
-                    playSaddledSound();
+                    playSaddledSound(FnCSounds.ENTITY_DESADDLE);
                     ItemStack itemStack1 = new ItemStack(Items.SADDLE);
                     if (!playerEntity.inventory.add(itemStack1)) {
                         playerEntity.drop(itemStack1, false);
@@ -106,8 +108,8 @@ public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity i
         return super.mobInteract(playerEntity, hand);
     }
 
-    protected void playSaddledSound() {
-        level.playSound(null, getX(), getY() + getDimensions(getPose()).height / 3.0D, getZ(), getSoundsProvider().saddled, getSoundSource(), 1, 1);
+    protected void playSaddledSound(SoundEvent soundEvent) {
+        level.playSound(null, getX(), getY() + getDimensions(getPose()).height / 3.0D, getZ(), soundEvent, getSoundSource(), 1, 1);
     }
 
     protected ActionResultType sidedOperation(Runnable runnable) {
