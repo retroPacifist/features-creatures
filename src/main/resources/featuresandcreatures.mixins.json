@@ -4,8 +4,10 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "featuresandcreatures.refmap.json",
   "client": [
+    "access.FirstPersonRendererAccess",
     "client.ItemRendererMixin",
-    "client.MixinClientWorldInfo"
+    "client.MixinClientWorldInfo",
+    "client.MixinFirstPersonRenderer"
   ],
   "minVersion": "0.8",
   "mixins": [
