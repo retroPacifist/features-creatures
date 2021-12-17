@@ -18,12 +18,13 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(FirstPersonRenderer.class)
 public abstract class MixinFirstPersonRenderer {
 
-    @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", ordinal = 0, shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void renderDowsingRod(AbstractClientPlayerEntity p_228405_1_, float arg1, float arg2, Hand p_228405_4_, float arg3, ItemStack itemStack, float arg4, MatrixStack stack, IRenderTypeBuffer renderTypeBuffer, int i, CallbackInfo ci, boolean flag, HandSide handside) {
-        if (itemStack.getItem() == FnCItems.DOWSING_ROD) {
-            DowsingRodItem.renderInHand(stack, renderTypeBuffer, i, arg2, arg4, arg3, (FirstPersonRenderer) (Object) this);
+    @Inject(method = "renderArmWithItem", at = @At("HEAD"), cancellable = true)
+    private void renderDowsingRod(AbstractClientPlayerEntity player, float partialTicks, float pitch, Hand hand, float attackAnimation, ItemStack itemStack, float handHeight, MatrixStack poseStack, IRenderTypeBuffer bufferProvider, int packedLight, CallbackInfo ci) {
+        if (player.getMainHandItem().getItem() == FnCItems.DOWSING_ROD || player.getOffhandItem().getItem() == FnCItems.DOWSING_ROD) {
+            if (itemStack.getItem() == FnCItems.DOWSING_ROD) {
+                DowsingRodItem.renderInHand(player, itemStack, poseStack, hand, bufferProvider, packedLight, pitch, handHeight, attackAnimation, (FirstPersonRenderer) (Object) this);
+            }
             ci.cancel();
-            stack.popPose();
         }
     }
 }

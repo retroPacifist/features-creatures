@@ -111,7 +111,7 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
                     if (charge > Math.round(getMaxCharge() * 0.37f)) {
                         victim.knockback(0.3F, -pushDirection.x * 1.5, -pushDirection.z * 1.5);
                     }
-                    world.playSound(null, victim.blockPosition(), FnCSounds.ANTLER_HEADDRESS_ATTACK_STRONG, player.getSoundSource(), 1f, 1f);
+                    world.playSound(null, victim.blockPosition(), FnCSounds.ANTLER_HEADDRESS_ATTACK_STRONG, player.getSoundSource(), (float) (player.getDeltaMovement().length() * 3), 1f);
                 }
             }
             if (--damageTimer <= 0) {
