@@ -370,7 +370,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         }
         if (isRiding(this)) {
             if (this.getVehicle() instanceof MobEntity)
-            ((MobEntity) this.getVehicle()).setTarget(null);
+            ((MobEntity) this.getVehicle()).setTarget(this.getTarget());
         }
     }
 
