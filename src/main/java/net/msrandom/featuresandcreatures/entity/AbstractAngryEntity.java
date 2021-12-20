@@ -1,23 +1,19 @@
 package net.msrandom.featuresandcreatures.entity;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.TimeUtil;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
-import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.*;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -25,16 +21,16 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class AbstractAngryEntity extends Animal implements NeutralMob, IAnimatable {
+public abstract class AbstractAngryEntity extends AnimalEntity implements IAngerable, IAnimatable {
 
-    private static final DataParameter<Boolean> SADDLED = SynchedEntityData.defineId(AbstractAngryEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> DATA_STANDING_ID = SynchedEntityData.defineId(AbstractAngryEntity.class, DataSerializers.BOOLEAN);
-    private static final RangedInteger PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
+    private static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(AbstractAngryEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DATA_STANDING_ID = EntityDataManager.defineId(AbstractAngryEntity.class, DataSerializers.BOOLEAN);
+    private static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
     private int warningSoundTicks;
     private int remainingPersistentAngerTime;
     private UUID persistentAngerTarget;
 
-    protected AbstractAngryEntity(EntityType<? extends AbstractAngryEntity> type, Level world) {
+    protected AbstractAngryEntity(EntityType<? extends AbstractAngryEntity> type, World world) {
         super(type, world);
     }
 
@@ -45,13 +41,12 @@ public class AbstractAngryEntity extends Animal implements NeutralMob, IAnimatab
         this.goalSelector.addGoal(1, new AttackGoal());
         this.goalSelector.addGoal(2, new PanicGoal(this, 1.32D));
         this.goalSelector.addGoal(3, new FollowParentGoal(this, 1.25D));
-        this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, new CallForHelpGoal());
+        this.goalSelector.addGoal(4, new RandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
         this.targetSelector.addGoal(2, new AbstractAngryEntity.AttackPlayerGoal());
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
-        this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
+        this.targetSelector.addGoal(5, new ResetAngerGoal<>(this, false));
     }
 
     @Override
@@ -65,34 +60,36 @@ public class AbstractAngryEntity extends Animal implements NeutralMob, IAnimatab
         this.entityData.define(SADDLED, false);
     }
 
-    public void readAdditionalSaveData(CompoundTag nbt) {
+    public void readAdditionalSaveData(CompoundNBT nbt) {
         super.readAdditionalSaveData(nbt);
         if (!level.isClientSide) {
-            this.readPersistentAngerSaveData(this.level, nbt);
+            this.readPersistentAngerSaveData((ServerWorld) this.level, nbt);
             this.setSaddled(nbt.getBoolean("Saddled"));
 
         }
     }
 
     @Override
-    public ActionResultType mobInteract(Player player, InteractionHand hand) {
+    public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
         super.mobInteract(player, hand);
         if (player.isHolding(Items.SADDLE) && !this.isBaby()) {
             this.setSaddled(true);
             if (!player.isCreative()) {
-                player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.PIG_SADDLE, SoundSource.AMBIENT, 1, 1);
+                player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), getSaddleSound(), SoundCategory.AMBIENT, 1, 1);
                 player.getItemInHand(hand).shrink(1);
             }
         }
         if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()) {
             this.setSaddled(false);
             player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY() + 0.3f, this.getZ(), Items.SADDLE.getDefaultInstance()));
-            player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.AMBIENT, 1, 1);
+            player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), FnCSounds.ENTITY_DESADDLE, SoundCategory.AMBIENT, 1, 1);
         }
         return ActionResultType.SUCCESS;
     }
 
-    public void addAdditionalSaveData(CompoundTag nbt) {
+    protected abstract SoundEvent getSaddleSound();
+
+    public void addAdditionalSaveData(CompoundNBT nbt) {
         super.addAdditionalSaveData(nbt);
         this.addPersistentAngerSaveData(nbt);
         nbt.putBoolean("Saddled", this.isSaddled());
@@ -107,11 +104,9 @@ public class AbstractAngryEntity extends Animal implements NeutralMob, IAnimatab
         }
     }
 
-
-
     @Nullable
     @Override
-    public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
+    public AgeableEntity getBreedOffspring(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
         return null;
     }
 
@@ -176,9 +171,9 @@ public class AbstractAngryEntity extends Animal implements NeutralMob, IAnimatab
         this.entityData.set(SADDLED, saddled);
     }
 
-    protected class AttackPlayerGoal extends NearestAttackableTargetGoal<Player> {
+    protected class AttackPlayerGoal extends NearestAttackableTargetGoal<PlayerEntity> {
         public AttackPlayerGoal() {
-            super(AbstractAngryEntity.this, Player.class, 20, true, true, null);
+            super(AbstractAngryEntity.this, PlayerEntity.class, 20, true, true, null);
         }
 
         public boolean canUse() {
@@ -213,7 +208,7 @@ public class AbstractAngryEntity extends Animal implements NeutralMob, IAnimatab
 
         }
 
-        protected void alertOther(Mob mob, LivingEntity attacker) {
+        protected void alertOther(MobEntity mob, LivingEntity attacker) {
             if (mob instanceof AbstractAngryEntity && !mob.isBaby()) {
                 super.alertOther(mob, attacker);
             }

@@ -1,40 +1,38 @@
 package net.msrandom.featuresandcreatures.entity;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCItems;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class Spear extends AbstractArrow {
+public class Spear extends AbstractArrowEntity {
     private boolean dealtDamage;
-    private ItemStack thrownStack = new ItemStack(FnCItems.SPEAR.get());
+    private ItemStack thrownStack = new ItemStack(FnCItems.SPEAR);
 
-    public Spear(EntityType<? extends Arrow> type, Level worldIn) {
+    public Spear(EntityType<? extends AbstractArrowEntity> type, World worldIn) {
         super(type, worldIn);
     }
 
-    public Spear(Level worldIn, LivingEntity thrower, ItemStack stack) {
-        super(FnCEntities.SPEAR.get(), thrower, worldIn);
+    public Spear(World worldIn, LivingEntity thrower, ItemStack stack) {
+        super(FnCEntities.SPEAR, thrower, worldIn);
         this.thrownStack = stack.copy();
-
     }
 
     protected ItemStack getPickupItem() {
@@ -42,18 +40,18 @@ public class Spear extends AbstractArrow {
     }
 
     @Nullable
-    protected EntityHitResult findHitEntity(Vec3 startVec, Vec3 endVec) {
+    protected EntityRayTraceResult findHitEntity(Vector3d startVec, Vector3d endVec) {
         return this.dealtDamage ? null : super.findHitEntity(startVec, endVec);
     }
 
     @Override
     @Nonnull
-    public Packet<?> getAddEntityPacket() {
+    public IPacket getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult result) {
+    protected void onHitEntity(EntityRayTraceResult result) {
         Entity entity = result.getEntity();
         float f = 12.0F;
         if (entity instanceof LivingEntity) {
@@ -64,7 +62,7 @@ public class Spear extends AbstractArrow {
         Entity entity1 = this.getOwner();
         DamageSource damagesource = DamageSource.trident(this, (Entity) (entity1 == null ? this : entity1));
         this.dealtDamage = true;
-        SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
+        SoundEvent soundevent = FnCSounds.SPEAR_ATTACK;
         if (entity.hurt(damagesource, f)) {
             if (entity.getType() == EntityType.ENDERMAN) {
                 return;
@@ -84,14 +82,13 @@ public class Spear extends AbstractArrow {
         this.playSound(soundevent, 1.0F, 1.0F);
     }
 
-    public void playerTouch(Player player) {
+    public void playerTouch(PlayerEntity player) {
         Entity entity = this.getOwner();
         if (entity == null || entity.getUUID() == player.getUUID()) {
             super.playerTouch(player);
         }
     }
-
-    public void readAdditionalSaveData(CompoundTag p_70037_1_) {
+    public void readAdditionalSaveData(CompoundNBT p_70037_1_) {
         super.readAdditionalSaveData(p_70037_1_);
         if (p_70037_1_.contains("Spear", 10)) {
             this.thrownStack = ItemStack.of(p_70037_1_.getCompound("Spear"));
@@ -99,14 +96,14 @@ public class Spear extends AbstractArrow {
         this.dealtDamage = p_70037_1_.getBoolean("DealtDamage");
     }
 
-    public void addAdditionalSaveData(CompoundTag p_213281_1_) {
+    public void addAdditionalSaveData(CompoundNBT p_213281_1_) {
         super.addAdditionalSaveData(p_213281_1_);
-        p_213281_1_.put("Spear", this.thrownStack.save(new CompoundTag()));
+        p_213281_1_.put("Spear", this.thrownStack.save(new CompoundNBT()));
         p_213281_1_.putBoolean("DealtDamage", this.dealtDamage);
     }
 
     public void tickDespawn() {
-        if (this.pickup != AbstractArrow.Pickup.ALLOWED) {
+        if (this.pickup != AbstractArrowEntity.PickupStatus.ALLOWED) {
             super.tickDespawn();
         }
     }

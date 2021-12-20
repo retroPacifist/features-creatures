@@ -1,71 +1,59 @@
 package net.msrandom.featuresandcreatures;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
-import net.msrandom.featuresandcreatures.entity.Boar;
-import net.msrandom.featuresandcreatures.client.renderer.entity.BoarRenderer;
+import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
+import net.msrandom.featuresandcreatures.client.renderer.entity.*;
+import net.msrandom.featuresandcreatures.core.*;
 import net.msrandom.featuresandcreatures.entity.Jackalope;
-import net.msrandom.featuresandcreatures.client.renderer.entity.JackalopeRenderer;
 import net.msrandom.featuresandcreatures.entity.Jockey;
-import net.msrandom.featuresandcreatures.client.renderer.entity.JockeyRenderer;
-import net.msrandom.featuresandcreatures.entity.Sabertooth;
-import net.msrandom.featuresandcreatures.client.renderer.entity.SabertoothRenderer;
-import net.msrandom.featuresandcreatures.client.renderer.entity.SpearRenderer;
+import net.msrandom.featuresandcreatures.entity.mount.Boar;
+import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressRenderer;
-import net.msrandom.featuresandcreatures.core.FnCEntities;
-import net.msrandom.featuresandcreatures.core.FnCItems;
-import net.msrandom.featuresandcreatures.core.FnCKeybinds;
-import net.msrandom.featuresandcreatures.core.FnCTriggers;
-import net.msrandom.featuresandcreatures.network.AntlerHeaddressChargePacket;
-import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
+import net.msrandom.featuresandcreatures.network.NetworkHandler;
 import net.msrandom.featuresandcreatures.util.FnCConfig;
-import net.msrandom.featuresandcreatures.util.WorldJockeyCapability;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
+import java.util.function.Consumer;
+
 @Mod(FeaturesAndCreatures.MOD_ID)
 public class FeaturesAndCreatures {
-    private static final String NETWORK_VERSION = "1";
     public static final String MOD_ID = "featuresandcreatures";
-    public static final Logger LOGGER = LogManager.getLogger();
-    public static final SimpleChannel NETWORK_CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(MOD_ID, "network"),
-            () -> NETWORK_VERSION,
-            NETWORK_VERSION::equals,
-            NETWORK_VERSION::equals
-    );
 
     public FeaturesAndCreatures() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::commonSetup);
         bus.addListener(this::clientSetup);
         bus.addListener(this::registerAttributes);
-        FnCEntities.REGISTRAR.register(bus);
-        FnCItems.REGISTRAR.register(bus);
+        bus.addListener(this::registerModels);
+        FnCEntities.REGISTRAR.initialize();
+        FnCItems.REGISTRAR.initialize();
+        FnCSounds.REGISTRAR.initialize();
         FnCTriggers.register();
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, FnCConfig.getConfigSpec());
 
         //GeckoLib
         GeckoLib.initialize();
-
-        AntlerHeaddressChargePacket.register(0, NETWORK_CHANNEL);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        CapabilityManager.INSTANCE.register(WorldJockeyCapability.class, new WorldJockeyCapability.Storage(), () -> new WorldJockeyCapability(null));
+        NetworkHandler.init();
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
@@ -74,20 +62,40 @@ public class FeaturesAndCreatures {
     }
 
     public void registerRenderers() {
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JOCKEY.get(), JockeyRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.BOAR.get(), BoarRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JACKALOPE.get(), JackalopeRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SABERTOOTH.get(), SabertoothRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SPEAR.get(), SpearRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JOCKEY, JockeyRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.BOAR, BoarEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JACKALOPE, JackalopeRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SABERTOOTH, SabertoothRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SPEAR, SpearRenderer::new);
         GeoArmorRenderer.registerArmorRenderer(AntlerHeaddressItem.class, new AntlerHeaddressRenderer());
 
-        BuiltInGuiTextureRenderer.register(FnCItems.SPEAR.get());
+        ItemModelsProperties.register(
+                FnCItems.SPEAR,
+                new ResourceLocation(MOD_ID, "throwing"),
+                (stack, level, entity) -> entity != null && entity.getUseItem() == stack ? 1f : 0f
+        );
+    }
+
+    private void registerModels(ModelRegistryEvent event) {
+        BuiltInGuiTextureRenderer.register(FnCItems.SPEAR);
     }
 
     private void registerAttributes(EntityAttributeCreationEvent event) {
-        event.put(FnCEntities.JOCKEY.get(), Jockey.createJockeyAttributes().build());
-        event.put(FnCEntities.BOAR.get(), Boar.createAttributes().build());
-        event.put(FnCEntities.JACKALOPE.get(), Jackalope.createAttributes().build());
-        event.put(FnCEntities.SABERTOOTH.get(), Sabertooth.createAttributes().build());
+        event.put(FnCEntities.JOCKEY, Jockey.createJockeyAttributes().build());
+        event.put(FnCEntities.BOAR, Boar.createBoarAttributes().build());
+        event.put(FnCEntities.JACKALOPE, Jackalope.createAttributes().build());
+        event.put(FnCEntities.SABERTOOTH, Sabertooth.createSabertoothAttributes().build());
+    }
+
+    public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, World world, Consumer<T> consumer) {
+        T entity = entityType.create(world);
+        if (entity != null) {
+            consumer.accept(entity);
+        }
+        return entity;
+    }
+
+    public static ResourceLocation createResourceLocation(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 }

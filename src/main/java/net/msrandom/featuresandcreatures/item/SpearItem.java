@@ -2,48 +2,44 @@ package net.msrandom.featuresandcreatures.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.enchantment.IVanishable;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.UseAction;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.item.Vanishable;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.entity.Spear;
 
 import java.util.Map;
 
-public class SpearItem extends Item implements Vanishable {
-    private final Multimap<Attribute, AttributeModifier> spearAttributes;
+public class SpearItem extends Item implements IVanishable {
+    private final Multimap<Attribute, AttributeModifier> spearAttributes = ImmutableMultimap.of();
 
     public SpearItem(Properties properties) {
         super(properties);
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        this.spearAttributes = builder.build();
     }
 
-    public boolean canAttackBlock(BlockState state, Level world, BlockPos pos, Player player) {
+    public boolean canAttackBlock(BlockState state, World world, BlockPos pos, PlayerEntity player) {
         return !player.isCreative();
     }
 
-    @Override
-    public UseAnim getUseAnimation(ItemStack p_41452_) {
-        return UseAnim.SPEAR;
+    public UseAction getUseAnimation(ItemStack stack) {
+        return UseAction.SPEAR;
     }
 
     public int getUseDuration(ItemStack stack) {
@@ -62,61 +58,60 @@ public class SpearItem extends Item implements Vanishable {
         return enchantment == Enchantments.UNBREAKING || enchantment == Enchantments.FIRE_ASPECT;
     }
 
-    public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int timeLeft) {
-        if (entity instanceof Player) {
-            Player Player = (Player) entity;
+    public void releaseUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft) {
+        if (entity instanceof PlayerEntity) {
+            PlayerEntity playerentity = (PlayerEntity) entity;
             int i = this.getUseDuration(stack) - timeLeft;
             if (i >= 10) {
                 if (!world.isClientSide) {
-                    stack.hurtAndBreak(1, Player, (p_220047_1_) -> {
+                    stack.hurtAndBreak(1, playerentity, (p_220047_1_) -> {
                         p_220047_1_.broadcastBreakEvent(entity.getUsedItemHand());
                     });
-                    Spear spear = new Spear(world, Player, stack);
-                    spear.shootFromRotation(Player, Player.getXRot(), Player.getYRot(), 0.0F, 2.5F + (float) 2 * 0.5F, 1.0F);
-                    if (Player.isCreative()) {
-                        spear.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+                    Spear spear = new Spear(world, playerentity, stack);
+                    spear.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F, 2.5F + (float) 2 * 0.5F, 1.0F);
+                    if (playerentity.abilities.instabuild) {
+                        spear.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                     }
                     world.addFreshEntity(spear);
-                    world.playSound(null, spear, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    if (!Player.isCreative()) {
-                        Player.getInventory().removeItem(stack);
+                    world.playSound(null, spear, FnCSounds.SPEAR_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    if (!playerentity.abilities.instabuild) {
+                        playerentity.inventory.removeItem(stack);
                     }
                 }
             }
-            Player.awardStat(Stats.ITEM_USED.get(this));
+            playerentity.awardStat(Stats.ITEM_USED.get(this));
         }
     }
 
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         if (itemstack.getDamageValue() >= itemstack.getMaxDamage() - 1) {
-            return InteractionResultHolder.fail(itemstack);
+            return ActionResult.fail(itemstack);
         } else {
             player.startUsingItem(hand);
-            return InteractionResultHolder.consume(itemstack);
+            return ActionResult.consume(itemstack);
         }
     }
 
     public boolean hurtEnemy(ItemStack stack, LivingEntity attacker, LivingEntity entity) {
         stack.hurtAndBreak(1, entity, (player) -> {
-            player.broadcastBreakEvent(EquipmentSlot.MAINHAND);
+            player.broadcastBreakEvent(EquipmentSlotType.MAINHAND);
         });
         return true;
     }
 
-    public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity entity) {
+    public boolean mineBlock(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity entity) {
         if ((double) state.getDestroySpeed(world, pos) != 0.0D) {
             stack.hurtAndBreak(2, entity, (p_220046_0_) -> {
-                p_220046_0_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
+                p_220046_0_.broadcastBreakEvent(EquipmentSlotType.MAINHAND);
             });
         }
 
         return true;
     }
 
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
-        return slot == EquipmentSlot.MAINHAND ? this.spearAttributes : super.getDefaultAttributeModifiers(slot);
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlotType slot) {
+        return slot == EquipmentSlotType.MAINHAND ? this.spearAttributes : super.getDefaultAttributeModifiers(slot);
     }
 
     public int getEnchantmentValue() {

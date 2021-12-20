@@ -1,22 +1,34 @@
 package net.msrandom.featuresandcreatures.entity;
 
-import com.mojang.math.Vector3d;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.BreedGoal;
-import net.minecraft.world.entity.ai.goal.PanicGoal;
-import net.minecraft.world.entity.ai.goal.TemptGoal;
-import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.controller.JumpController;
+import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.Path;
+import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -24,11 +36,10 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
 
 import javax.annotation.Nullable;
 
-public class Jackalope extends Animal implements IAnimatable {
+public class Jackalope extends AnimalEntity implements IAnimatable {
 
     private static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(Jackalope.class, DataSerializers.BOOLEAN);
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT, Items.GOLDEN_CARROT);
@@ -39,7 +50,7 @@ public class Jackalope extends Animal implements IAnimatable {
     private boolean wasOnGround;
     private int jumpDelayTicks;
 
-    public Jackalope(EntityType<? extends Jackalope> type, Level world) {
+    public Jackalope(EntityType<? extends Jackalope> type, World world) {
         super(type, world);
         this.jumpControl = new JumpHelperController(this);
         this.moveControl = new MoveHelperController(this);
@@ -181,22 +192,22 @@ public class Jackalope extends Animal implements IAnimatable {
     }
 
     protected SoundEvent getJumpSound() {
-        return SoundEvents.RABBIT_JUMP;
+        return FnCSounds.JACKALOPE_STEP;
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.RABBIT_AMBIENT;
+        return FnCSounds.JACKALOPE_AMBIENT;
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource p_184601_1_) {
-        return SoundEvents.RABBIT_HURT;
+        return FnCSounds.JACKALOPE_HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.RABBIT_DEATH;
+        return FnCSounds.JACKALOPE_DEATH;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -217,9 +228,9 @@ public class Jackalope extends Animal implements IAnimatable {
 
     @Nullable
     @Override
-    public AgeableEntity getBreedOffspring(ServerLevel world, AgeableEntity entity) {
-        Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
-        jackalope.setAge(-24000);
+    public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity entity) {
+        Jackalope jackalope = FnCEntities.JACKALOPE.create(world);
+        if (jackalope != null) jackalope.setAge(-24000);
         return jackalope;
     }
 
@@ -237,14 +248,15 @@ public class Jackalope extends Animal implements IAnimatable {
         this.goalSelector.addGoal(1, new BreedGoal(this, 1.25D));
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT), false));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
     }
 
     @Override
-    public ActionResultType mobInteract(Player player, Hand hand) {
+    public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
         super.mobInteract(player, hand);
         if (player.isHolding(Items.SADDLE)) {
+            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.JACKALOPE_SADDLE, SoundCategory.AMBIENT, 1, 1);
             this.setSaddled(true);
             if (!player.isCreative()) {
                 player.getItemInHand(hand).shrink(1);
@@ -253,19 +265,19 @@ public class Jackalope extends Animal implements IAnimatable {
         if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()) {
             this.setSaddled(false);
             player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY() + 0.3f, this.getZ(), Items.SADDLE.getDefaultInstance()));
-            player.level.playSound(null, this.getX(), this.getY() + 0.3f, this.getZ(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.AMBIENT, 1, 1);
+            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.ENTITY_DESADDLE, SoundCategory.AMBIENT, 1, 1);
         }
         return ActionResultType.SUCCESS;
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundNBT) {
+    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         this.setSaddled(compoundNBT.getBoolean("Saddled"));
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundNBT) {
+    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
         compoundNBT.putBoolean("Saddled", this.isSaddled());
     }

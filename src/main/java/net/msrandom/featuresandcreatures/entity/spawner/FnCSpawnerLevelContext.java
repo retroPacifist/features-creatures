@@ -1,13 +1,16 @@
 package net.msrandom.featuresandcreatures.entity.spawner;
 
+import javax.annotation.Nullable;
+
 public interface FnCSpawnerLevelContext {
 
-    default void setJockeySpawnCoolDown(long spawnDelay) {
 
+    @Nullable
+    default JockeySpawner.Context jockeyContext() {
+        return null;
     }
 
-    default long getJockeySpawnCoolDown() {
-        return 0;
+    default void setJockeyContext(JockeySpawner.Context context) {
+        throw new UnsupportedOperationException();
     }
-
 }

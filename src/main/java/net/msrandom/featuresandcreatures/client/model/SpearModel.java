@@ -21,15 +21,8 @@ public class SpearModel extends Model {
 		pole.texOffs(4, 0).addBox(-2.5F, -9.0F, 0.0F, 5.0F, 9.0F, 0.0F, 0.0F, false);
 	}
 
-
 	@Override
 	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
 		pole.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-	}
-
-	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.xRot = x;
-		modelRenderer.yRot = y;
-		modelRenderer.zRot = z;
 	}
 }

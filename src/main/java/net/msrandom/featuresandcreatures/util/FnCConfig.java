@@ -16,6 +16,8 @@ public final class FnCConfig {
     private static final FnCConfig INSTANCE;
 
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> jockeyEffects;
+    private final ForgeConfigSpec.BooleanValue namedJockeyDespawn;
+    private final ForgeConfigSpec.DoubleValue jockeySpawnChance;
 
     static {
         final Pair<FnCConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(FnCConfig::new);
@@ -25,6 +27,8 @@ public final class FnCConfig {
 
     public FnCConfig(ForgeConfigSpec.Builder builder) {
         jockeyEffects = builder.defineListAllowEmpty(Collections.singletonList("jockeyEffectBlacklist"), Collections::emptyList, effect -> effect instanceof String && ForgeRegistries.ENTITIES.containsKey(new ResourceLocation((String) effect)));
+        jockeySpawnChance = builder.defineInRange("jockeySpawnChance", 0.5, 0, 1);
+        namedJockeyDespawn = builder.define("namedJockeyDespawn", true);
     }
 
     public Set<Potion> getJockeyEffectBlacklist() {
@@ -33,6 +37,14 @@ public final class FnCConfig {
                 .filter(ForgeRegistries.POTIONS::containsKey)
                 .map(ForgeRegistries.POTIONS::getValue)
                 .collect(Collectors.toSet());
+    }
+
+    public double getJockeySpawnChance() {
+        return jockeySpawnChance.get();
+    }
+
+    public boolean namedJockeyDespawn() {
+        return namedJockeyDespawn.get();
     }
 
     public static ForgeConfigSpec getConfigSpec() {
