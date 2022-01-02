@@ -4,7 +4,7 @@ license="CC-2.0"
 issueTrackerURL="https://www.curseforge.com/minecraft/mc-mods/features-creatures/"
 [[mods]]
 modId="featuresandcreatures"
-version="0.1.0"
+version="0.1.1"
 displayName="Features & Creatures"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/features-creatures/"
 logoFile="fc_logo.png"
