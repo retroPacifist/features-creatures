@@ -628,4 +628,9 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
             }
         }
     }
+
+    @Override
+    public boolean canBeLeashed(PlayerEntity player) {
+        return false;
+    }
 }
