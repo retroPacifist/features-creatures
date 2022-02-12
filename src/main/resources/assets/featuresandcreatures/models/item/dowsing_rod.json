@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "featuresandcreatures:item/dowsing_rod"
+    "layer0": "featuresandcreatures:item/dowsing_rod_inactive"
   },
   "display": {
     "firstperson_righthand": {
