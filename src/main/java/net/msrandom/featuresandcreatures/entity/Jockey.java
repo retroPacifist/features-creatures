@@ -29,6 +29,8 @@ import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
+import net.msrandom.featuresandcreatures.entity.mount.AbstractAngryMountEntity;
+import net.msrandom.featuresandcreatures.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
@@ -368,9 +370,18 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 setAttackTimer(10);
             }
         }
-        if (isRiding(this)) {
-            if (this.getVehicle() instanceof MobEntity)
-            ((MobEntity) this.getVehicle()).setTarget(this.getTarget());
+        if (this.getVehicle() instanceof MobEntity)
+        {
+            MobEntity mount = ((MobEntity) this.getVehicle());
+
+            if(getTarget() != null)
+            {
+                mount.setTarget(this.getTarget());
+                if(mount instanceof IAngerable)
+                    ((IAngerable) mount).startPersistentAngerTimer();
+            }
+            else if(mount.getTarget() != null)
+                setTarget(mount.getTarget());
         }
     }
 
