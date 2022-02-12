@@ -23,6 +23,8 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
@@ -70,6 +72,7 @@ public class DowsingRodItem extends Item {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static void renderInHand(AbstractClientPlayerEntity player, ItemStack stack, MatrixStack poseStack, Hand hand, IRenderTypeBuffer bufferProvider, int packedLight, float pitch, float handHeight, float attackAnimation, FirstPersonRenderer firstPersonRenderer) {
         float f = MathHelper.sqrt(attackAnimation);
         float f1 = MathHelper.sin(attackAnimation * (float) Math.PI) * -0.2F;
