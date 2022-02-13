@@ -20,6 +20,8 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -29,8 +31,6 @@ import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
-import net.msrandom.featuresandcreatures.entity.mount.AbstractAngryMountEntity;
-import net.msrandom.featuresandcreatures.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
@@ -244,7 +244,11 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                     }
                 }
 
-                offers.add(new MerchantOffer(new ItemStack(Items.DIAMOND, price), ItemStack.EMPTY, PotionUtils.setCustomEffects(new ItemStack(item, amount), effects).setHoverName(new TranslationTextComponent(translationKey)), Integer.MAX_VALUE, 0, 1));
+                ItemStack potion = PotionUtils.setCustomEffects(new ItemStack(item, amount), effects)
+                        .setHoverName(new TranslationTextComponent(translationKey).withStyle(Style.EMPTY.withItalic(false)).withStyle(TextFormatting.YELLOW));
+                potion.getTag().putInt("CustomPotionColor", PotionUtils.getColor(effects));
+
+                offers.add(new MerchantOffer(new ItemStack(Items.DIAMOND, price), ItemStack.EMPTY, potion, Integer.MAX_VALUE, 0, 1));
             }
         }
         return offers;
@@ -435,6 +439,9 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         nbt.putBoolean("Attacking", isAttacking());
         nbt.putInt("AttackTimer", getAttackTimer());
 
+        if(offers != null)
+            nbt.put("Offers", offers.createTag());
+
     }
 
     @Override
@@ -443,6 +450,9 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         setTimeAlive(nbt.getInt("TimeAlive"));
         setAttacking(nbt.getBoolean("Attacking"));
         setAttackTimer(nbt.getInt("AttackTimer"));
+
+        if(nbt.contains("Offers"))
+            offers = new MerchantOffers(nbt.getCompound("Offers"));
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
