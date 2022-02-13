@@ -123,9 +123,14 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         return false;
     }
 
+
     @Override
     public SoundEvent getNotifyTradeSound() {
-        return null;
+        return FnCSounds.JOCKEY_YES;
+    }
+
+    protected SoundEvent getTradeUpdatedSound(boolean agrees) {
+        return agrees ? FnCSounds.JOCKEY_YES : FnCSounds.JOCKEY_NO;
     }
 
     public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
@@ -343,7 +348,13 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
-    public void notifyTradeUpdated(ItemStack p_110297_1_) {
+    public void notifyTradeUpdated(ItemStack stack)
+    {
+        if (!this.level.isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20)
+        {
+            this.ambientSoundTime = -this.getAmbientSoundInterval();
+            this.playSound(this.getTradeUpdatedSound(!stack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
+        }
     }
 
     @Override
@@ -387,6 +398,12 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
             else if(mount.getTarget() != null)
                 setTarget(mount.getTarget());
         }
+    }
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return getTarget() != null ? FnCSounds.JOCKEY_NO : FnCSounds.JOCKEY_AMBIENT;
     }
 
     @Override

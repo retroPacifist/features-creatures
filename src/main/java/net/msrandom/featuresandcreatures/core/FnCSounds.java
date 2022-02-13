@@ -18,9 +18,12 @@ public class FnCSounds {
     public static SoundEvent BOAR_SADDLE = createSound("entity.boar.saddle");
     public static SoundEvent BOAR_STEP = createSound("entity.boar.step");
 
+    public static SoundEvent JOCKEY_AMBIENT = createSound("entity.jockey.ambient");
     public static SoundEvent JOCKEY_HURT = createSound("entity.jockey.hurt");
     public static SoundEvent JOCKEY_DEATH = createSound("entity.jockey.death");
     public static SoundEvent JOCKEY_ATTACK = createSound("entity.jockey.attack");
+    public static SoundEvent JOCKEY_YES = createSound("entity.jockey.yes");
+    public static SoundEvent JOCKEY_NO = createSound("entity.jockey.no");
 
     public static SoundEvent JACKALOPE_HURT = createSound("entity.jackalope.hurt");
     public static SoundEvent JACKALOPE_AMBIENT = createSound("entity.jackalope.ambient");

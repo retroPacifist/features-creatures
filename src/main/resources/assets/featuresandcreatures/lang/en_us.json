@@ -34,6 +34,8 @@
   "subtitles.entity.jockey.dies": "Jockey dies",
   "subtitles.entity.jockey.attack": "Jockey throws potion",
   "subtitles.entity.jockey.trade": "Jockey trades",
+  "subtitles.entity.jockey.yes": "Jockey agrees",
+  "subtitles.entity.jockey.no": "Jockey disagrees",
   "subtitles.entity.sabertooth.hurts": "Sabertooth hurts",
   "subtitles.entity.sabertooth.ambient": "Sabertooth yowls",
   "subtitles.entity.sabertooth.dies": "Sabertooth dies",
