@@ -43,7 +43,7 @@ public class DowsingRodItem extends Item {
         if(FMLEnvironment.dist == Dist.CLIENT)
             ItemModelsProperties.register(this, new ResourceLocation(FeaturesAndCreatures.MOD_ID, "dowsing"), ((stack, level, entity) ->
             {
-                if(level == null || level.getLevelData() == null)
+                if(entity == null || level == null || level.getLevelData() == null)
                     return 0;
 
                 JockeySpawner.Context context = ((FnCSpawnerLevelContext) level.getLevelData()).jockeyContext();
