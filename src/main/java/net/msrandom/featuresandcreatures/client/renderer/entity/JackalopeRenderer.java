@@ -31,6 +31,10 @@ public class JackalopeRenderer extends GeoEntityRenderer<Jackalope> {
         } else {
             shadowRadius = 0.8f;
         }
+
+        if(entity.getLeashHolder() != null)
+            AbstractMountRenderer.renderLeash(entity, partialTicks, stack, bufferIn, entity.getLeashHolder());
+
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
 }

@@ -30,6 +30,10 @@ public class SabertoothRenderer extends GeoEntityRenderer<Sabertooth> {
             stack.scale(0.5f, 0.5f, 0.5f);
             shadowRadius *= 2;
         }
+
+        if(entity.getLeashHolder() != null)
+            AbstractMountRenderer.renderLeash(entity, partialTicks, stack, bufferIn, entity.getLeashHolder());
+
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
 }

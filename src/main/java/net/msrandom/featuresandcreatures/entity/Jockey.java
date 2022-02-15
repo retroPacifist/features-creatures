@@ -20,6 +20,8 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -121,9 +123,14 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         return false;
     }
 
+
     @Override
     public SoundEvent getNotifyTradeSound() {
-        return null;
+        return FnCSounds.JOCKEY_YES;
+    }
+
+    protected SoundEvent getTradeUpdatedSound(boolean agrees) {
+        return agrees ? FnCSounds.JOCKEY_YES : FnCSounds.JOCKEY_NO;
     }
 
     public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
@@ -242,7 +249,11 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                     }
                 }
 
-                offers.add(new MerchantOffer(new ItemStack(Items.DIAMOND, price), ItemStack.EMPTY, PotionUtils.setCustomEffects(new ItemStack(item, amount), effects).setHoverName(new TranslationTextComponent(translationKey)), Integer.MAX_VALUE, 0, 1));
+                ItemStack potion = PotionUtils.setCustomEffects(new ItemStack(item, amount), effects)
+                        .setHoverName(new TranslationTextComponent(translationKey).withStyle(Style.EMPTY.withItalic(false)).withStyle(TextFormatting.YELLOW));
+                potion.getTag().putInt("CustomPotionColor", PotionUtils.getColor(effects));
+
+                offers.add(new MerchantOffer(new ItemStack(Items.DIAMOND, price), ItemStack.EMPTY, potion, Integer.MAX_VALUE, 0, 1));
             }
         }
         return offers;
@@ -337,7 +348,13 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
-    public void notifyTradeUpdated(ItemStack p_110297_1_) {
+    public void notifyTradeUpdated(ItemStack stack)
+    {
+        if (!this.level.isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20)
+        {
+            this.ambientSoundTime = -this.getAmbientSoundInterval();
+            this.playSound(this.getTradeUpdatedSound(!stack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
+        }
     }
 
     @Override
@@ -368,10 +385,25 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 setAttackTimer(10);
             }
         }
-        if (isRiding(this)) {
-            if (this.getVehicle() instanceof MobEntity)
-            ((MobEntity) this.getVehicle()).setTarget(this.getTarget());
+        if (this.getVehicle() instanceof MobEntity)
+        {
+            MobEntity mount = ((MobEntity) this.getVehicle());
+
+            if(getTarget() != null)
+            {
+                mount.setTarget(this.getTarget());
+                if(mount instanceof IAngerable)
+                    ((IAngerable) mount).startPersistentAngerTimer();
+            }
+            else if(mount.getTarget() != null)
+                setTarget(mount.getTarget());
         }
+    }
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return getTarget() != null ? FnCSounds.JOCKEY_NO : FnCSounds.JOCKEY_AMBIENT;
     }
 
     @Override
@@ -424,6 +456,9 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         nbt.putBoolean("Attacking", isAttacking());
         nbt.putInt("AttackTimer", getAttackTimer());
 
+        if(offers != null)
+            nbt.put("Offers", offers.createTag());
+
     }
 
     @Override
@@ -432,6 +467,9 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         setTimeAlive(nbt.getInt("TimeAlive"));
         setAttacking(nbt.getBoolean("Attacking"));
         setAttackTimer(nbt.getInt("AttackTimer"));
+
+        if(nbt.contains("Offers"))
+            offers = new MerchantOffers(nbt.getCompound("Offers"));
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -616,5 +654,10 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                 this.mount.getNavigation().moveTo(this.jockey.followingPlayer, speed);
             }
         }
+    }
+
+    @Override
+    public boolean canBeLeashed(PlayerEntity player) {
+        return false;
     }
 }

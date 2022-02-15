@@ -5,6 +5,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -61,6 +63,7 @@ public class FeaturesAndCreatures {
         FnCKeybinds.register();
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void registerRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JOCKEY, JockeyRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FnCEntities.BOAR, BoarEntityRenderer::new);

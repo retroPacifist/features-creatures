@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
@@ -23,6 +24,10 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.loading.FMLCommonLaunchHandler;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
@@ -31,8 +36,43 @@ import net.msrandom.featuresandcreatures.mixin.access.FirstPersonRendererAccess;
 import org.lwjgl.opengl.GL11;
 
 public class DowsingRodItem extends Item {
-    public DowsingRodItem(Properties settings) {
+    public DowsingRodItem(Properties settings)
+    {
         super(settings);
+
+        if(FMLEnvironment.dist == Dist.CLIENT)
+            ItemModelsProperties.register(this, new ResourceLocation(FeaturesAndCreatures.MOD_ID, "dowsing"), ((stack, level, entity) ->
+            {
+                if(entity == null || level == null || level.getLevelData() == null)
+                    return 0;
+
+                JockeySpawner.Context context = ((FnCSpawnerLevelContext) level.getLevelData()).jockeyContext();
+                if(context != null)
+                {
+                    BlockPos pos = context.getPos();
+                    if (pos != null)
+                    {
+                        float pitch = (float) Math.toRadians(entity.xRot);
+                        float yaw = (float) Math.toRadians(-entity.yRot);
+                        float horizontalFactor = MathHelper.cos(pitch);
+
+                        Vector3d playerForward = new Vector3d(
+                                MathHelper.sin(yaw) * horizontalFactor,
+                                /*-MathHelper.sin(pitch)*/0, //ignore y
+                                MathHelper.cos(yaw) * horizontalFactor
+                        );
+
+                        Vector3d playerToJockey = new Vector3d(
+                                pos.getX() + 0.5 - entity.getX(),
+                                /*playerForward.y*/0, //ignore y
+                                pos.getZ() + 0.5 - entity.getZ()
+                        );
+
+                        return 180f - (float) Math.toDegrees(Math.acos(playerForward.dot(playerToJockey) / (playerForward.length() * playerToJockey.length())));
+                    }
+                }
+                return 0;
+            }));
     }
 
     @Override
@@ -70,6 +110,7 @@ public class DowsingRodItem extends Item {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static void renderInHand(AbstractClientPlayerEntity player, ItemStack stack, MatrixStack poseStack, Hand hand, IRenderTypeBuffer bufferProvider, int packedLight, float pitch, float handHeight, float attackAnimation, FirstPersonRenderer firstPersonRenderer) {
         float f = MathHelper.sqrt(attackAnimation);
         float f1 = MathHelper.sin(attackAnimation * (float) Math.PI) * -0.2F;

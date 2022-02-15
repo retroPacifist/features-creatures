@@ -34,6 +34,8 @@
   "subtitles.entity.jockey.dies": "Jockey dies",
   "subtitles.entity.jockey.attack": "Jockey throws potion",
   "subtitles.entity.jockey.trade": "Jockey trades",
+  "subtitles.entity.jockey.yes": "Jockey agrees",
+  "subtitles.entity.jockey.no": "Jockey disagrees",
   "subtitles.entity.sabertooth.hurts": "Sabertooth hurts",
   "subtitles.entity.sabertooth.ambient": "Sabertooth yowls",
   "subtitles.entity.sabertooth.dies": "Sabertooth dies",
@@ -45,7 +47,6 @@
   "subtitles.entity.antler_headdress.charging": "Player charges",
   "subtitles.entity.antler_headdress.finished_charging": "Player finishes charging",
   "subtitles.entity.antler_headdress.hit_strong": "Player charges forward",
-  "subtitles.item.dowsing_rod.locates": "Dowsing rod pings",
   "advancementRoot.description": "A world of creatures big and small.",
   "advancements.adventure.throw_trident.description": "Throw a throwable weapon at something.\nNote: Throwing away your only weapon is not a good idea."
 }

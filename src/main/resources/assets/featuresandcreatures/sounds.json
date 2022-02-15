@@ -45,19 +45,25 @@
     ],
     "subtitle": "subtitles.entity.boar.steps"
   },
+  "entity.jockey.ambient": {
+    "sounds": [
+      "featuresandcreatures:mob/jockey/eep1",
+      "featuresandcreatures:mob/jockey/eep2",
+      "featuresandcreatures:mob/jockey/trill2"
+    ],
+    "subtitle": "subtitles.entity.jockey.ambient"
+  },
   "entity.jockey.hurt": {
     "sounds": [
-      "damage/hit1",
-      "damage/hit2",
-      "damage/hit3"
+      "featuresandcreatures:mob/jockey/hurt1",
+      "featuresandcreatures:mob/jockey/hurt2"
     ],
     "subtitle": "subtitles.entity.jockey.hurts"
   },
   "entity.jockey.death": {
     "sounds": [
-      "damage/hit1",
-      "damage/hit2",
-      "damage/hit3"
+      "featuresandcreatures:mob/jockey/die1",
+      "featuresandcreatures:mob/jockey/die1"
     ],
     "subtitle": "subtitles.entity.jockey.dies"
   },
@@ -66,6 +72,19 @@
       "random/bow"
     ],
     "subtitle": "subtitles.entity.jockey.attack"
+  },
+  "entity.jockey.yes": {
+    "sounds": [
+      "featuresandcreatures:mob/jockey/trill1"
+    ],
+    "subtitle": "subtitles.entity.jockey.yes"
+  },
+  "entity.jockey.no": {
+    "sounds": [
+      "featuresandcreatures:mob/jockey/frustrated1",
+      "featuresandcreatures:mob/jockey/frustrated2"
+    ],
+    "subtitle": "subtitles.entity.jockey.no"
   },
   "entity.jackalope.hurt": {
     "sounds": [
@@ -201,11 +220,5 @@
       "entity/itemframe/remove_item4"
     ],
     "subtitle": "subtitles.entity.featuresandcreatures.desaddle"
-  },
-  "item.dowsing_rod.locates": {
-    "sounds": [
-      "note/pling"
-    ],
-    "subtitle": "subtitles.item.dowsing_rod.locates"
   }
 }

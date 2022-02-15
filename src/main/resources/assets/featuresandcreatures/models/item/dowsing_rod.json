@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "featuresandcreatures:item/dowsing_rod"
+    "layer0": "featuresandcreatures:item/dowsing_rod_inactive"
   },
   "display": {
     "firstperson_righthand": {
@@ -10,5 +10,19 @@
     "firstperson_lefthand": {
       "translation": [0, 0, -3.5]
     }
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "featuresandcreatures:dowsing": 112.5
+      },
+      "model": "featuresandcreatures:item/dowsing_rod_semi_active"
+    },
+    {
+      "predicate": {
+        "featuresandcreatures:dowsing": 170
+      },
+      "model": "featuresandcreatures:item/dowsing_rod_active"
+    }
+  ]
 }

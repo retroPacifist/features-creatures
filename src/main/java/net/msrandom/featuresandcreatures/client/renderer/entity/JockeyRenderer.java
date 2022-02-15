@@ -19,7 +19,7 @@ public class JockeyRenderer extends GeoEntityRenderer<Jockey> {
 
     public JockeyRenderer(EntityRendererManager dispatcher) {
         super(dispatcher, new JockeyModel());
-        this.shadowRadius = 0.5f;
+        this.shadowRadius = 0.35f;
     }
 
     @Override

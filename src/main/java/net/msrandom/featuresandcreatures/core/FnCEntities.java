@@ -16,7 +16,7 @@ import net.msrandom.featuresandcreatures.util.FnCRegistrar;
 public class FnCEntities {
     public static final FnCRegistrar<EntityType<?>> REGISTRAR = new FnCRegistrar<>(ForgeRegistries.ENTITIES);
 
-    public static final EntityType<Jockey> JOCKEY = createMobEntity("jockey", EntityType.Builder.of(Jockey::new, EntityClassification.CREATURE).sized(0.25f, 1f), 0xDBA5FF, 0x564237);
+    public static final EntityType<Jockey> JOCKEY = createMobEntity("jockey", EntityType.Builder.of(Jockey::new, EntityClassification.CREATURE).sized(0.35f, 1f), 0xDBA5FF, 0x564237);
     public static final EntityType<Boar> BOAR = createMobEntity("boar", EntityType.Builder.of(Boar::new, EntityClassification.CREATURE).sized(0.9F, 0.9F), 0x705F44, 0xFFF05A);
     public static final EntityType<Jackalope> JACKALOPE = createMobEntity("jackalope", EntityType.Builder.of(Jackalope::new, EntityClassification.CREATURE).sized(1F, 0.8F), 0xB3A98D, 0x444444);
     public static final EntityType<Sabertooth> SABERTOOTH = createMobEntity("sabertooth", EntityType.Builder.of(Sabertooth::new, EntityClassification.CREATURE).sized(1.2F, 1.3F), 0xC59125, 0xEEA2C4);
