@@ -1,7 +1,7 @@
 package net.msrandom.featuresandcreatures.util;
 
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
@@ -31,11 +31,11 @@ public final class FnCConfig {
         namedJockeyDespawn = builder.define("namedJockeyDespawn", true);
     }
 
-    public Set<Potion> getJockeyEffectBlacklist() {
+    public Set<MobEffect> getJockeyEffectBlacklist() {
         return jockeyEffects.get().stream()
                 .map(ResourceLocation::new)
-                .filter(ForgeRegistries.POTIONS::containsKey)
-                .map(ForgeRegistries.POTIONS::getValue)
+                .filter(ForgeRegistries.MOB_EFFECTS::containsKey)
+                .map(ForgeRegistries.MOB_EFFECTS::getValue)
                 .collect(Collectors.toSet());
     }
 

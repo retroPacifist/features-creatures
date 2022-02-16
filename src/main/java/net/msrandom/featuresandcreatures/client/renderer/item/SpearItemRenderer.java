@@ -1,19 +1,25 @@
 package net.msrandom.featuresandcreatures.client.renderer.item;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.item.ItemStack;
 import net.msrandom.featuresandcreatures.client.renderer.entity.SpearRenderer;
 
-public class SpearItemRenderer extends ItemStackTileEntityRenderer {
+public class SpearItemRenderer extends BlockEntityWithoutLevelRenderer {
+    public SpearItemRenderer(BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_) {
+        super(p_172550_, p_172551_);
+    }
+
     @Override
-    public void renderByItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack poseStack, IRenderTypeBuffer bufferProvider, int packed, int combinedOverlay) {
+    public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource bufferProvider, int packed, int combinedOverlay) {
         poseStack.pushPose();
-        IVertexBuilder vertexBuilder = ItemRenderer.getFoilBufferDirect(bufferProvider, SpearRenderer.MODEL.renderType(SpearRenderer.TEXTURE), true, stack.hasFoil());
+        VertexConsumer vertexBuilder = ItemRenderer.getFoilBufferDirect(bufferProvider, SpearRenderer.MODEL.renderType(SpearRenderer.TEXTURE), true, stack.hasFoil());
         SpearRenderer.MODEL.renderToBuffer(poseStack, vertexBuilder, packed, combinedOverlay, 1, 1, 1, 1);
         poseStack.popPose();
     }

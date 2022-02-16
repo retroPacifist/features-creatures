@@ -1,12 +1,11 @@
 package net.msrandom.featuresandcreatures.util;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 
 import java.util.ArrayList;
 import java.util.List;

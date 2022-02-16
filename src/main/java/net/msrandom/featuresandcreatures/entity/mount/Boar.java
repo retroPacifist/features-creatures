@@ -1,40 +1,39 @@
 package net.msrandom.featuresandcreatures.entity.mount;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.PanicGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import java.util.List;
 
 import static net.msrandom.featuresandcreatures.FeaturesAndCreatures.createEntity;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public final class Boar extends AbstractAngryMountEntity implements IRideable {
-    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.defineId(Boar.class, DataSerializers.INT);
+public final class Boar extends AbstractAngryMountEntity implements ItemSteerable {
+    private static final EntityDataAccessor<Integer> BOOST_TIME = SynchedEntityData.defineId(Boar.class, EntityDataSerializers.INT);
     private static final SoundsProvider SOUNDS_PROVIDER = SoundsProvider.create(
             FnCSounds.BOAR_AMBIENT,
             FnCSounds.BOAR_HURT,
@@ -44,17 +43,23 @@ public final class Boar extends AbstractAngryMountEntity implements IRideable {
     private static final String WALK_ANIMATION = "animation.boar.walk";
     private static final String ATTACK_ANIMATION = "animation.boar.attack";
 
-    private final BoostHelper boostHelper = new BoostHelper(entityData, BOOST_TIME, SADDLED);
+    private final ItemBasedSteering boostHelper = new ItemBasedSteering(entityData, BOOST_TIME, SADDLED);
 
-    public Boar(EntityType<? extends Boar> entityType, World world) {
+    public Boar(EntityType<? extends Boar> entityType, Level world) {
         super(entityType, world);
     }
 
-    public static @NotNull AttributeModifierMap.MutableAttribute createBoarAttributes() {
+    public static @NotNull AttributeSupplier.Builder createBoarAttributes() {
         return createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 11.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.2D)
                 .add(Attributes.ATTACK_DAMAGE, 8.0F);
+    }
+
+    @Nullable
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob mob) {
+        return createEntity(FnCEntities.BOAR, serverWorld, boarEntity -> boarEntity.setAge(-24000));
     }
 
     @Override
@@ -64,7 +69,7 @@ public final class Boar extends AbstractAngryMountEntity implements IRideable {
     }
 
     @Override
-    public void onSyncedDataUpdated(DataParameter<?> dataParameter) {
+    public void onSyncedDataUpdated(EntityDataAccessor<?> dataParameter) {
         if (BOOST_TIME.equals(dataParameter)) {
             boostHelper.onSynced();
         }
@@ -78,19 +83,19 @@ public final class Boar extends AbstractAngryMountEntity implements IRideable {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void readAdditionalSaveData(CompoundTag compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         setBoostTime(compoundNBT.getInt("BoostTime"));
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void addAdditionalSaveData(CompoundTag compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
         compoundNBT.putInt("BoostTime", getBoostTime());
     }
 
     @Override
-    public ActionResultType mobInteract(PlayerEntity playerEntity, Hand hand) {
+    public InteractionResult mobInteract(Player playerEntity, InteractionHand hand) {
         if (!playerEntity.isCrouching() && !isFood(playerEntity.getItemInHand(hand)) && isSaddled() && !isVehicle() && !playerEntity.isSecondaryUseActive()) {
             return sidedOperation(() -> playerEntity.startRiding(this));
         }
@@ -123,11 +128,6 @@ public final class Boar extends AbstractAngryMountEntity implements IRideable {
     }
 
     @Override
-    public @Nullable AgeableEntity getBreedOffspring(ServerWorld serverWorld, AgeableEntity entity) {
-        return createEntity(FnCEntities.BOAR, serverWorld, boarEntity -> boarEntity.setAge(-24000));
-    }
-
-    @Override
     protected double getBreedWalkSpeed() {
         return 0.8D;
     }
@@ -135,10 +135,10 @@ public final class Boar extends AbstractAngryMountEntity implements IRideable {
     @Override
     public boolean canBeControlledByRider() {
         Entity entity = getControllingPassenger();
-        if (!(entity instanceof PlayerEntity)) {
+        if (!(entity instanceof Player)) {
             return false;
         } else {
-            PlayerEntity playerentity = (PlayerEntity) entity;
+            Player playerentity = (Player) entity;
             return playerentity.getMainHandItem().getItem() == Items.CARROT_ON_A_STICK || playerentity.getOffhandItem().getItem() == Items.CARROT_ON_A_STICK;
         }
     }
@@ -156,12 +156,12 @@ public final class Boar extends AbstractAngryMountEntity implements IRideable {
     }
 
     @Override
-    public void travel(Vector3d vector3d) {
+    public void travel(Vec3 vector3d) {
         travel(this, boostHelper, vector3d);
     }
 
     @Override
-    public void travelWithInput(Vector3d vector3d) {
+    public void travelWithInput(Vec3 vector3d) {
         super.travel(vector3d);
     }
 

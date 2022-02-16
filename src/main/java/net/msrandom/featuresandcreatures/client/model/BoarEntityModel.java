@@ -1,6 +1,6 @@
 package net.msrandom.featuresandcreatures.client.model;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.entity.mount.Boar;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;

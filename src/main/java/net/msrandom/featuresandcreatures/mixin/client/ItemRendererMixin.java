@@ -1,13 +1,14 @@
 package net.msrandom.featuresandcreatures.mixin.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.RenderProperties;
 import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,19 +17,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.renderer.entity.ItemRenderer;
+
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
     @Shadow
     @Final
-    private ItemModelMesher itemModelShaper;
+    private ItemModelShaper itemModelShaper;
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    private void render(ItemStack stack, ItemCameraTransforms.TransformType transformType, boolean leftHand, MatrixStack matrixStack, IRenderTypeBuffer vertexBuilder, int combinedLight, int combinedOverlay, IBakedModel model, CallbackInfo ci) {
+    private void render(ItemStack stack, ItemTransforms.TransformType transformType, boolean leftHand, PoseStack matrixStack, MultiBufferSource vertexBuilder, int combinedLight, int combinedOverlay, BakedModel model, CallbackInfo ci) {
         if (!stack.isEmpty()) {
             ModelResourceLocation itemModel = BuiltInGuiTextureRenderer.getItemModel(stack);
             if (itemModel != null) {
                 matrixStack.pushPose();
-                boolean gui = transformType == ItemCameraTransforms.TransformType.GUI || transformType == ItemCameraTransforms.TransformType.GROUND || transformType == ItemCameraTransforms.TransformType.FIXED;
+                boolean gui = transformType == ItemTransforms.TransformType.GUI || transformType == ItemTransforms.TransformType.GROUND || transformType == ItemTransforms.TransformType.FIXED;
                 if (gui) {
                     model = itemModelShaper.getModelManager().getModel(itemModel);
                 }
@@ -38,14 +41,14 @@ public abstract class ItemRendererMixin {
                     if (model.isLayered()) {
                         ForgeHooksClient.drawItemLayered((ItemRenderer) (Object) this, model, stack, matrixStack, vertexBuilder, combinedLight, combinedOverlay, true);
                     } else {
-                        RenderType rendertype = RenderTypeLookup.getRenderType(stack, true);
-                        IVertexBuilder ivertexbuilder;
+                        RenderType rendertype = ItemBlockRenderTypes.getRenderType(stack, true);
+                        VertexConsumer ivertexbuilder;
                         ivertexbuilder = getFoilBufferDirect(vertexBuilder, rendertype, true, stack.hasFoil());
 
                         renderModelLists(model, stack, combinedLight, combinedOverlay, matrixStack, ivertexbuilder);
                     }
                 } else {
-                    stack.getItem().getItemStackTileEntityRenderer().renderByItem(stack, transformType, matrixStack, vertexBuilder, combinedLight, combinedOverlay);
+                    RenderProperties.get(stack).getItemStackRenderer().renderByItem(stack, transformType, matrixStack, vertexBuilder, combinedLight, combinedOverlay);
                 }
 
                 matrixStack.popPose();
@@ -55,10 +58,10 @@ public abstract class ItemRendererMixin {
     }
 
     @Shadow
-    public static IVertexBuilder getFoilBufferDirect(IRenderTypeBuffer p_239391_0_, RenderType p_239391_1_, boolean p_239391_2_, boolean p_239391_3_) {
+    public static VertexConsumer getFoilBufferDirect(MultiBufferSource p_239391_0_, RenderType p_239391_1_, boolean p_239391_2_, boolean p_239391_3_) {
         return null;
     }
 
     @Shadow
-    public abstract void renderModelLists(IBakedModel p_229114_1_, ItemStack p_229114_2_, int p_229114_3_, int p_229114_4_, MatrixStack p_229114_5_, IVertexBuilder p_229114_6_);
+    public abstract void renderModelLists(BakedModel p_229114_1_, ItemStack p_229114_2_, int p_229114_3_, int p_229114_4_, PoseStack p_229114_5_, VertexConsumer p_229114_6_);
 }

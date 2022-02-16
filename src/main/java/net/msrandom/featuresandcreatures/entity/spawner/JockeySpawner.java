@@ -1,14 +1,14 @@
 package net.msrandom.featuresandcreatures.entity.spawner;
 
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.spawner.ISpecialSpawner;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.CustomSpawner;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.entity.Jockey;
 import net.msrandom.featuresandcreatures.util.FnCConfig;
@@ -16,13 +16,13 @@ import net.msrandom.featuresandcreatures.util.FnCConfig;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class JockeySpawner implements ISpecialSpawner {
+public class JockeySpawner implements CustomSpawner {
     private static final long COOLDOWN = 72000L;
     public static final int MAX_OFFSET = 10;
     private int spawnChance;
 
     @Override
-    public int tick(ServerWorld world, boolean spawnFriendlies, boolean spawnEnemies) {
+    public int tick(ServerLevel world, boolean spawnFriendlies, boolean spawnEnemies) {
         double successChance = FnCConfig.getInstance().getJockeySpawnChance();
         if (successChance <= 0) return 0;
 
@@ -41,7 +41,7 @@ public class JockeySpawner implements ISpecialSpawner {
         return 0;
     }
 
-    private int attemptSpawnJockey(ServerWorld world, Context context, double successChance) {
+    private int attemptSpawnJockey(ServerLevel world, Context context, double successChance) {
         int defaultSpawnChance = (int) (25 * successChance);
         if (spawnChance == 0) {
             spawnChance = defaultSpawnChance;
@@ -49,7 +49,7 @@ public class JockeySpawner implements ISpecialSpawner {
 
         // Increasing chance, similarly to how the wandering trader functions
         int i = spawnChance;
-        spawnChance = MathHelper.clamp(spawnChance + defaultSpawnChance, 0, 75);
+        spawnChance = Mth.clamp(spawnChance + defaultSpawnChance, 0, 75);
 
         if (world.random.nextInt(100) > i) {
             context.setJockeySpawnCooldown(COOLDOWN);
@@ -62,7 +62,7 @@ public class JockeySpawner implements ISpecialSpawner {
             return 0;
         }
 
-        ServerPlayerEntity player = world.getRandomPlayer();
+        ServerPlayer player = world.getRandomPlayer();
         if (player != null) {
             BlockPos position = player.blockPosition().offset(world.random.nextInt(MAX_OFFSET) - (MAX_OFFSET / 2), world.random.nextInt(MAX_OFFSET) - (MAX_OFFSET / 2), world.random.nextInt(MAX_OFFSET) - (MAX_OFFSET / 2));
 
@@ -86,7 +86,7 @@ public class JockeySpawner implements ISpecialSpawner {
             }
 
             jockey.moveTo(position.getX(), position.getY(), position.getZ());
-            jockey.finalizeSpawn(world, world.getCurrentDifficultyAt(position), SpawnReason.NATURAL, null, null);
+            jockey.finalizeSpawn(world, world.getCurrentDifficultyAt(position), MobSpawnType.NATURAL, null, null);
 
             if (handleMount(world, jockey) && world.addFreshEntity(jockey)) {
                 context.setUuid(jockey.getUUID());
@@ -99,8 +99,8 @@ public class JockeySpawner implements ISpecialSpawner {
         return 0;
     }
 
-    private static boolean handleMount(ServerWorld world, Jockey jockey) {
-        final MobEntity mountEntity = Jockey.getMountEntity(world, jockey);
+    private static boolean handleMount(ServerLevel world, Jockey jockey) {
+        final Mob mountEntity = Jockey.getMountEntity(world, jockey);
         if (mountEntity != null) {
             mountEntity.moveTo(jockey.position());
             jockey.startRiding(mountEntity);
@@ -117,8 +117,8 @@ public class JockeySpawner implements ISpecialSpawner {
         @Nullable
         private BlockPos pos;
 
-        public Context(CompoundNBT nbt) {
-            this(nbt.contains("uuid") ? nbt.getUUID("uuid") : null, nbt.contains("jockeySpawnCooldown") ? nbt.getLong("jockeySpawnCooldown") : COOLDOWN, nbt.contains("pos") ? NBTUtil.readBlockPos(nbt.getCompound("pos")) : null);
+        public Context(CompoundTag nbt) {
+            this(nbt.contains("uuid") ? nbt.getUUID("uuid") : null, nbt.contains("jockeySpawnCooldown") ? nbt.getLong("jockeySpawnCooldown") : COOLDOWN, nbt.contains("pos") ? NbtUtils.readBlockPos(nbt.getCompound("pos")) : null);
         }
 
         public Context(@Nullable UUID uuid, long jockeySpawnCooldown, @Nullable BlockPos pos) {
@@ -153,13 +153,13 @@ public class JockeySpawner implements ISpecialSpawner {
             this.pos = pos;
         }
 
-        public CompoundNBT toNBT() {
-            CompoundNBT compoundNBT = new CompoundNBT();
+        public CompoundTag toNBT() {
+            CompoundTag compoundNBT = new CompoundTag();
             if (uuid != null) {
                 compoundNBT.putUUID("uuid", this.uuid);
             }
             if (pos != null) {
-                compoundNBT.put("pos", NBTUtil.writeBlockPos(pos));
+                compoundNBT.put("pos", NbtUtils.writeBlockPos(pos));
             }
             compoundNBT.putLong("jockeySpawnCoolDown", this.jockeySpawnCooldown);
             return compoundNBT;

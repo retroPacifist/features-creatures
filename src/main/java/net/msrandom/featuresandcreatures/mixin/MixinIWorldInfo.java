@@ -1,9 +1,9 @@
 package net.msrandom.featuresandcreatures.mixin;
 
-import net.minecraft.world.storage.IWorldInfo;
+import net.minecraft.world.level.storage.LevelData;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin(IWorldInfo.class)
+@Mixin(LevelData.class)
 public interface MixinIWorldInfo extends FnCSpawnerLevelContext {
 }

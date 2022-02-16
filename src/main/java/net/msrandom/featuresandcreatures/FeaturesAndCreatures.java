@@ -1,21 +1,22 @@
 package net.msrandom.featuresandcreatures;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
+import net.msrandom.featuresandcreatures.client.model.SpearModel;
 import net.msrandom.featuresandcreatures.client.renderer.entity.*;
 import net.msrandom.featuresandcreatures.core.*;
 import net.msrandom.featuresandcreatures.entity.Jackalope;
@@ -42,6 +43,9 @@ public class FeaturesAndCreatures {
         bus.addListener(this::clientSetup);
         bus.addListener(this::registerAttributes);
         bus.addListener(this::registerModels);
+        bus.addListener(this::registerRenderers);
+        bus.addListener(this::registerArmor);
+        bus.addListener(this::bakeLayers);
         FnCEntities.REGISTRAR.initialize();
         FnCItems.REGISTRAR.initialize();
         FnCSounds.REGISTRAR.initialize();
@@ -57,23 +61,30 @@ public class FeaturesAndCreatures {
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
-        registerRenderers();
         FnCKeybinds.register();
     }
 
-    public void registerRenderers() {
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JOCKEY, JockeyRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.BOAR, BoarEntityRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JACKALOPE, JackalopeRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SABERTOOTH, SabertoothRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SPEAR, SpearRenderer::new);
-        GeoArmorRenderer.registerArmorRenderer(AntlerHeaddressItem.class, new AntlerHeaddressRenderer());
+    public void registerRenderers(EntityRenderersEvent.RegisterRenderers renderer) {
+        renderer.registerEntityRenderer(FnCEntities.JOCKEY, JockeyRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.BOAR, BoarEntityRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.JACKALOPE, JackalopeRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.SABERTOOTH, SabertoothRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.SPEAR, SpearRenderer::new);
 
-        ItemModelsProperties.register(
+        ItemProperties.register(
                 FnCItems.SPEAR,
                 new ResourceLocation(MOD_ID, "throwing"),
-                (stack, level, entity) -> entity != null && entity.getUseItem() == stack ? 1f : 0f
-        );
+                (stack, world, entity, level) -> {
+                    return entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
+                });
+    }
+
+    public void bakeLayers(EntityRenderersEvent.RegisterLayerDefinitions event){
+        event.registerLayerDefinition(SpearModel.LAYER_LOCATION, SpearModel::createBodyLayer);
+    }
+
+    public void registerArmor(final EntityRenderersEvent.AddLayers event){
+        GeoArmorRenderer.registerArmorRenderer(AntlerHeaddressItem.class, new AntlerHeaddressRenderer());
     }
 
     private void registerModels(ModelRegistryEvent event) {
@@ -87,7 +98,7 @@ public class FeaturesAndCreatures {
         event.put(FnCEntities.SABERTOOTH, Sabertooth.createSabertoothAttributes().build());
     }
 
-    public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, World world, Consumer<T> consumer) {
+    public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, Level world, Consumer<T> consumer) {
         T entity = entityType.create(world);
         if (entity != null) {
             consumer.accept(entity);

@@ -1,10 +1,10 @@
 package net.msrandom.featuresandcreatures.network;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 
 import java.util.List;
@@ -23,12 +23,12 @@ public class NetworkHandler {
         SIMPLE_CHANNEL.registerMessage(1, JockeyPosPacket.class, JockeyPosPacket::writeToPacket, JockeyPosPacket::readFromPacket, JockeyPosPacket::handle);
     }
 
-    public static void sendToClient(ServerPlayerEntity playerEntity, Object objectToSend) {
+    public static void sendToClient(ServerPlayer playerEntity, Object objectToSend) {
         SIMPLE_CHANNEL.sendTo(objectToSend, playerEntity.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    public static void sendToAllClients(List<ServerPlayerEntity> playerEntities, Object objectToSend) {
-        for (ServerPlayerEntity playerEntity : playerEntities) {
+    public static void sendToAllClients(List<ServerPlayer> playerEntities, Object objectToSend) {
+        for (ServerPlayer playerEntity : playerEntities) {
             SIMPLE_CHANNEL.sendTo(objectToSend, playerEntity.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
         }
     }

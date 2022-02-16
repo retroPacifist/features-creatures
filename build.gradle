@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
 
         mavenCentral()
@@ -8,13 +8,15 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = '1.18.1-0.0.2'
+version = '1.18.1-0.1.0'
 group = 'net.msrandom.featuresandcreatures'
 archivesBaseName = 'FeaturesAndCreatures'
 
@@ -25,7 +27,7 @@ mixin {
 }
 
 minecraft {
-    mappings channel: 'official', version: '1.18'
+    mappings channel: 'official', version: '1.18.1'
     runs {
         client {
             workingDirectory project.file('run')
@@ -72,16 +74,15 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
-
-    flatDir {
-        dir 'F:\\Max\\Minecraft\\Modding\\features-creatures\\libs'
-    }
 }
 
 dependencies {
     compileOnly 'org.jetbrains:annotations:23.0.0'
-    minecraft 'net.minecraftforge:forge:1.18-38.0.16'
-    implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.3')
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    minecraft 'net.minecraftforge:forge:1.18.1-39.0.59'
+    implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.9')
 }
 
 jar {

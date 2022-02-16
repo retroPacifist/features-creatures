@@ -1,21 +1,20 @@
 package net.msrandom.featuresandcreatures.entity.mount;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -30,25 +29,25 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity implements IAnimatable {
-    protected static final DataParameter<Integer> ANIMATION_TIME = EntityDataManager.defineId(AbstractMountEntity.class, DataSerializers.INT);
-    protected static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(AbstractMountEntity.class, DataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Integer> ANIMATION_TIME = SynchedEntityData.defineId(AbstractMountEntity.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Boolean> SADDLED = SynchedEntityData.defineId(AbstractMountEntity.class, EntityDataSerializers.BOOLEAN);
 
     protected final AnimationFactory animationFactory = new AnimationFactory(this);
 
-    protected AbstractMountEntity(EntityType<? extends AbstractMountEntity> entityType, World world) {
+    protected AbstractMountEntity(EntityType<? extends AbstractMountEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(0, new SwimGoal(this));
+        goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new BreedGoal(this, getBreedWalkSpeed()));
         goalSelector.addGoal(2, new FollowParentGoal(this, 1.25D));
-        goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
-        goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, getFoods()));
-        goalSelector.addGoal(4, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        goalSelector.addGoal(5, new LookRandomlyGoal(this));
+        goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        goalSelector.addGoal(4, new TemptGoal(this, 1.2D, getFoods(), false));
+        goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 6.0F));
+        goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         registerAdditionalGoals();
     }
 
@@ -62,14 +61,14 @@ public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity i
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void readAdditionalSaveData(CompoundTag compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         setAnimationTime(compoundNBT.getInt("AnimationTime"));
         setSaddled(compoundNBT.getBoolean("Saddled"));
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void addAdditionalSaveData(CompoundTag compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
         compoundNBT.putInt("AnimationTime", getAnimationTime());
         compoundNBT.putBoolean("Saddled", isSaddled());
@@ -81,7 +80,7 @@ public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity i
     }
 
     @Override
-    public ActionResultType mobInteract(PlayerEntity playerEntity, Hand hand) {
+    public InteractionResult mobInteract(Player playerEntity, InteractionHand hand) {
         if (!isBaby()) {
             if (!isSaddled()) {
                 ItemStack itemStack = playerEntity.getItemInHand(hand);
@@ -89,7 +88,7 @@ public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity i
                     return sidedOperation(() -> {
                         playSaddledSound(getSoundsProvider().saddled);
                         setSaddled(true);
-                        if (!playerEntity.abilities.instabuild) {
+                        if (!playerEntity.getAbilities().instabuild) {
                             itemStack.shrink(1);
                         }
                     });
@@ -98,7 +97,7 @@ public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity i
                 return sidedOperation(() -> {
                     playSaddledSound(FnCSounds.ENTITY_DESADDLE);
                     ItemStack itemStack1 = new ItemStack(Items.SADDLE);
-                    if (!playerEntity.inventory.add(itemStack1)) {
+                    if (!playerEntity.getInventory().add(itemStack1)) {
                         playerEntity.drop(itemStack1, false);
                     }
                     setSaddled(false);
@@ -112,12 +111,12 @@ public abstract class AbstractMountEntity extends AbstractSoundsProviderEntity i
         level.playSound(null, getX(), getY() + getDimensions(getPose()).height / 3.0D, getZ(), soundEvent, getSoundSource(), 1, 1);
     }
 
-    protected ActionResultType sidedOperation(Runnable runnable) {
+    protected InteractionResult sidedOperation(Runnable runnable) {
         if (!level.isClientSide) {
             runnable.run();
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else {
-            return ActionResultType.CONSUME;
+            return InteractionResult.CONSUME;
         }
     }
 

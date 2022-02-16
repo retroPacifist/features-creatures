@@ -1,7 +1,7 @@
 package net.msrandom.featuresandcreatures.entity.mount.goal;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.msrandom.featuresandcreatures.entity.mount.AbstractAngryMountEntity;
 import org.jetbrains.annotations.NotNull;
 

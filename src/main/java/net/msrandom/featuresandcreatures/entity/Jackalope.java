@@ -1,30 +1,34 @@
 package net.msrandom.featuresandcreatures.entity;
 
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.JumpController;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.JumpControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
@@ -39,9 +43,9 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 
-public class Jackalope extends AnimalEntity implements IAnimatable {
+public class Jackalope extends Animal implements IAnimatable {
 
-    private static final DataParameter<Boolean> SADDLED = EntityDataManager.defineId(Jackalope.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> SADDLED = SynchedEntityData.defineId(Jackalope.class, EntityDataSerializers.BOOLEAN);
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.CARROT, Items.GOLDEN_CARROT);
     private final AnimationFactory factory = new AnimationFactory(this);
 
@@ -50,20 +54,20 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     private boolean wasOnGround;
     private int jumpDelayTicks;
 
-    public Jackalope(EntityType<? extends Jackalope> type, World world) {
+    public Jackalope(EntityType<? extends Jackalope> type, Level world) {
         super(type, world);
         this.jumpControl = new JumpHelperController(this);
         this.moveControl = new MoveHelperController(this);
         this.setSpeedModifier(0.0D);
     }
 
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 10.0D).add(Attributes.MOVEMENT_SPEED, 0.7F);
+    public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 10.0D).add(Attributes.MOVEMENT_SPEED, 0.7F);
     }
     @Override
     public void setBaby(boolean p_82227_1_) {
         super.setBaby(p_82227_1_);
-        this.setBoundingBox(new AxisAlignedBB(this.blockPosition()));
+        this.setBoundingBox(new AABB(this.blockPosition()));
     }
 
 
@@ -71,7 +75,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         if (!this.horizontalCollision && (!this.moveControl.hasWanted() || !(this.moveControl.getWantedY() > this.getY() + 0.7D))) {
             Path path = this.navigation.getPath();
             if (path != null && !path.isDone()) {
-                Vector3d vector3d = path.getNextEntityPos(this);
+                Vec3 vector3d = path.getNextEntityPos(this);
                 if (vector3d.y > this.getY() + 0.6D) {
                     return 0.6F;
                 }
@@ -86,9 +90,9 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         super.jumpFromGround();
         double d0 = this.moveControl.getSpeedModifier();
         if (d0 > 0.0D) {
-            double d1 = getHorizontalDistanceSqr(this.getDeltaMovement());
+            double d1 = this.getDeltaMovement().horizontalDistanceSqr();
             if (d1 < 0.01D) {
-                this.moveRelative(0.2F, new Vector3d(0.0D, 0.0D, 1.0D));
+                this.moveRelative(0.2F, new Vec3(0.0D, 0.0D, 1.0D));
             }
         }
         if (!this.level.isClientSide) {
@@ -136,7 +140,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
             if (!controller.wantJump()) {
                 if (this.moveControl.hasWanted() && this.jumpDelayTicks == 0) {
                     Path path = this.navigation.getPath();
-                    Vector3d vector3d = new Vector3d(this.moveControl.getWantedX(), this.moveControl.getWantedY(), this.moveControl.getWantedZ());
+                    Vec3 vector3d = new Vec3(this.moveControl.getWantedX(), this.moveControl.getWantedY(), this.moveControl.getWantedZ());
                     if (path != null && !path.isDone()) {
                         vector3d = path.getNextEntityPos(this);
                     }
@@ -156,7 +160,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     }
 
     private void facePoint(double p_175533_1_, double p_175533_3_) {
-        this.yRot = (float) (MathHelper.atan2(p_175533_3_ - this.getZ(), p_175533_1_ - this.getX()) * (double) (180F / (float) Math.PI)) - 90.0F;
+        this.setYRot((float) (Mth.atan2(p_175533_3_ - this.getZ(), p_175533_1_ - this.getX()) * (double) (180F / (float) Math.PI)) - 90.0F);
     }
 
     private void enableJumpControl() {
@@ -228,7 +232,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
 
     @Nullable
     @Override
-    public AgeableEntity getBreedOffspring(ServerWorld world, AgeableEntity entity) {
+    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
         Jackalope jackalope = FnCEntities.JACKALOPE.create(world);
         if (jackalope != null) jackalope.setAge(-24000);
         return jackalope;
@@ -243,20 +247,20 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
         this.goalSelector.addGoal(1, new BreedGoal(this, 1.25D));
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT), false));
-        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
     }
 
     @Override
-    public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
         super.mobInteract(player, hand);
         if (player.isHolding(Items.SADDLE)) {
-            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.JACKALOPE_SADDLE, SoundCategory.AMBIENT, 1, 1);
+            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.JACKALOPE_SADDLE, SoundSource.AMBIENT, 1, 1);
             this.setSaddled(true);
             if (!player.isCreative()) {
                 player.getItemInHand(hand).shrink(1);
@@ -265,19 +269,19 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()) {
             this.setSaddled(false);
             player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY() + 0.3f, this.getZ(), Items.SADDLE.getDefaultInstance()));
-            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.ENTITY_DESADDLE, SoundCategory.AMBIENT, 1, 1);
+            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.ENTITY_DESADDLE, SoundSource.AMBIENT, 1, 1);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void readAdditionalSaveData(CompoundTag compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         this.setSaddled(compoundNBT.getBoolean("Saddled"));
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void addAdditionalSaveData(CompoundTag compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
         compoundNBT.putBoolean("Saddled", this.isSaddled());
     }
@@ -312,7 +316,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         this.entityData.set(SADDLED, saddled);
     }
 
-    static class MoveHelperController extends MovementController {
+    static class MoveHelperController extends MoveControl {
         private final Jackalope jack;
         private double nextJumpSpeed;
 
@@ -341,7 +345,7 @@ public class Jackalope extends AnimalEntity implements IAnimatable {
         }
     }
 
-    public class JumpHelperController extends JumpController {
+    public class JumpHelperController extends JumpControl {
         private final Jackalope jack;
         private boolean canJump;
 

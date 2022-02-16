@@ -1,22 +1,22 @@
 package net.msrandom.featuresandcreatures.entity.mount;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IAngerable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.ResetAngerGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.RangedInteger;
-import net.minecraft.util.TickRangeConverter;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.TimeUtil;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.msrandom.featuresandcreatures.entity.mount.goal.MountAttackGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,14 +31,14 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class AbstractAngryMountEntity extends AbstractMountEntity implements IAngerable {
-    protected static final DataParameter<Boolean> ATTACKING = EntityDataManager.defineId(AbstractAngryMountEntity.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Integer> REMAINING_PERSISTENT_ANGER_TIME = EntityDataManager.defineId(AbstractAngryMountEntity.class, DataSerializers.INT);
-    protected static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
+public abstract class AbstractAngryMountEntity extends AbstractMountEntity implements NeutralMob {
+    protected static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(AbstractAngryMountEntity.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Integer> REMAINING_PERSISTENT_ANGER_TIME = SynchedEntityData.defineId(AbstractAngryMountEntity.class, EntityDataSerializers.INT);
+    protected static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
     private UUID persistentAngerTarget;
 
-    protected AbstractAngryMountEntity(EntityType<? extends AbstractAngryMountEntity> entityType, World world) {
+    protected AbstractAngryMountEntity(EntityType<? extends AbstractAngryMountEntity> entityType, Level world) {
         super(entityType, world);
     }
 
@@ -46,8 +46,8 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.addGoal(1, new MountAttackGoal<>(this));
-        targetSelector.addGoal(5, new ResetAngerGoal<>(this, false));
-        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
+        targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
+        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
     }
 
     @Override
@@ -58,16 +58,16 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void readAdditionalSaveData(CompoundTag compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         if (!level.isClientSide) {
-            readPersistentAngerSaveData((ServerWorld) level, compoundNBT);
+            readPersistentAngerSaveData((ServerLevel) level, compoundNBT);
         }
         setAttacking(compoundNBT.getBoolean("Attacking"));
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void addAdditionalSaveData(CompoundTag compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
         addPersistentAngerSaveData(compoundNBT);
         compoundNBT.putBoolean("Attacking", isAttacking());
@@ -148,7 +148,7 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
 
     @Override
     public void startPersistentAngerTimer() {
-        setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.randomValue(random));
+        setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(random));
     }
 
     public boolean isAttacking() {

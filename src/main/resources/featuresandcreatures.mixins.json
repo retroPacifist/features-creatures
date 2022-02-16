@@ -13,6 +13,7 @@
   "mixins": [
     "MixinIWorldInfo",
     "SlimeSizeInvoker",
+    "access.TargetingConditionsAccess",
     "entity.MixinWolfEntity",
     "server.MixinPlayerList",
     "server.MixinServerLevel",

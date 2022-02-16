@@ -1,10 +1,10 @@
 package net.msrandom.featuresandcreatures.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 
 import java.util.function.Supplier;
@@ -17,11 +17,11 @@ public class JockeyPosPacket {
         this.jockeyPos = jockeyPos;
     }
 
-    public static void writeToPacket(JockeyPosPacket packet, PacketBuffer buf) {
+    public static void writeToPacket(JockeyPosPacket packet, FriendlyByteBuf buf) {
         buf.writeBlockPos(packet.jockeyPos);
     }
 
-    public static JockeyPosPacket readFromPacket(PacketBuffer buf) {
+    public static JockeyPosPacket readFromPacket(FriendlyByteBuf buf) {
         return new JockeyPosPacket(buf.readBlockPos());
     }
 
@@ -29,7 +29,7 @@ public class JockeyPosPacket {
         if (ctx.get().getDirection().getReceptionSide().isClient()) {
             ctx.get().enqueueWork(() -> {
                 Minecraft minecraft = Minecraft.getInstance();
-                ClientWorld world = minecraft.level;
+                ClientLevel world = minecraft.level;
                 if (world != null) {
                     ((FnCSpawnerLevelContext) world.getLevelData()).jockeyContext().setPos(message.jockeyPos);
                 } else {

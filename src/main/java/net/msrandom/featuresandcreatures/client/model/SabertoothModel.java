@@ -1,6 +1,6 @@
 package net.msrandom.featuresandcreatures.client.model;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.client.renderer.entity.SabertoothRenderer;
 import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
