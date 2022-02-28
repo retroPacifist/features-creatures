@@ -1,10 +1,10 @@
 package net.msrandom.featuresandcreatures.entity.mount;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,14 +14,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Constant wrapper for sounds. Yes could do abstract implementations, but the classes become ugly and long.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractSoundsProviderEntity extends AnimalEntity {
+public abstract class AbstractSoundsProviderEntity extends Animal {
 
-    protected AbstractSoundsProviderEntity(EntityType<? extends AbstractSoundsProviderEntity> entityType, World world) {
+    protected AbstractSoundsProviderEntity(EntityType<? extends AbstractSoundsProviderEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
-    protected @Nullable SoundEvent getAmbientSound() {
+    protected SoundEvent getAmbientSound() {
         return getSoundsProvider().ambient;
     }
 

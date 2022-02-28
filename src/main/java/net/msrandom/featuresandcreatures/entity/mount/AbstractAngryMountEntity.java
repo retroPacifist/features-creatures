@@ -8,14 +8,18 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.ResetAngerGoal;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.datasync.EntityDataAccessor;
+import net.minecraft.network.datasync.EntityDataSerializers;
+import net.minecraft.network.datasync.SynchedEntityData;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.RangedInteger;
 import net.minecraft.util.TickRangeConverter;
 import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.monster.ZombifiedPiglin;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.entity.mount.goal.MountAttackGoal;
 import org.jetbrains.annotations.NotNull;
@@ -31,14 +35,16 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class AbstractAngryMountEntity extends AbstractMountEntity implements IAngerable {
-    protected static final DataParameter<Boolean> ATTACKING = EntityDataManager.defineId(AbstractAngryMountEntity.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Integer> REMAINING_PERSISTENT_ANGER_TIME = EntityDataManager.defineId(AbstractAngryMountEntity.class, DataSerializers.INT);
+public abstract class AbstractAngryMountEntity extends AbstractMountEntity implements NeutralMob {
+    protected static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(AbstractAngryMountEntity.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Integer> REMAINING_PERSISTENT_ANGER_TIME = SynchedEntityData.defineId(AbstractAngryMountEntity.class, EntityDataSerializers.INT);
     protected static final RangedInteger PERSISTENT_ANGER_TIME = TickRangeConverter.rangeOfSeconds(20, 39);
+
+    ZombifiedPiglin
 
     private UUID persistentAngerTarget;
 
-    protected AbstractAngryMountEntity(EntityType<? extends AbstractAngryMountEntity> entityType, World world) {
+    protected AbstractAngryMountEntity(EntityType<? extends AbstractAngryMountEntity> entityType, Level world) {
         super(entityType, world);
     }
 
@@ -58,7 +64,7 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void readAdditionalSaveData(CompoundTag compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         if (!level.isClientSide) {
             readPersistentAngerSaveData((ServerWorld) level, compoundNBT);
@@ -67,7 +73,7 @@ public abstract class AbstractAngryMountEntity extends AbstractMountEntity imple
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compoundNBT) {
+    public void addAdditionalSaveData(CompoundTag compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
         addPersistentAngerSaveData(compoundNBT);
         compoundNBT.putBoolean("Attacking", isAttacking());

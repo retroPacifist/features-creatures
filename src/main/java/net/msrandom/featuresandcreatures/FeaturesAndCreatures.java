@@ -1,10 +1,17 @@
 package net.msrandom.featuresandcreatures;
 
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -65,17 +72,18 @@ public class FeaturesAndCreatures {
 
     @OnlyIn(Dist.CLIENT)
     public void registerRenderers() {
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JOCKEY, JockeyRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.BOAR, BoarEntityRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.JACKALOPE, JackalopeRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SABERTOOTH, SabertoothRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(FnCEntities.SPEAR, SpearRenderer::new);
+        EntityRenderers.register(FnCEntities.JOCKEY, JockeyRenderer::new);
+        EntityRenderers.register(FnCEntities.BOAR, BoarEntityRenderer::new);
+        EntityRenderers.register(FnCEntities.JACKALOPE, JackalopeRenderer::new);
+        EntityRenderers.register(FnCEntities.SABERTOOTH, SabertoothRenderer::new);
+        EntityRenderers.register(FnCEntities.SPEAR, SpearRenderer::new);
+
         GeoArmorRenderer.registerArmorRenderer(AntlerHeaddressItem.class, new AntlerHeaddressRenderer());
 
-        ItemModelsProperties.register(
+        ItemProperties.register(
                 FnCItems.SPEAR,
                 new ResourceLocation(MOD_ID, "throwing"),
-                (stack, level, entity) -> entity != null && entity.getUseItem() == stack ? 1f : 0f
+                (stack, level, entity, i) -> entity != null && entity.getUseItem() == stack ? 1f : 0f
         );
     }
 
@@ -90,7 +98,7 @@ public class FeaturesAndCreatures {
         event.put(FnCEntities.SABERTOOTH, Sabertooth.createSabertoothAttributes().build());
     }
 
-    public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, World world, Consumer<T> consumer) {
+    public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, Level world, Consumer<T> consumer) {
         T entity = entityType.create(world);
         if (entity != null) {
             consumer.accept(entity);

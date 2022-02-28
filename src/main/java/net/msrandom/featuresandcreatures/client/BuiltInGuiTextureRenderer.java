@@ -1,9 +1,9 @@
 package net.msrandom.featuresandcreatures.client;
 
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 
 import java.util.HashMap;
@@ -18,6 +18,8 @@ public class BuiltInGuiTextureRenderer {
         ModelLoader.addSpecialModel(location);
         MODELS.put(item, location);
     }
+
+    Player
 
     public static ModelResourceLocation getItemModel(ItemStack stack) {
         return MODELS.get(stack.getItem());

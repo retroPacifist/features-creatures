@@ -1,6 +1,6 @@
 package net.msrandom.featuresandcreatures.entity.mount;
 
-import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.AgeableMob;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -8,7 +8,18 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.World;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.server.ServerWorld;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
@@ -27,11 +38,11 @@ public final class Sabertooth extends AbstractAngryMountEntity {
     private static final String WALK_ANIMATION = "animation.sabertooth.walk";
     private static final String ATTACK_ANIMATION = "animation.sabertooth.attack";
 
-    public Sabertooth(EntityType<? extends Sabertooth> entityType, World world) {
+    public Sabertooth(EntityType<? extends Sabertooth> entityType, Level world) {
         super(entityType, world);
     }
 
-    public static @NotNull AttributeModifierMap.MutableAttribute createSabertoothAttributes() {
+    public static @NotNull AttributeSupplier.Builder createSabertoothAttributes() {
         return createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 12.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
@@ -40,7 +51,7 @@ public final class Sabertooth extends AbstractAngryMountEntity {
 
     @Override
     protected void registerAdditionalGoals() {
-        targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 10, true, true, null));
+        targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Sheep.class, 10, true, true, null));
     }
 
     @Override
@@ -64,7 +75,7 @@ public final class Sabertooth extends AbstractAngryMountEntity {
     }
 
     @Override
-    public @Nullable AgeableEntity getBreedOffspring(ServerWorld serverWorld, AgeableEntity entity) {
+    public @Nullable AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob entity) {
         return createEntity(FnCEntities.SABERTOOTH, serverWorld, boarEntity -> boarEntity.setAge(-24000));
     }
 }

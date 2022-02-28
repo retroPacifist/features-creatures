@@ -1,20 +1,20 @@
 package net.msrandom.featuresandcreatures.entity;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
@@ -22,15 +22,15 @@ import net.msrandom.featuresandcreatures.core.FnCSounds;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class Spear extends AbstractArrowEntity {
+public class Spear extends AbstractArrow {
     private boolean dealtDamage;
     private ItemStack thrownStack = new ItemStack(FnCItems.SPEAR);
 
-    public Spear(EntityType<? extends AbstractArrowEntity> type, World worldIn) {
+    public Spear(EntityType<? extends AbstractArrow> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public Spear(World worldIn, LivingEntity thrower, ItemStack stack) {
+    public Spear(Level worldIn, LivingEntity thrower, ItemStack stack) {
         super(FnCEntities.SPEAR, thrower, worldIn);
         this.thrownStack = stack.copy();
     }
@@ -40,18 +40,20 @@ public class Spear extends AbstractArrowEntity {
     }
 
     @Nullable
-    protected EntityRayTraceResult findHitEntity(Vector3d startVec, Vector3d endVec) {
+    @Override
+    protected EntityHitResult findHitEntity(Vec3 startVec, Vec3 endVec) {
         return this.dealtDamage ? null : super.findHitEntity(startVec, endVec);
     }
 
-    @Override
-    @Nonnull
-    public IPacket getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 
     @Override
-    protected void onHitEntity(EntityRayTraceResult result) {
+    @Nonnull
+    public Packet<?> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
+    }
+    
+    @Override
+    protected void onHitEntity(EntityHitResult result) {
         Entity entity = result.getEntity();
         float f = 12.0F;
         if (entity instanceof LivingEntity) {
@@ -82,13 +84,13 @@ public class Spear extends AbstractArrowEntity {
         this.playSound(soundevent, 1.0F, 1.0F);
     }
 
-    public void playerTouch(PlayerEntity player) {
+    public void playerTouch(Player player) {
         Entity entity = this.getOwner();
         if (entity == null || entity.getUUID() == player.getUUID()) {
             super.playerTouch(player);
         }
     }
-    public void readAdditionalSaveData(CompoundNBT p_70037_1_) {
+    public void readAdditionalSaveData(CompoundTag p_70037_1_) {
         super.readAdditionalSaveData(p_70037_1_);
         if (p_70037_1_.contains("Spear", 10)) {
             this.thrownStack = ItemStack.of(p_70037_1_.getCompound("Spear"));
@@ -96,14 +98,14 @@ public class Spear extends AbstractArrowEntity {
         this.dealtDamage = p_70037_1_.getBoolean("DealtDamage");
     }
 
-    public void addAdditionalSaveData(CompoundNBT p_213281_1_) {
+    public void addAdditionalSaveData(CompoundTag p_213281_1_) {
         super.addAdditionalSaveData(p_213281_1_);
-        p_213281_1_.put("Spear", this.thrownStack.save(new CompoundNBT()));
+        p_213281_1_.put("Spear", this.thrownStack.save(new CompoundTag()));
         p_213281_1_.putBoolean("DealtDamage", this.dealtDamage);
     }
 
     public void tickDespawn() {
-        if (this.pickup != AbstractArrowEntity.PickupStatus.ALLOWED) {
+        if (this.pickup != AbstractArrow.Pickup.ALLOWED) {
             super.tickDespawn();
         }
     }

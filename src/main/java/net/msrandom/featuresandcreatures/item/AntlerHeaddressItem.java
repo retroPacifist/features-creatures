@@ -12,11 +12,11 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundSource;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
@@ -68,7 +68,7 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
         PlayerEntity player = (PlayerEntity) entity;
-        CompoundNBT data = player.getPersistentData();
+        CompoundTag data = player.getPersistentData();
         if (world.isClientSide) {
             int charge = data.getInt(CURRENT_CHARGE);
             boolean isCharging = FnCKeybinds.CHARGE_ANTLER.isDown();
@@ -77,17 +77,17 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
                     charge++;
                 }
                 if (charge == Math.round(getMaxCharge() * 0.01f) || charge == getMaxCharge() / 4 || charge == getMaxCharge() / 2) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_CHARGE, SoundCategory.AMBIENT, 1, charge / 50F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_CHARGE, SoundSource.AMBIENT, 1, charge / 50F, false);
                 } else if (charge == Math.round(getMaxCharge() * 0.75f)) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_CHARGE, SoundCategory.AMBIENT, 2, 1.5F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_CHARGE, SoundSource.AMBIENT, 2, 1.5F, false);
                 } else if (charge == getMaxCharge()) {
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_FINISHED_CHARGING, SoundCategory.AMBIENT, 30, charge / 15F, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), FnCSounds.ANTLER_HEADDRESS_FINISHED_CHARGING, SoundSource.AMBIENT, 30, charge / 15F, false);
                 }
 
                 if (!isCharging && charge > 0) {
                     NetworkHandler.SIMPLE_CHANNEL.sendToServer(new AntlerHeaddressChargePacket(charge));
                     handleCharge(player, charge);
-                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundCategory.AMBIENT, 30, 1, false);
+                    world.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_RIPTIDE_1, SoundSource.AMBIENT, 30, 1, false);
                     charge = 0;
                 }
 

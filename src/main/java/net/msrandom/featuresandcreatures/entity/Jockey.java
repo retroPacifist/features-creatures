@@ -11,20 +11,23 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.datasync.EntityDataAccessor;
+import net.minecraft.network.datasync.EntityDataSerializers;
+import net.minecraft.network.datasync.SynchedEntityData;
 import net.minecraft.potion.*;
-import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Mth;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
@@ -53,7 +56,7 @@ import java.util.stream.Collectors;
 
 import static net.msrandom.featuresandcreatures.FeaturesAndCreatures.createEntity;
 
-public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatable, IRangedAttackMob {
+public class Jockey extends PathfinderMob implements INPC, IMerchant, IAnimatable, IRangedAttackMob {
     private static final String POTION_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.potion";
     private static final String ARROW_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.arrow";
 
@@ -63,18 +66,18 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     private PlayerEntity followingPlayer;
     private MerchantOffers offers;
     private BlockPos lastBlockPos = BlockPos.ZERO;
-    private static final DataParameter<Boolean> ATTACKING = EntityDataManager.defineId(Jockey.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> ATTACK_TIMER = EntityDataManager.defineId(Jockey.class, DataSerializers.INT);
-    private static final DataParameter<Integer> TIME_ALIVE = EntityDataManager.defineId(Jockey.class, DataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(Jockey.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> ATTACK_TIMER = SynchedEntityData.defineId(Jockey.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> TIME_ALIVE = SynchedEntityData.defineId(Jockey.class, EntityDataSerializers.INT);
     private static final EntityPredicate TARGETING = (new EntityPredicate()).range(32.0D).allowInvulnerable().allowSameTeam().allowNonAttackable().allowUnseeable();
 
 
 
-    public Jockey(EntityType<? extends Jockey> p_i48575_1_, World p_i48575_2_) {
+    public Jockey(EntityType<? extends Jockey> p_i48575_1_, Level p_i48575_2_) {
         super(p_i48575_1_, p_i48575_2_);
     }
 
-    public static AttributeModifierMap.MutableAttribute createJockeyAttributes() {
+    public static AttributeSupplier.Builder createJockeyAttributes() {
         return createMobAttributes().add(Attributes.MAX_HEALTH, 12.0);
     }
 
@@ -133,7 +136,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         return agrees ? FnCSounds.JOCKEY_YES : FnCSounds.JOCKEY_NO;
     }
 
-    public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+    public InteractionResult mobInteract(PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         if (!(itemstack.getItem() instanceof SpawnEggItem) && this.isAlive() && tradingPlayer == null) {
             if (!this.getOffers().isEmpty()) {
@@ -142,7 +145,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
                     this.openTradingScreen(player, this.getDisplayName(), 1);
                 }
             }
-            return ActionResultType.sidedSuccess(this.level.isClientSide);
+            return InteractionResult.sidedSuccess(this.level.isClientSide);
         } else {
             return super.mobInteract(player, hand);
         }
@@ -450,7 +453,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT nbt) {
+    public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putInt("TimeAlive", getTimeAlive());
         nbt.putBoolean("Attacking", isAttacking());
@@ -462,7 +465,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT nbt) {
+    public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         setTimeAlive(nbt.getInt("TimeAlive"));
         setAttacking(nbt.getBoolean("Attacking"));
@@ -518,7 +521,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
         double d0 = target.getX() + vector3d.x - this.getX();
         double d1 = target.getEyeY() - (double) 1.1F - this.getY();
         double d2 = target.getZ() + vector3d.z - this.getZ();
-        float f = MathHelper.sqrt(d0 * d0 + d2 * d2);
+        float f = Mth.sqrt(d0 * d0 + d2 * d2);
         Potion potion = Potions.HARMING;
         PotionEntity potionentity = new PotionEntity(this.level, this);
         potionentity.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
@@ -531,7 +534,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
     }
 
     @Nullable
-    public static MobEntity getMountEntity(World world, Jockey jockey) {
+    public static Mob getMountEntity(Level world, Jockey jockey) {
         if (jockey.getY() < 30) {
             return EntityType.CAVE_SPIDER.create(world);
         }
@@ -553,7 +556,7 @@ public class Jockey extends CreatureEntity implements INPC, IMerchant, IAnimatab
             case PLAINS:
                 HorseEntity horse = EntityType.HORSE.create(world);
                 if (horse != null) {
-                    horse.equipSaddle(SoundCategory.NEUTRAL);
+                    horse.equipSaddle(SoundSource.NEUTRAL);
                     horse.setBaby(true);
                 }
                 return horse;
