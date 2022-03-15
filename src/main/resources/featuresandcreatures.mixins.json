@@ -18,5 +18,8 @@
     "server.MixinPlayerList",
     "server.MixinServerLevel",
     "server.MixinServerWorldInfo"
-  ]
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

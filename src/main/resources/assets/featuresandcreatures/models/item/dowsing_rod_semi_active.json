@@ -1,0 +1,6 @@
+{
+  "parent": "featuresandcreatures:item/dowsing_rod",
+  "textures": {
+    "layer0": "featuresandcreatures:item/dowsing_rod_semi_active"
+  }
+}
