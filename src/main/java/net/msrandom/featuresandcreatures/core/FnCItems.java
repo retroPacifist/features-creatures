@@ -33,5 +33,5 @@ public class FnCItems {
     public static final RegistryObject<Item> BOAR_SPAWN_EGG = REGISTRAR.register("boar_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.BOAR,0x705F44, 0xFFF05A, new Item.Properties().tab(FnCItems.TAB)));
     public static final RegistryObject<Item> SABERTOOTH_SPAWN_EGG = REGISTRAR.register("sabertooth_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.SABERTOOTH, 0xC59125, 0xEEA2C4, new Item.Properties().tab(FnCItems.TAB)));
     public static final RegistryObject<Item> JACKALOPE_SPAWN_EGG = REGISTRAR.register("jackalope_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.JACKALOPE,0xB3A98D, 0x444444, new Item.Properties().tab(FnCItems.TAB)));
-
+    public static final RegistryObject<Item> BLACK_FOREST_SPIRIT_SPAWN_EGG = REGISTRAR.register("black_forest_spirit_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.BLACK_FOREST_SPIRIT,0x392D22, 0xFFEC53, new Item.Properties().tab(FnCItems.TAB)));
 }

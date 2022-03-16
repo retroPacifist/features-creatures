@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.entity;
+package net.msrandom.featuresandcreatures.entity.mount;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;

@@ -19,7 +19,9 @@ import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
 import net.msrandom.featuresandcreatures.client.model.SpearModel;
 import net.msrandom.featuresandcreatures.client.renderer.entity.*;
 import net.msrandom.featuresandcreatures.core.*;
-import net.msrandom.featuresandcreatures.entity.Jackalope;
+import net.msrandom.featuresandcreatures.entity.BlackForestSpirit;
+import net.msrandom.featuresandcreatures.entity.Gup;
+import net.msrandom.featuresandcreatures.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.entity.Jockey;
 import net.msrandom.featuresandcreatures.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
@@ -46,8 +48,8 @@ public class FeaturesAndCreatures {
         bus.addListener(this::registerRenderers);
         bus.addListener(this::registerArmor);
         bus.addListener(this::bakeLayers);
-        FnCEntities.REGISTRAR.register(bus);
         FnCItems.REGISTRAR.register(bus);
+        FnCEntities.REGISTRAR.register(bus);
         FnCSounds.REGISTRAR.initialize();
         FnCTriggers.register();
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, FnCConfig.getConfigSpec());
@@ -70,7 +72,8 @@ public class FeaturesAndCreatures {
         renderer.registerEntityRenderer(FnCEntities.JACKALOPE.get(), JackalopeRenderer::new);
         renderer.registerEntityRenderer(FnCEntities.SABERTOOTH.get(), SabertoothRenderer::new);
         renderer.registerEntityRenderer(FnCEntities.SPEAR.get(), SpearRenderer::new);
-
+        renderer.registerEntityRenderer(FnCEntities.BLACK_FOREST_SPIRIT.get(), BlackForestSpiritRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.GUP.get(), GupRenderer::new);
         ItemProperties.register(
                 FnCItems.SPEAR.get(),
                 new ResourceLocation(MOD_ID, "throwing"),
@@ -96,6 +99,8 @@ public class FeaturesAndCreatures {
         event.put(FnCEntities.BOAR.get(), Boar.createBoarAttributes().build());
         event.put(FnCEntities.JACKALOPE.get(), Jackalope.createAttributes().build());
         event.put(FnCEntities.SABERTOOTH.get(), Sabertooth.createSabertoothAttributes().build());
+        event.put(FnCEntities.BLACK_FOREST_SPIRIT.get(), BlackForestSpirit.createAttributes().build());
+        event.put(FnCEntities.GUP.get(), Gup.createAttributes().build());
     }
 
     public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, Level world, Consumer<T> consumer) {

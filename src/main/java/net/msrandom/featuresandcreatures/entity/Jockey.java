@@ -49,6 +49,7 @@ import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
 import net.msrandom.featuresandcreatures.entity.mount.Boar;
+import net.msrandom.featuresandcreatures.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
