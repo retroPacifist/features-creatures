@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "featuresandcreatures:block/deepslate_midnight_ore_top",
+    "side": "featuresandcreatures:block/deepslate_midnight_ore"
+  }
+}

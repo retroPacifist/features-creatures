@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "minecraft:block/deepslate"
+    },
+    "active=true": {
+      "model": "featuresandcreatures:block/deepslate_midnight_ore"
+    }
+  }
+}
