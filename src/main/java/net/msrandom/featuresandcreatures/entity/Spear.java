@@ -24,14 +24,14 @@ import javax.annotation.Nullable;
 
 public class Spear extends AbstractArrow {
     private boolean dealtDamage;
-    private ItemStack thrownStack = new ItemStack(FnCItems.SPEAR);
+    private ItemStack thrownStack = new ItemStack(FnCItems.SPEAR.get());
 
     public Spear(EntityType<? extends AbstractArrow> type, Level worldIn) {
         super(type, worldIn);
     }
 
     public Spear(Level worldIn, LivingEntity thrower, ItemStack stack) {
-        super(FnCEntities.SPEAR, thrower, worldIn);
+        super(FnCEntities.SPEAR.get(), thrower, worldIn);
         this.thrownStack = stack.copy();
     }
 

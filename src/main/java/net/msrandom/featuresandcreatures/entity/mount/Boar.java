@@ -59,7 +59,7 @@ public final class Boar extends AbstractAngryMountEntity implements ItemSteerabl
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob mob) {
-        return createEntity(FnCEntities.BOAR, serverWorld, boarEntity -> boarEntity.setAge(-24000));
+        return createEntity(FnCEntities.BOAR.get(), serverWorld, boarEntity -> boarEntity.setAge(-24000));
     }
 
     @Override

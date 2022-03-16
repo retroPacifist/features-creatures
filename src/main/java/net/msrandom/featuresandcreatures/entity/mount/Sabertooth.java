@@ -65,6 +65,6 @@ public final class Sabertooth extends AbstractAngryMountEntity {
 
     @Override
     public @Nullable AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob entity) {
-        return createEntity(FnCEntities.SABERTOOTH, serverWorld, sabertooth -> sabertooth.setAge(-24000));
+        return createEntity(FnCEntities.SABERTOOTH.get(), serverWorld, sabertooth -> sabertooth.setAge(-24000));
     }
 }

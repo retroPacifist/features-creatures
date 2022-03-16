@@ -46,8 +46,8 @@ public class FeaturesAndCreatures {
         bus.addListener(this::registerRenderers);
         bus.addListener(this::registerArmor);
         bus.addListener(this::bakeLayers);
-        FnCEntities.REGISTRAR.initialize();
-        FnCItems.REGISTRAR.initialize();
+        FnCEntities.REGISTRAR.register(bus);
+        FnCItems.REGISTRAR.register(bus);
         FnCSounds.REGISTRAR.initialize();
         FnCTriggers.register();
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, FnCConfig.getConfigSpec());
@@ -65,14 +65,14 @@ public class FeaturesAndCreatures {
     }
 
     public void registerRenderers(EntityRenderersEvent.RegisterRenderers renderer) {
-        renderer.registerEntityRenderer(FnCEntities.JOCKEY, JockeyRenderer::new);
-        renderer.registerEntityRenderer(FnCEntities.BOAR, BoarEntityRenderer::new);
-        renderer.registerEntityRenderer(FnCEntities.JACKALOPE, JackalopeRenderer::new);
-        renderer.registerEntityRenderer(FnCEntities.SABERTOOTH, SabertoothRenderer::new);
-        renderer.registerEntityRenderer(FnCEntities.SPEAR, SpearRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.JOCKEY.get(), JockeyRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.BOAR.get(), BoarEntityRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.JACKALOPE.get(), JackalopeRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.SABERTOOTH.get(), SabertoothRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.SPEAR.get(), SpearRenderer::new);
 
         ItemProperties.register(
-                FnCItems.SPEAR,
+                FnCItems.SPEAR.get(),
                 new ResourceLocation(MOD_ID, "throwing"),
                 (stack, world, entity, level) -> {
                     return entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
@@ -88,14 +88,14 @@ public class FeaturesAndCreatures {
     }
 
     private void registerModels(ModelRegistryEvent event) {
-        BuiltInGuiTextureRenderer.register(FnCItems.SPEAR);
+        BuiltInGuiTextureRenderer.register(FnCItems.SPEAR.get());
     }
 
     private void registerAttributes(EntityAttributeCreationEvent event) {
-        event.put(FnCEntities.JOCKEY, Jockey.createJockeyAttributes().build());
-        event.put(FnCEntities.BOAR, Boar.createBoarAttributes().build());
-        event.put(FnCEntities.JACKALOPE, Jackalope.createAttributes().build());
-        event.put(FnCEntities.SABERTOOTH, Sabertooth.createSabertoothAttributes().build());
+        event.put(FnCEntities.JOCKEY.get(), Jockey.createJockeyAttributes().build());
+        event.put(FnCEntities.BOAR.get(), Boar.createBoarAttributes().build());
+        event.put(FnCEntities.JACKALOPE.get(), Jackalope.createAttributes().build());
+        event.put(FnCEntities.SABERTOOTH.get(), Sabertooth.createSabertoothAttributes().build());
     }
 
     public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, Level world, Consumer<T> consumer) {

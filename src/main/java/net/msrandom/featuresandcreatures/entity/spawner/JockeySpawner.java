@@ -80,7 +80,7 @@ public class JockeySpawner implements CustomSpawner {
                 }
             }
 
-            Jockey jockey = FnCEntities.JOCKEY.create(world);
+            Jockey jockey = FnCEntities.JOCKEY.get().create(world);
             if (jockey == null) {
                 return 0;
             }

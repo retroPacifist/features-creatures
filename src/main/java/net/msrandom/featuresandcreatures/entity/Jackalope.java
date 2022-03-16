@@ -233,7 +233,7 @@ public class Jackalope extends Animal implements IAnimatable {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
-        Jackalope jackalope = FnCEntities.JACKALOPE.create(world);
+        Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
         if (jackalope != null) jackalope.setAge(-24000);
         return jackalope;
     }

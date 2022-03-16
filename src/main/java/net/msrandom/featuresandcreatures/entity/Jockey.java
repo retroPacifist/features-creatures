@@ -48,6 +48,7 @@ import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
+import net.msrandom.featuresandcreatures.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
@@ -68,8 +69,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static net.msrandom.featuresandcreatures.FeaturesAndCreatures.createEntity;
 
 public class Jockey extends PathfinderMob implements Npc, Merchant, IAnimatable, RangedAttackMob {
     private static final String POTION_TRANSLATION_KEY = "entity." + FeaturesAndCreatures.MOD_ID + ".jockey.potion";
@@ -523,10 +522,10 @@ public class Jockey extends PathfinderMob implements Npc, Merchant, IAnimatable,
             return EntityType.CAVE_SPIDER.create(world);
         }
 
-        Biome.BiomeCategory biome = world.getBiome(jockey.blockPosition()).getBiomeCategory();
+        Biome.BiomeCategory biome = world.getBiome(jockey.blockPosition()).value().biomeCategory;
         switch (biome) {
             case ICY:
-                Sabertooth sabertooth = FnCEntities.SABERTOOTH.create(world);
+                Sabertooth sabertooth = FnCEntities.SABERTOOTH.get().create(world);
                 if (sabertooth != null) sabertooth.setSaddled(true);
                 return sabertooth;
             case SWAMP:
@@ -534,7 +533,7 @@ public class Jockey extends PathfinderMob implements Npc, Merchant, IAnimatable,
                 if (slime != null) ((SlimeSizeInvoker) slime).callSetSize(2, true);
                 return slime;
             case EXTREME_HILLS:
-                Jackalope jackalope = FnCEntities.JACKALOPE.create(world);
+                Jackalope jackalope = FnCEntities.JACKALOPE.get().create(world);
                 if (jackalope != null) jackalope.setSaddled(true);
                 return jackalope;
             case PLAINS:
@@ -545,7 +544,9 @@ public class Jockey extends PathfinderMob implements Npc, Merchant, IAnimatable,
                 }
                 return horse;
             default:
-                return createEntity(FnCEntities.BOAR, world, boarEntity -> boarEntity.setSaddled(true));
+                Boar boar = FnCEntities.BOAR.get().create(world);
+                if (boar != null) boar.setSaddled(true);
+                return boar;
         }
     }
 

@@ -18,8 +18,8 @@ public abstract class MixinFirstPersonRenderer {
 
     @Inject(method = "renderArmWithItem", at = @At("HEAD"), cancellable = true)
     private void renderDowsingRod(AbstractClientPlayer player, float partialTicks, float pitch, InteractionHand hand, float attackAnimation, ItemStack itemStack, float handHeight, PoseStack poseStack, MultiBufferSource bufferProvider, int packedLight, CallbackInfo ci) {
-        if (player.getMainHandItem().getItem() == FnCItems.DOWSING_ROD || player.getOffhandItem().getItem() == FnCItems.DOWSING_ROD) {
-            if (itemStack.getItem() == FnCItems.DOWSING_ROD) {
+        if (player.getMainHandItem().getItem() == FnCItems.DOWSING_ROD.get() || player.getOffhandItem().getItem() == FnCItems.DOWSING_ROD.get()) {
+            if (itemStack.getItem() == FnCItems.DOWSING_ROD.get()) {
                 DowsingRodItem.renderInHand(player, itemStack, poseStack, hand, bufferProvider, packedLight, pitch, handHeight, attackAnimation, (ItemInHandRenderer) (Object) this);
             }
             ci.cancel();

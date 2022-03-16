@@ -42,7 +42,7 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
             SoundEvents.ARMOR_EQUIP_LEATHER,
             0.0F,
             0.0F,
-            () -> Ingredient.of(FnCItems.ANTLER)
+            () -> Ingredient.of(FnCItems.ANTLER.get())
     );
 
     private static final String DATA_PREFIX = "AntlerHeaddress";
