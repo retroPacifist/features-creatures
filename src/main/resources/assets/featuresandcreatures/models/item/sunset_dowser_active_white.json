@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "featuresandcreatures:item/sunset_dowser_active_white"
+  }
+}
