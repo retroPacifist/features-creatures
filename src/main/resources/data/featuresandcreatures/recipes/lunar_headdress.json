@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "base": {
+    "item": "featuresandcreatures:antler_headdress"
+  },
+  "addition": {
+    "item": "featuresandcreatures:midnight_crystal"
+  },
+  "result": {
+    "item": "minecraft:lunar_headdress"
+  }
+}

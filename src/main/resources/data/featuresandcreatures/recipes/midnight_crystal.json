@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "featuresandcreatures:midnight_crystal_block"
+    }
+  ],
+  "result": {
+    "item": "featuresandcreatures:midnight_crystal",
+    "count": 4
+  }
+}

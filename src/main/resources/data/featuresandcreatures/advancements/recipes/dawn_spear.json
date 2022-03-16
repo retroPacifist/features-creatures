@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "featuresandcreatures:dawn_spear"
+    ]
+  },
+  "criteria": {
+    "has_spear": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "featuresandcreatures:spear"
+          }
+        ]
+      }
+    },
+    "has_dawn_crystal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "featuresandcreatures:dawn_crystal"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "featuresandcreatures:dawn_spear"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_spear",
+      "has_dawn_crystal",
+      "has_the_recipe"
+    ]
+  ]
+}

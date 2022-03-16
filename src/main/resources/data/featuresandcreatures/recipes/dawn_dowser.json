@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "base": {
+    "item": "featuresandcreatures:dowsing_rod"
+  },
+  "addition": {
+    "item": "featuresandcreatures:dawn_crystal"
+  },
+  "result": {
+    "item": "minecraft:dawn_dowser"
+  }
+}

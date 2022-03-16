@@ -33,7 +33,9 @@
   "item.featuresandcreatures.spear": "Spear",
   "item.featuresandcreatures.sunset_crystal": "Sunset Crystal",
   "item.featuresandcreatures.sunset_dowser": "Sunset Dowser",
-  "item.featuresandcreatures.tinted_potion": "Tinted Potion",
+  "item.featuresandcreatures.tinted_potion": "Tinted Bottle",
+  "item.featuresandcreatures.tinted_potion.effect": "Tinted Potion",
+  // TODO i know this doesnt work its for someone else. just as a reminder LOL
 
   "block.featuresandcreatures.dawn_crystal_block": "Dawn Crystal Block",
   "block.featuresandcreatures.dawn_ore": "Andesite Dawn Ore",

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A A",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:tinted_glass"
+    }
+  },
+  "result": {
+    "item": "featuresandcreatures:tinted_potion",
+    "count": 3
+  }
+}
