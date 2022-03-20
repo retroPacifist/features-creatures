@@ -26,6 +26,9 @@ public class FnCItems {
     public static final RegistryObject<Item> ANTLER = REGISTRAR.register("antler", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> ANTLER_HEADDRESS = REGISTRAR.register("antler_headdress", () -> new AntlerHeaddressItem(EquipmentSlot.HEAD, new Item.Properties().tab(TAB).durability(-1)));
     public static final RegistryObject<Item> SABERTOOTH_FANG = REGISTRAR.register("sabertooth_fang", () -> new Item(new Item.Properties().tab(TAB)));
+    public static final RegistryObject<Item> DAWN_CRYSTAL = REGISTRAR.register("dawn_crystal", () -> new Item(new Item.Properties().tab(TAB)));
+    public static final RegistryObject<Item> MIDNIGHT_CRYSTAL = REGISTRAR.register("midnight_crystal", () -> new Item(new Item.Properties().tab(TAB)));
+    public static final RegistryObject<Item> SUNSET_CRYSTAL = REGISTRAR.register("sunset_crystal", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> SPEAR = REGISTRAR.register("spear", () -> new SpearItem(new Item.Properties().durability(200).tab(TAB)));
     public static final RegistryObject<Item> DOWSING_ROD = REGISTRAR.register("dowsing_rod", () -> new DowsingRodItem(new Item.Properties().tab(TAB)));
 
