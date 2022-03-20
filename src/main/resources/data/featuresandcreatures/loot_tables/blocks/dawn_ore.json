@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "featuresandcreatures:dawn_crystal"
+        }
+      ]
+    }
+  ]
+}
+//TODO lol. illegally commenting... hi again. this SUCKS!!! why does everything have to be so complex and backwards i just want to make cool mods... anyways this needs to take both fortune and luck into account. the docs have more details :thumbsUp:

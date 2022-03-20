@@ -43,10 +43,16 @@ public class FnCItems {
     public static final RegistryObject<Item> BRIMSTONE_GOLEM_SPAWN_EGG = REGISTRAR.register("brimstone_golem_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.BRIMSTONE_GOLEM,0x52491E, 0x5DF662, new Item.Properties().tab(FnCItems.TAB)));
 
     public static final RegistryObject<Item> DAWN_ORE = createBlockItem(FnCBlocks.DAWN_ORE);
+    public static final RegistryObject<Item> DEEPSLATE_DAWN_ORE = createBlockItem(FnCBlocks.DEEPSLATE_DAWN_ORE);
+    public static final RegistryObject<Item> STONE_DAWN_ORE = createBlockItem(FnCBlocks.STONE_DAWN_ORE);
     public static final RegistryObject<Item> DAWN_CRYSTAL_BLOCK = createBlockItem(FnCBlocks.DAWN_CRYSTAL_BLOCK);
     public static final RegistryObject<Item> MIDNIGHT_ORE = createBlockItem(FnCBlocks.MIDNIGHT_ORE);
+    public static final RegistryObject<Item> DEEPSLATE_MIDNIGHT_ORE = createBlockItem(FnCBlocks.DEEPSLATE_MIDNIGHT_ORE);
+    public static final RegistryObject<Item> STONE_MIDNIGHT_ORE = createBlockItem(FnCBlocks.STONE_MIDNIGHT_ORE);
     public static final RegistryObject<Item> MIDNIGHT_CRYSTAL_BLOCK = createBlockItem(FnCBlocks.MIDNIGHT_CRYSTAL_BLOCK);
     public static final RegistryObject<Item> SUNSET_ORE = createBlockItem(FnCBlocks.SUNSET_ORE);
+    public static final RegistryObject<Item> DEEPSLATE_SUNSET_ORE = createBlockItem(FnCBlocks.DEEPSLATE_SUNSET_ORE);
+    public static final RegistryObject<Item> STONE_SUNSET_ORE = createBlockItem(FnCBlocks.STONE_SUNSET_ORE);
     public static final RegistryObject<Item> SUNSET_CRYSTAL_BLOCK = createBlockItem(FnCBlocks.SUNSET_CRYSTAL_BLOCK);
 
     public static RegistryObject<Item> createBlockItem(RegistryObject<Block> block){

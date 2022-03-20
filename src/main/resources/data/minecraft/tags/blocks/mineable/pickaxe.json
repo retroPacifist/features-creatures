@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "featuresandcreatures:dawn_ore",
+    "featuresandcreatures:deepslate_dawn_ore",
+    "featuresandcreatures:stone_dawn_ore",
+    "featuresandcreatures:dawn_crystal_block",
+    "featuresandcreatures:midnight_ore",
+    "featuresandcreatures:deepslate_midnight_ore",
+    "featuresandcreatures:stone_midnight_ore",
+    "featuresandcreatures:midnight_crystal_block",
+    "featuresandcreatures:sunset_ore",
+    "featuresandcreatures:deepslate_sunset_ore",
+    "featuresandcreatures:stone_sunset_ore",
+    "featuresandcreatures:sunset_crystal_block"
+  ]
+}
