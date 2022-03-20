@@ -51,6 +51,7 @@ public class FeaturesAndCreatures {
         bus.addListener(this::bakeLayers);
         FnCItems.REGISTRAR.register(bus);
         FnCEntities.REGISTRAR.register(bus);
+        FnCBlocks.REGISTRAR.register(bus);
         FnCSounds.REGISTRAR.initialize();
         FnCTriggers.register();
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, FnCConfig.getConfigSpec());
