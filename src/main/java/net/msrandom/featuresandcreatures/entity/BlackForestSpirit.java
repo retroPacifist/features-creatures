@@ -15,7 +15,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
@@ -24,8 +23,8 @@ import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -36,10 +35,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-import java.util.EnumSet;
-import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 public class BlackForestSpirit extends Monster implements NeutralMob, RangedAttackMob, IAnimatable {
 
@@ -62,7 +58,7 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(5, new FollowItemGoal(this, 1, 3,7));
+        this.goalSelector.addGoal(5, new TemptGoal(this, 1F, Ingredient.of(Items.LAPIS_LAZULI), true));
         this.targetSelector.addGoal(1, (new SpiritTargetGoal(this)));
     }
 
@@ -96,7 +92,6 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
                     this.setItemInHand(this.getUsedItemHand(), ItemStack.EMPTY);
                 }
             }
-
         }
         super.tick();
     }
@@ -151,7 +146,6 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
     @Override
     public void startPersistentAngerTimer() {
         this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
-
     }
 
     @Override
@@ -211,76 +205,4 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
         }
     }
 
-    public static class FollowItemGoal extends Goal {
-        private final Mob mob;
-        private final Predicate<Mob> followPredicate;
-        @javax.annotation.Nullable
-        private ItemEntity followingMob;
-        private final double speedModifier;
-        private final PathNavigation navigation;
-        private int timeToRecalcPath;
-        private final float stopDistance;
-        private float oldWaterCost;
-        private final float areaSize;
-
-        public FollowItemGoal(Mob p_25271_, double p_25272_, float p_25273_, float p_25274_) {
-            this.mob = p_25271_;
-            this.followPredicate = (p_25278_) -> {
-                return p_25278_ != null && p_25271_.getClass() != p_25278_.getClass();
-            };
-            this.speedModifier = p_25272_;
-            this.navigation = p_25271_.getNavigation();
-            this.stopDistance = p_25273_;
-            this.areaSize = p_25274_;
-            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-        }
-
-        public boolean canUse() {
-            List<ItemEntity> list = this.mob.level.getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(this.areaSize));
-            if (!list.isEmpty()) {
-                for (ItemEntity mob : list) {
-                    if (!mob.isInvisible()) {
-                            this.followingMob = mob;
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public boolean canContinueToUse() {
-            return this.followingMob != null && !this.navigation.isDone() && this.mob.distanceToSqr(this.followingMob) > (double) (this.stopDistance * this.stopDistance);
-        }
-
-        public void start() {
-            this.timeToRecalcPath = 0;
-            this.oldWaterCost = this.mob.getPathfindingMalus(BlockPathTypes.WATER);
-            this.mob.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        }
-
-        public void stop() {
-            this.followingMob = null;
-            this.navigation.stop();
-            this.mob.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
-        }
-
-        public void tick() {
-            if (this.followingMob != null && !this.mob.isLeashed()) {
-                this.mob.getLookControl().setLookAt(this.followingMob, 10.0F, (float) this.mob.getMaxHeadXRot());
-                if (--this.timeToRecalcPath <= 0) {
-                    this.timeToRecalcPath = this.adjustedTickDelay(10);
-                    double d0 = this.mob.getX() - this.followingMob.getX();
-                    double d1 = this.mob.getY() - this.followingMob.getY();
-                    double d2 = this.mob.getZ() - this.followingMob.getZ();
-                    double d3 = d0 * d0 + d1 * d1 + d2 * d2;
-                    if (!(d3 <= (double) (this.stopDistance * this.stopDistance))) {
-                        this.navigation.moveTo(this.followingMob, this.speedModifier);
-                    } else {
-                        this.navigation.stop();
-                    }
-                }
-            }
-        }
-    }
 }

@@ -20,6 +20,7 @@ import net.msrandom.featuresandcreatures.client.model.SpearModel;
 import net.msrandom.featuresandcreatures.client.renderer.entity.*;
 import net.msrandom.featuresandcreatures.core.*;
 import net.msrandom.featuresandcreatures.entity.BlackForestSpirit;
+import net.msrandom.featuresandcreatures.entity.BrimstoneGolem;
 import net.msrandom.featuresandcreatures.entity.Gup;
 import net.msrandom.featuresandcreatures.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.entity.Jockey;
@@ -74,6 +75,7 @@ public class FeaturesAndCreatures {
         renderer.registerEntityRenderer(FnCEntities.SPEAR.get(), SpearRenderer::new);
         renderer.registerEntityRenderer(FnCEntities.BLACK_FOREST_SPIRIT.get(), BlackForestSpiritRenderer::new);
         renderer.registerEntityRenderer(FnCEntities.GUP.get(), GupRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.BRIMSTONE_GOLEM.get(), BrimstoneGolemRenderer::new);
         ItemProperties.register(
                 FnCItems.SPEAR.get(),
                 new ResourceLocation(MOD_ID, "throwing"),
@@ -101,6 +103,7 @@ public class FeaturesAndCreatures {
         event.put(FnCEntities.SABERTOOTH.get(), Sabertooth.createSabertoothAttributes().build());
         event.put(FnCEntities.BLACK_FOREST_SPIRIT.get(), BlackForestSpirit.createAttributes().build());
         event.put(FnCEntities.GUP.get(), Gup.createAttributes().build());
+        event.put(FnCEntities.BRIMSTONE_GOLEM.get(), BrimstoneGolem.createAttributes().build());
     }
 
     public static <T extends Entity> @Nullable T createEntity(EntityType<T> entityType, Level world, Consumer<T> consumer) {

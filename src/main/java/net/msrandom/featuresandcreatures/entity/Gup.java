@@ -43,9 +43,11 @@ public class Gup extends Monster implements IAnimatable, RangedAttackMob {
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(5, new LeapAtTargetGoal(this, 10F));
-        this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.25D, 20, 10.0F));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, false));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(2, new LeapAtTargetGoal(this, 10F));
+        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.25D, 20, 10.0F));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
     }
 
     @Override
@@ -127,7 +129,6 @@ public class Gup extends Monster implements IAnimatable, RangedAttackMob {
     @Override
     public void tick() {
         super.tick();
-        System.out.println(isAttacking());
         if(this.isAttacking()){
             this.setAttackTimer(this.getAttackTimer() - 1);
         }

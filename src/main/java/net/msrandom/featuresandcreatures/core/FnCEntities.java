@@ -7,10 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.entity.BlackForestSpirit;
-import net.msrandom.featuresandcreatures.entity.Gup;
-import net.msrandom.featuresandcreatures.entity.Jockey;
-import net.msrandom.featuresandcreatures.entity.Spear;
+import net.msrandom.featuresandcreatures.entity.*;
 import net.msrandom.featuresandcreatures.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
@@ -24,6 +21,7 @@ public class FnCEntities {
     public static final RegistryObject<EntityType<Sabertooth>> SABERTOOTH = createEntity("sabertooth", EntityType.Builder.of(Sabertooth::new, MobCategory.CREATURE).sized(1.2F, 1.3F));
     public static final RegistryObject<EntityType<BlackForestSpirit>> BLACK_FOREST_SPIRIT = createEntity("black_forest_spirit", EntityType.Builder.of(BlackForestSpirit::new, MobCategory.CREATURE).sized(0.7F, 2f));
     public static final RegistryObject<EntityType<Gup>> GUP = createEntity("gup", EntityType.Builder.of(Gup::new, MobCategory.CREATURE).sized(2.6F, 2f));
+    public static final RegistryObject<EntityType<BrimstoneGolem>> BRIMSTONE_GOLEM = createEntity("brimstone_golem", EntityType.Builder.of(BrimstoneGolem::new, MobCategory.CREATURE).sized(2.6F, 4f));
 
     public static final RegistryObject<EntityType<Spear>> SPEAR = createEntity("spear", EntityType.Builder.<Spear>of(Spear::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20));
 
