@@ -35,7 +35,7 @@ public class Gup extends Monster implements IAnimatable, RangedAttackMob {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return createMobAttributes().add(Attributes.MAX_HEALTH, 12.0).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.MOVEMENT_SPEED, 0.23F).add(Attributes.FOLLOW_RANGE, 48.0D);
+        return createMobAttributes().add(Attributes.MAX_HEALTH, 56.0).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.MOVEMENT_SPEED, 0.15F).add(Attributes.FOLLOW_RANGE, 48.0D);
     }
 
     @Override
