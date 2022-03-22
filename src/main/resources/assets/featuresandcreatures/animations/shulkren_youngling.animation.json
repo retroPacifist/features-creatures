@@ -1,0 +1,340 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.shulkren_youngling.idle": {
+			"loop": true
+		},
+		"animation.shulkren_youngling.walk": {
+			"loop": true,
+			"animation_length": 1.2,
+			"bones": {
+				"LeftLeg": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.3": {
+							"vector": [-25, 0, 0]
+						},
+						"0.6": {
+							"vector": [0, 0, 0]
+						},
+						"0.9": {
+							"vector": [25, 0, 0]
+						},
+						"1.2": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"RightLeg": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.3": {
+							"vector": [25, 0, 0]
+						},
+						"0.6": {
+							"vector": [0, 0, 0]
+						},
+						"0.9": {
+							"vector": [-25, 0, 0]
+						},
+						"1.2": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"RealLeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.3": {
+							"vector": [25, 0, 0]
+						},
+						"0.6": {
+							"vector": [0, 0, 0]
+						},
+						"0.9": {
+							"vector": [-25, 0, 0]
+						},
+						"1.2": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"RealRightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.3": {
+							"vector": [-25, 0, 0]
+						},
+						"0.6": {
+							"vector": [0, 0, 0]
+						},
+						"0.9": {
+							"vector": [25, 0, 0]
+						},
+						"1.2": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"animation.shulkren_youngling.hold": {
+			"loop": "hold_on_last_frame",
+			"override_previous_animation": true,
+			"bones": {
+				"RealLeftArm": {
+					"rotation": {
+						"vector": [-47.5, 5, 7.5]
+					}
+				},
+				"RealRightArm": {
+					"rotation": {
+						"vector": [-47.5, -5, -7.5]
+					}
+				},
+				"Head": {
+					"rotation": {
+						"vector": [27.5, 0, 0]
+					}
+				},
+				"LHand": {
+					"rotation": {
+						"vector": [-15, -32.5, 55]
+					}
+				},
+				"RHand": {
+					"rotation": {
+						"vector": [-15, 32.5, -55]
+					}
+				}
+			}
+		},
+		"animation.shulkren_youngling.give": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 2,
+			"override_previous_animation": true,
+			"bones": {
+				"RealLeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-47.5, 5, 7.5]
+						},
+						"0.5": {
+							"vector": [-47.5, 5, 7.5]
+						},
+						"1.0": {
+							"vector": [-92.5, 10, 7.5]
+						}
+					}
+				},
+				"RealRightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-47.5, -5, -7.5]
+						},
+						"0.5": {
+							"vector": [-47.5, -5, -7.5]
+						},
+						"1.0": {
+							"vector": [-92.5, -10, -7.5]
+						}
+					}
+				},
+				"Head": {
+					"rotation": {
+						"0.0": {
+							"vector": [27.5, 0, 0]
+						},
+						"0.5": {
+							"vector": [-15, 0, 0]
+						}
+					}
+				},
+				"LHand": {
+					"rotation": {
+						"vector": [-15, -32.5, 55]
+					}
+				},
+				"RHand": {
+					"rotation": {
+						"vector": [-15, 32.5, -55]
+					}
+				}
+			}
+		},
+		"animation.shulkren_youngling.eat": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 1.6,
+			"override_previous_animation": true,
+			"bones": {
+				"RealLeftArm": {
+					"rotation": {
+						"vector": [-47.5, 5, 7.5]
+					}
+				},
+				"RealRightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-47.5, -5, -7.5]
+						},
+						"0.2": {
+							"vector": [-75, -5, -7.5]
+						},
+						"0.4": {
+							"vector": [-47.5, -5, -7.5]
+						},
+						"0.6": {
+							"vector": [-75, -5, -7.5]
+						},
+						"0.8": {
+							"vector": [-47.5, -5, -7.5]
+						},
+						"1.0": {
+							"vector": [-75, -5, -7.5]
+						},
+						"1.2": {
+							"vector": [-47.5, -5, -7.5]
+						},
+						"1.4": {
+							"vector": [-75, -5, -7.5]
+						},
+						"1.6": {
+							"vector": [-47.5, -5, -7.5]
+						}
+					}
+				},
+				"Head": {
+					"rotation": {
+						"vector": [27.5, 0, 0]
+					}
+				},
+				"LHand": {
+					"rotation": {
+						"vector": [-15, -32.5, 55]
+					}
+				},
+				"RHand": {
+					"rotation": {
+						"0.0": {
+							"vector": [-15, 32.5, -55]
+						},
+						"0.2": {
+							"vector": [-15, 32.5, -97.5]
+						},
+						"0.4": {
+							"vector": [-15, 32.5, -55]
+						},
+						"0.6": {
+							"vector": [-15, 32.5, -97.5]
+						},
+						"0.8": {
+							"vector": [-15, 32.5, -55]
+						},
+						"1.0": {
+							"vector": [-15, 32.5, -97.5]
+						},
+						"1.2": {
+							"vector": [-15, 32.5, -55]
+						},
+						"1.4": {
+							"vector": [-15, 32.5, -97.5]
+						},
+						"1.6": {
+							"vector": [-15, 32.5, -55]
+						}
+					}
+				}
+			}
+		},
+		"animation.shulkren_youngling.plant": {
+			"animation_length": 0.84,
+			"bones": {
+				"Torso": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.4": {
+							"vector": [30, 0, 0]
+						},
+						"0.8": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"RealLeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.4": {
+							"vector": [-57.5, 0, 0]
+						},
+						"0.8": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"LHand": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.4": {
+							"vector": [-47.5, 60, -25]
+						},
+						"0.8": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"RealRightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.4": {
+							"vector": [35, -25, 0]
+						},
+						"0.8": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"Head": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.4": {
+							"vector": [45, 0, 0]
+						},
+						"0.8": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.4": {
+							"vector": [0, -1.5, -4.25]
+						},
+						"0.8": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

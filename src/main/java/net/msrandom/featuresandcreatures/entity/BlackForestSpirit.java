@@ -47,7 +47,6 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
     private int remainingPersistentAngerTime;
     private UUID persistentAngerTarget;
 
-
     public BlackForestSpirit(EntityType<? extends BlackForestSpirit> type, Level level) {
         super(type, level);
     }
@@ -204,5 +203,4 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
             super.stop();
         }
     }
-
 }
