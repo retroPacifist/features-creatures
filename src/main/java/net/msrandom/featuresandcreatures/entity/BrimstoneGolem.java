@@ -122,6 +122,11 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
         }
     }
 
+    @Override
+    public boolean fireImmune() {
+        return true;
+    }
+
     private float getAttackDamage() {
         return (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
     }

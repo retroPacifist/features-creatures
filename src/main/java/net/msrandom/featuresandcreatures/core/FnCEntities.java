@@ -20,7 +20,7 @@ public class FnCEntities {
     public static final RegistryObject<EntityType<Jackalope>> JACKALOPE = createEntity("jackalope", EntityType.Builder.of(Jackalope::new, MobCategory.CREATURE).sized(1F, 0.8F));
     public static final RegistryObject<EntityType<Sabertooth>> SABERTOOTH = createEntity("sabertooth", EntityType.Builder.of(Sabertooth::new, MobCategory.CREATURE).sized(1.2F, 1.3F));
     public static final RegistryObject<EntityType<BlackForestSpirit>> BLACK_FOREST_SPIRIT = createEntity("black_forest_spirit", EntityType.Builder.of(BlackForestSpirit::new, MobCategory.CREATURE).sized(0.7F, 2f));
-    public static final RegistryObject<EntityType<Gup>> GUP = createEntity("gup", EntityType.Builder.of(Gup::new, MobCategory.CREATURE).sized(2.6F, 2f));
+    public static final RegistryObject<EntityType<Gup>> GUP = createEntity("gup", EntityType.Builder.of(Gup::new, MobCategory.CREATURE).sized(2.625F, 2f));
     public static final RegistryObject<EntityType<BrimstoneGolem>> BRIMSTONE_GOLEM = createEntity("brimstone_golem", EntityType.Builder.of(BrimstoneGolem::new, MobCategory.CREATURE).sized(2.6F, 4f));
     public static final RegistryObject<EntityType<ShulkrenYoungling>> SHULKREN_YOUNGLING = createEntity("shulkren_youngling", EntityType.Builder.of(ShulkrenYoungling::new, MobCategory.CREATURE).sized(1F, 1f));
 
