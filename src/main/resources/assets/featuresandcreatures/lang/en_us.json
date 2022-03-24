@@ -98,10 +98,12 @@
   "bestiary.featuresandcreature.unknown": "??????",
   "bestiary.featuresandcreatures.black_forest_spirit.description": "These wooden creatures seem to arise from the bark of the surrounding trees. Their method of reproduction eludes me if they have one at all.\n\nThey do not eat nor sleep but retreat into the trees. If bribed with rich minerals, they may assist you in obtaining saplings to further their home turf.",
   "bestiary.featuresandcreatures.black_forest_spirit.spawn": "Dark Oak Forests during Thunderstorms",
+  "bestiary.featuresandcreatures.black_forest_spirit.spawn.byg": "Dark Oak Forests and Fir Forests during Thunderstorms",
   "bestiary.featuresandcreatures.boar.description": "Boars seem to be incredibly closely related to the pink pigs scattered throughout the world. Not close enough to interbreed.\n\nDespite this, their behavior is mostly identical. However, Boars can and will be aggressive to any attackers.",
   "bestiary.featuresandcreatures.boar.spawn": "With the Jockey",
   "bestiary.featuresandcreatures.brimstone_golem.description": "A mighty construct hailing from the Nether, these golems pack a far bigger punch than anything manufactured in the Overworld to date.\n\nBe very careful around them, they’re unpredictable and highly aggressive. Even from a range, they deftly take out their prey.",
-  "bestiary.featuresandcreatures.brimstone_golem.spawn": "Brimstone Caverns, Bastion Remnants, and Constructable",
+  "bestiary.featuresandcreatures.brimstone_golem.spawn": "Bastion Remnants and Constructable",
+  "bestiary.featuresandcreatures.brimstone_golem.spawn.byg": "Brimstone Caverns, Bastion Remnants, and Constructable",
   "bestiary.featuresandcreatures.gup1.description": "These gargantuan jelly-like creatures are monsters of death and destruction. They barely seem to register any hit I do.\n\nI managed to fell one, once. And it simply split into two, and continued with its onslaught. Be wary around these monsters.",
   "bestiary.featuresandcreatures.gup1.spawn": "New Moons, and Swamps at daytime",
   "bestiary.featuresandcreatures.gup2.description": "Just like their brethren, the Geeps will not hesitate to destroy you. Their gelatinous spikes will puncture any armor you have, trust me.\n\nThey don’t care about the safety of anything nearby, they attack indiscriminatorily, and do it full of rage and malic and vitriol.",
@@ -115,5 +117,6 @@
   "bestiary.featuresandcreatures.sabertooth.description": "This ferocious feline is from times long gone, kept cultivated and domesticated by its savior from extinction.\n\nA powerful attacker, using claws and teeth. The teeth themselves can be fashioned into a deadly weapon, or so I’ve heard. I hope I can witness that one day.",
   "bestiary.featuresandcreatures.sabertooth.spawn": "With the Jockey",
   "bestiary.featuresandcreatures.shulkren_youngling.description": "One of the few friendly faces in the abyssal dimension of The End. The Shulkren Younglings are childish and curious.\n\nThey are willing to trade with me, and in turn, I protect them from the harsh wilds. They love to garden, it’s a rather cute change of pace in this world.\n",
-  "bestiary.featuresandcreatures.shulkren_youngling": "The End"
+  "bestiary.featuresandcreatures.shulkren_youngling": "The End",
+  "bestiary.featuresandcreatures.shulkren_youngling.byg": "The End, especially Shulkren Forests"
 }
