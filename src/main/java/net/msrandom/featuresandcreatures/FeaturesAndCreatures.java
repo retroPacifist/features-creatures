@@ -4,7 +4,9 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -20,8 +22,8 @@ import net.msrandom.featuresandcreatures.client.model.SpearModel;
 import net.msrandom.featuresandcreatures.client.renderer.entity.*;
 import net.msrandom.featuresandcreatures.core.*;
 import net.msrandom.featuresandcreatures.entity.*;
-import net.msrandom.featuresandcreatures.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.entity.mount.Boar;
+import net.msrandom.featuresandcreatures.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
 import net.msrandom.featuresandcreatures.item.AntlerHeaddressRenderer;
@@ -59,6 +61,7 @@ public class FeaturesAndCreatures {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         NetworkHandler.init();
+        SpawnPlacements.register(FnCEntities.BLACK_FOREST_SPIRIT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlackForestSpirit::checkSpawnRules);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {

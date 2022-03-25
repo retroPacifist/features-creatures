@@ -218,11 +218,11 @@ public class Gup extends Monster implements IAnimatable {
         AnimationController<?> controller = event.getController();
         controller.transitionLengthTicks = 0;
         if (this.isAttacking()) {
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.spikes", true));
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.spikes", false));
             return PlayState.CONTINUE;
         }
         if (!this.isOnGround()) {
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.jump", true));
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.jump", false));
             return PlayState.CONTINUE;
         }
         if (this.isOnGround() && event.isMoving()) {

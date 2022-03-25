@@ -1,5 +1,6 @@
 package net.msrandom.featuresandcreatures.entity;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -7,10 +8,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -25,6 +24,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -35,6 +37,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class BlackForestSpirit extends Monster implements NeutralMob, RangedAttackMob, IAnimatable {
@@ -73,6 +76,23 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
     @Override
     public boolean canHoldItem(ItemStack stack) {
         return stack.getCount() == 1 && !stack.getItem().getRegistryName().toString().contains("sapling");
+    }
+
+    public static boolean checkSpawnRules(EntityType<BlackForestSpirit> type, LevelAccessor world, MobSpawnType spawnType, BlockPos pos, Random random) {
+        if (world.getDifficulty() != Difficulty.PEACEFUL) {
+            if (world.getBiome(pos).is(Biomes.DARK_FOREST) && pos.getY() > 50 && pos.getY() < 70 && random.nextFloat() < 0.5F && 0.0F == world.getMoonBrightness()) {
+                return checkMobSpawnRules(type, world, spawnType, pos, random);
+            }
+
+            if (!(world instanceof WorldGenLevel)) {
+                return false;
+            }
+
+            if (world.getBiome(pos).is(Biomes.DARK_FOREST) && ((WorldGenLevel) world).getLevel().isThundering()) {
+                return checkMobSpawnRules(type, world, spawnType, pos, random);
+            }
+        }
+        return false;
     }
 
     @Override
