@@ -62,6 +62,7 @@ public class FeaturesAndCreatures {
     private void commonSetup(FMLCommonSetupEvent event) {
         NetworkHandler.init();
         SpawnPlacements.register(FnCEntities.BLACK_FOREST_SPIRIT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlackForestSpirit::checkSpawnRules);
+        SpawnPlacements.register(FnCEntities.SHULKREN_YOUNGLING.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, ShulkrenYoungling::checkSpawnRules);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {

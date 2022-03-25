@@ -1,5 +1,6 @@
 package net.msrandom.featuresandcreatures.entity;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -8,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -22,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -38,6 +42,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
@@ -49,7 +54,14 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
         super(p_21368_, p_21369_);
     }
 
-    @Override
+    public static boolean checkSpawnRules(EntityType<ShulkrenYoungling> type, LevelAccessor world, MobSpawnType spawnType, BlockPos pos, Random random) {
+        if (world.getBlockState(pos.below()).is(Blocks.END_STONE)) {
+            return checkMobSpawnRules(type, world, spawnType, pos, random);
+        }
+        return false;
+    }
+
+        @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
