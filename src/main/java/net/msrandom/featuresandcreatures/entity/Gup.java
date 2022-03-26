@@ -186,17 +186,17 @@ public class Gup extends PathfinderMob implements IAnimatable {
         this.refreshDimensions();
         switch (size) {
             case 1 -> {
-                this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(7F);
+                this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(14F);
                 this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.2F);
                 this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(2F);
             }
             case 2 -> {
-                this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(14F);
+                this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(28F);
                 this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.175F);
                 this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.5F);
             }
             case 3 -> {
-                this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(28F);
+                this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(56F);
                 this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.15F);
                 this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(5F);
             }
