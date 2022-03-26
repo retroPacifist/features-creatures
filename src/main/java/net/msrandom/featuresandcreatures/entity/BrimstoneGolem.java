@@ -1,5 +1,6 @@
 package net.msrandom.featuresandcreatures.entity;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -22,6 +23,8 @@ import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -32,6 +35,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 import java.util.UUID;
 
 public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedAttackMob, IAnimatable {
@@ -57,6 +61,13 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 64.0D).add(Attributes.MOVEMENT_SPEED, 0.2D).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.ATTACK_DAMAGE, 14.0D);
+    }
+
+    public static boolean checkSpawnRules(EntityType<BrimstoneGolem> type, LevelAccessor world, MobSpawnType spawnType, BlockPos pos, Random random) {
+        if (world.getBlockState(pos.below()).is(Blocks.POLISHED_BLACKSTONE_BRICKS)) {
+            return checkMobSpawnRules(type, world, spawnType, pos, random);
+        }
+        return false;
     }
 
     @Override

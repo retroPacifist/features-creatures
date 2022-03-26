@@ -27,5 +27,14 @@ public class MobWorldSpawner {
         if (event.getCategory() == Biome.BiomeCategory.FOREST) {
             event.getSpawns().addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(FnCEntities.BLACK_FOREST_SPIRIT.get(), 100, 1, 1));
         }
+        if (event.getCategory() == Biome.BiomeCategory.NETHER) {
+            event.getSpawns().addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(FnCEntities.BRIMSTONE_GOLEM.get(), 1000, 1, 1));
+        }
+        if (event.getCategory() == Biome.BiomeCategory.SWAMP) {
+            event.getSpawns().addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(FnCEntities.GUP.get(), 100, 1, 4));
+        }
+        if (event.getCategory() != Biome.BiomeCategory.THEEND && event.getCategory() != Biome.BiomeCategory.NETHER) {
+            event.getSpawns().addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(FnCEntities.GUP.get(), 11, 1, 4));
+        }
     }
 }

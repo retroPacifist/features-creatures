@@ -1,5 +1,7 @@
 package net.msrandom.featuresandcreatures.entity;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -7,6 +9,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
@@ -16,10 +19,13 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -30,8 +36,9 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
+import java.util.Random;
 
-public class Gup extends Monster implements IAnimatable {
+public class Gup extends PathfinderMob implements IAnimatable {
 
     private final AnimationFactory factory = new AnimationFactory(this);
 
@@ -48,6 +55,8 @@ public class Gup extends Monster implements IAnimatable {
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes().add(Attributes.MAX_HEALTH, 56.0).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.MOVEMENT_SPEED, 0.15F).add(Attributes.FOLLOW_RANGE, 48.0D);
     }
+
+
 
     @Override
     public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
@@ -93,7 +102,6 @@ public class Gup extends Monster implements IAnimatable {
             i++;
         }
         this.setSize(i, true);
-        System.out.println(getSize());
         return super.finalizeSpawn(p_33601_, p_33602_, p_33603_, p_33604_, p_33605_);
     }
 
@@ -244,6 +252,23 @@ public class Gup extends Monster implements IAnimatable {
         return this.getSize() > 0;
     }
 
+    public static boolean checkSpawnRules(EntityType<Gup> type, LevelAccessor world, MobSpawnType spawnType, BlockPos pos, Random random) {
+        if (world.getDifficulty() != Difficulty.PEACEFUL) {
+            Holder<Biome> biome = world.getBiome(pos);
+            if (biome.is(Biomes.SWAMP)) {
+                return true;
+            }
+
+            if (!(world instanceof WorldGenLevel)) {
+                return false;
+            }
+
+            if (biome.value().biomeCategory != Biome.BiomeCategory.THEEND && biome.value().biomeCategory != Biome.BiomeCategory.NETHER && !biome.is(Biomes.SWAMP) && world.getMoonBrightness() == 0.0F) {
+                return checkMobSpawnRules(type, world, spawnType, pos, random);
+            }
+        }
+        return false;
+    }
 
     @Override
     public void tick() {
