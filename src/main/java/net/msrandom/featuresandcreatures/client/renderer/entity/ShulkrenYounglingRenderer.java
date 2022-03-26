@@ -32,7 +32,7 @@ public class ShulkrenYounglingRenderer extends GeoEntityRenderer<ShulkrenYoungli
             stack.mulPose(Vector3f.XP.rotationDegrees(-25));
             stack.mulPose(Vector3f.YP.rotationDegrees(0));
             stack.mulPose(Vector3f.ZP.rotationDegrees(3.5f));
-            stack.translate(0.04D, 0.55D, -0.23D);
+            stack.translate(0.04D, 0.6D, -0.23D);
             stack.scale(0.70f, 0.70f, 0.70f);
             Minecraft.getInstance().getItemRenderer().renderStatic(mainHand, ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, packedLightIn, packedOverlayIn, stack, this.rtb, 1);
             stack.popPose();

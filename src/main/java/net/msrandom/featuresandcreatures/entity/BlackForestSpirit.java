@@ -9,12 +9,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -37,6 +39,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -60,7 +63,7 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(5, new TemptGoal(this, 1F, Ingredient.of(Items.LAPIS_LAZULI), true));
+        this.goalSelector.addGoal(5, new TemptGoal(this, 1F, Ingredient.of(Items.LAPIS_LAZULI), false));
         this.targetSelector.addGoal(1, (new SpiritTargetGoal(this)));
     }
 
@@ -75,7 +78,11 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
 
     @Override
     public boolean canHoldItem(ItemStack stack) {
-        return stack.getCount() == 1 && !stack.getItem().getRegistryName().toString().contains("sapling");
+        if (this.hasLapis()) {
+            return stack.getCount() == 1 && stack.getItem().getRegistryName().toString().contains("log");
+        } else {
+            return stack.getCount() == 1 && stack.is(Items.LAPIS_LAZULI);
+        }
     }
 
     public static boolean checkSpawnRules(EntityType<BlackForestSpirit> type, LevelAccessor world, MobSpawnType spawnType, BlockPos pos, Random random) {
@@ -99,20 +106,29 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
     public void tick() {
         Item pickup = this.getItemInHand(this.getUsedItemHand()).getItem();
         if (!hasLapis() && pickup == Items.LAPIS_LAZULI) {
-            setLapis(true);
+            int i = random.nextInt(10);
             this.setItemInHand(this.getUsedItemHand(), ItemStack.EMPTY);
+            if (i == 4) {
+                setLapis(true);
+            }
         }
         if (hasLapis() && pickup.getRegistryName().toString().contains("log")) {
             setLapis(false);
             String sapling = pickup.getRegistryName().toString().replace("log", "sapling");
             for (Item item : ForgeRegistries.ITEMS) {
                 if (item.getRegistryName().toString().equals(sapling)) {
-                    this.level.addFreshEntity(new ItemEntity(this.level, this.getX() + 1, this.getY() + 0.5f, this.getZ(), item.getDefaultInstance()));
+                    Player nearestPlayer = this.level.getNearestPlayer(this, 50);
+                    throwItemsTowardPos(this, item.getDefaultInstance(), Objects.requireNonNullElse(nearestPlayer, this).position());
                     this.setItemInHand(this.getUsedItemHand(), ItemStack.EMPTY);
                 }
             }
         }
         super.tick();
+    }
+
+    private static void throwItemsTowardPos(BlackForestSpirit spirit, ItemStack items, Vec3 vec3) {
+        spirit.swing(InteractionHand.OFF_HAND);
+        BehaviorUtils.throwItem(spirit, items, vec3.add(0.0D, 1.0D, 0.0D));
     }
 
     @Override

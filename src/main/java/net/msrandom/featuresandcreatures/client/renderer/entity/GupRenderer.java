@@ -34,7 +34,7 @@ public class GupRenderer extends GeoEntityRenderer<Gup> {
                 stack.scale(f2, f2, f2);
             }
             case 3 -> {
-                float f3 = (float) entity.getSize() / 1.7F;
+                float f3 = (float) entity.getSize() / 1.75F;
                 stack.scale(f3, f3, f3);
             }
         }

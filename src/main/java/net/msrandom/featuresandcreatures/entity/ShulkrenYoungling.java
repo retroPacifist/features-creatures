@@ -8,16 +8,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.TemptGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -61,13 +60,25 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
         return false;
     }
 
-        @Override
+    @Override
+    protected InteractionResult mobInteract(Player player, InteractionHand hand) {
+        ItemStack itemInHand = player.getItemInHand(hand);
+        if (itemInHand == Items.ENDER_EYE.getDefaultInstance()) {
+            itemInHand.shrink(1);
+            this.setItemInHand(InteractionHand.MAIN_HAND, itemInHand);
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.FAIL;
+    }
+
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(1, new TemptGoal(this, 1F, Ingredient.of(Items.ENDER_EYE), true));
-        this.targetSelector.addGoal(1, (new BlackForestSpirit.SpiritTargetGoal(this)));
+        this.goalSelector.addGoal(2, new TemptGoal(this, 1F, Ingredient.of(Items.ENDER_EYE), false));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 2D));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
     }
 
     @Override
@@ -80,7 +91,9 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     public void tick() {
         super.tick();
         if (this.isHolding(Items.ENDER_EYE)){
-            this.setTradeTimer(this.getTradeTimer() - 1);
+            if (!(this.getTarget() instanceof Player)) {
+                this.setTradeTimer(this.getTradeTimer() - 1);
+            }
         }
         if (this.getTradeTimer() <= 0){
             this.setDeltaMovement(this.getDeltaMovement());
@@ -115,7 +128,7 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
 
     @Override
     public boolean canHoldItem(ItemStack stack) {
-        return stack.getItem() == Items.ENDER_EYE;
+        return stack.getCount() == 1 && stack.getItem() == Items.ENDER_EYE;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

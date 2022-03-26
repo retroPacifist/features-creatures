@@ -14,8 +14,8 @@ public class BlackForestSpiritRenderer extends GeoEntityRenderer<BlackForestSpir
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BlackForestSpirit p_110775_1_) {
-        return BlackForestSpiritModel.TEXTURE;
+    public ResourceLocation getTextureLocation(BlackForestSpirit spirit) {
+        return spirit.hasLapis() ? BlackForestSpiritModel.GLOW_TEXTURE : BlackForestSpiritModel.TEXTURE;
     }
 
 }

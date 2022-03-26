@@ -9,6 +9,7 @@ import static net.msrandom.featuresandcreatures.FeaturesAndCreatures.createResou
 
 public class BlackForestSpiritModel extends AnimatedGeoModel<BlackForestSpirit> {
     public static final ResourceLocation TEXTURE = createResourceLocation("textures/entity/spirit/black_forest_spirit.png");
+    public static final ResourceLocation GLOW_TEXTURE = createResourceLocation("textures/entity/spirit/black_forest_spirit_glow.png");
 
 
     @Override
@@ -18,7 +19,7 @@ public class BlackForestSpiritModel extends AnimatedGeoModel<BlackForestSpirit> 
 
     @Override
     public ResourceLocation getTextureLocation(BlackForestSpirit object) {
-        return TEXTURE;
+        return object.hasLapis() ? GLOW_TEXTURE : TEXTURE;
     }
 
     @Override
