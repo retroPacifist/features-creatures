@@ -57,10 +57,9 @@ public class Gup extends PathfinderMob implements IAnimatable {
     }
 
 
-
     @Override
-    public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
-        return false;
+    public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource source) {
+        return super.causeFallDamage(p_147187_, 0.2F , source);
     }
 
     @Override
@@ -75,7 +74,7 @@ public class Gup extends PathfinderMob implements IAnimatable {
 
             @Override
             protected double getAttackReachSqr(LivingEntity p_25556_) {
-                return super.getAttackReachSqr(p_25556_) * 0.65D;
+                return super.getAttackReachSqr(p_25556_) * 0.25D;
             }
 
             @Override
@@ -233,7 +232,7 @@ public class Gup extends PathfinderMob implements IAnimatable {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.jump", false));
             return PlayState.CONTINUE;
         }
-        if (this.isOnGround() && event.isMoving()) {
+        if (this.isOnGround() && event.isMoving() || this.isInWater()) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.walk", true));
             return PlayState.CONTINUE;
         } else if (this.isOnGround() && !event.isMoving()) {
