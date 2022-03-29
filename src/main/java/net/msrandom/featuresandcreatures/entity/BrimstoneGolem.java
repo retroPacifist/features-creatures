@@ -97,7 +97,7 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
     public void tick() {
         super.tick();
         if (this.getTarget() != null) {
-            if (this.getTarget().distanceToSqr(this.getX(), this.getY(), this.getZ()) > 50) {
+            if (this.getTarget().distanceToSqr(this.getX(), this.getY(), this.getZ()) > 100) {
                 if (this.goalSelector.getRunningGoals().anyMatch(goal -> goal.getGoal().getClass() == MeleeAttackGoal.class)) {
                     this.goalSelector.removeGoal(meleeAttackGoal);
                     this.goalSelector.addGoal(1, rangedAttackGoal);

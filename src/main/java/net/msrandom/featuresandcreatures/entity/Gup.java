@@ -17,7 +17,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -26,6 +27,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -36,6 +39,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Random;
 
 public class Gup extends PathfinderMob implements IAnimatable {
@@ -53,13 +57,13 @@ public class Gup extends PathfinderMob implements IAnimatable {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return createMobAttributes().add(Attributes.MAX_HEALTH, 56.0).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.MOVEMENT_SPEED, 0.15F).add(Attributes.FOLLOW_RANGE, 48.0D);
+        return createMobAttributes().add(Attributes.MAX_HEALTH, 56.0).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.MOVEMENT_SPEED, 0.3F).add(Attributes.FOLLOW_RANGE, 48.0D);
     }
 
 
     @Override
     public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource source) {
-        return super.causeFallDamage(p_147187_, 0.2F , source);
+        return false;
     }
 
     @Override
@@ -67,21 +71,8 @@ public class Gup extends PathfinderMob implements IAnimatable {
         this.goalSelector.addGoal(1, new Gup.GupFloatGoal(this));
         this.goalSelector.addGoal(3, new Gup.GupRandomDirectionGoal(this));
         this.goalSelector.addGoal(5, new Gup.GupKeepOnJumpingGoal(this));
-        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(2, new LeapAtTargetGoal(this, 1F));
-        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1D, true){
-
-            @Override
-            protected double getAttackReachSqr(LivingEntity p_25556_) {
-                return super.getAttackReachSqr(p_25556_) * 0.25D;
-            }
-
-            @Override
-            protected int getAttackInterval() {
-                return 35;
-            }
-        });
+        this.goalSelector.addGoal(2, new GupLeapGoal(this, 1F));
+        this.goalSelector.addGoal(1, new GupLookAtTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
     }
 
@@ -216,6 +207,15 @@ public class Gup extends PathfinderMob implements IAnimatable {
         data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
     }
 
+    public void doDamage() {
+        AABB axisalignedbb = (new AABB(this.blockPosition())).inflate(1.5F).expandTowards(0.0D, 2.0D, 0.0D);
+        List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, axisalignedbb);
+        for (LivingEntity le : list) {
+            if (le instanceof Gup) return;
+            le.hurt(DamageSource.GENERIC, (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+        }
+    }
+
     @Override
     public AnimationFactory getFactory() {
         return factory;
@@ -224,15 +224,23 @@ public class Gup extends PathfinderMob implements IAnimatable {
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         AnimationController<?> controller = event.getController();
         controller.transitionLengthTicks = 0;
+        if (this.isInWater()) {
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.walk", true));
+            return PlayState.CONTINUE;
+        }
         if (this.isAttacking()) {
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.spikes", false));
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.spikes", true));
             return PlayState.CONTINUE;
         }
         if (!this.isOnGround()) {
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.jump", false));
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.jump", true));
             return PlayState.CONTINUE;
         }
-        if (this.isOnGround() && event.isMoving() || this.isInWater()) {
+        if (this.fallDistance > 0) {
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.jump", true));
+            return PlayState.CONTINUE;
+        }
+        if (this.isOnGround() && event.isMoving()) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.gup.walk", true));
             return PlayState.CONTINUE;
         } else if (this.isOnGround() && !event.isMoving()) {
@@ -281,7 +289,10 @@ public class Gup extends PathfinderMob implements IAnimatable {
         }
     }
 
-
+    @Override
+    protected float getJumpPower() {
+        return 0.6F;
+    }
 
     static class GupFloatGoal extends Goal {
         private final Gup gup;
@@ -332,10 +343,10 @@ public class Gup extends PathfinderMob implements IAnimatable {
         private final Gup gup;
         private boolean isAggressive;
 
-        public GupMoveControl(Gup p_33668_) {
-            super(p_33668_);
-            this.gup = p_33668_;
-            this.yRot = 180.0F * p_33668_.getYRot() / (float) Math.PI;
+        public GupMoveControl(Gup gup) {
+            super(gup);
+            this.gup = gup;
+            this.yRot = 180.0F * gup.getYRot() / (float) Math.PI;
         }
 
         public void setDirection(float p_33673_, boolean p_33674_) {
@@ -404,8 +415,103 @@ public class Gup extends PathfinderMob implements IAnimatable {
             ((Gup.GupMoveControl) this.gup.getMoveControl()).setDirection(this.chosenDegrees, false);
         }
     }
-    static class GupAttackGoal extends MeleeAttackGoal {
-        public GupAttackGoal(PathfinderMob p_25552_, double p_25553_, boolean p_25554_) {
+
+    static class GupLookAtTargetGoal extends Goal {
+        private final Gup gup;
+
+        public GupLookAtTargetGoal(Gup p_33648_) {
+            this.gup = p_33648_;
+            this.setFlags(EnumSet.of(Goal.Flag.LOOK));
+        }
+
+        public boolean canUse() {
+            LivingEntity livingentity = this.gup.getTarget();
+            if (livingentity == null) {
+                return false;
+            } else {
+                return this.gup.canAttack(livingentity) && this.gup.getMoveControl() instanceof GupMoveControl;
+            }
+        }
+
+        public void start() {
+            super.start();
+        }
+
+        public boolean requiresUpdateEveryTick() {
+            return true;
+        }
+
+        public boolean canContinueToUse() {
+            LivingEntity livingentity = this.gup.getTarget();
+            if (livingentity == null) {
+                return false;
+            } else return this.gup.canAttack(livingentity);
+        }
+
+        public void tick() {
+            LivingEntity livingentity = this.gup.getTarget();
+            if (livingentity != null) {
+                this.gup.lookAt(livingentity, 10.0F, 10.0F);
+                System.out.println(gup.getAttackTimer());
+                gup.setAttacking(true);
+                if (gup.getAttackTimer() <= 1) {
+                    gup.doDamage();
+                }
+            }
+            ((Gup.GupMoveControl) this.gup.getMoveControl()).setDirection(this.gup.getYRot(), true);
+        }
+    }
+
+    public static class GupLeapGoal extends Goal {
+        private final Gup gup;
+        private LivingEntity target;
+        private final float yd;
+
+        public GupLeapGoal(Gup gup, float p_25493_) {
+            this.gup = gup;
+            this.yd = p_25493_;
+            this.setFlags(EnumSet.of(Goal.Flag.JUMP, Goal.Flag.MOVE));
+        }
+
+        public boolean canUse() {
+            if (this.gup.isVehicle()) {
+                return false;
+            } else {
+                this.target = this.gup.getTarget();
+                if (this.target == null) {
+                    return false;
+                } else {
+                    double d0 = this.gup.distanceToSqr(this.target);
+                    if (!(d0 < 4.0D) && !(d0 > 16.0D)) {
+                        if (!this.gup.isOnGround() && this.gup.getAttackTimer() < 20) {
+                            return false;
+                        } else {
+                            return this.gup.getRandom().nextInt(reducedTickDelay(5)) == 0;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        public boolean canContinueToUse() {
+            return !this.gup.isOnGround();
+        }
+
+        public void start() {
+            Vec3 vec3 = this.gup.getDeltaMovement();
+            Vec3 vec31 = new Vec3(this.target.getX() - this.gup.getX(), 0.0D, this.target.getZ() - this.gup.getZ());
+            if (vec31.lengthSqr() > 1.0E-7D) {
+                vec31 = vec31.normalize().scale(0.4D).add(vec3.scale(0.2D));
+            }
+
+            this.gup.setDeltaMovement(vec31.x, (double)this.yd, vec31.z);
+        }
+    }
+
+    static class GupAnimatedAttackGoal extends MeleeAttackGoal {
+        public GupAnimatedAttackGoal(PathfinderMob p_25552_, double p_25553_, boolean p_25554_) {
             super(p_25552_, p_25553_, p_25554_);
         }
 
