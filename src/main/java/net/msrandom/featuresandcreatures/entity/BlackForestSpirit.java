@@ -15,11 +15,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -28,6 +29,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
@@ -39,19 +43,22 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
-public class BlackForestSpirit extends Monster implements NeutralMob, RangedAttackMob, IAnimatable {
+public class BlackForestSpirit extends Monster implements NeutralMob, RangedAttackMob, IAnimatable, FloatingEntity {
 
     private final AnimationFactory factory = new AnimationFactory(this);
 
     private static final EntityDataAccessor<Boolean> HAS_LAPIS = SynchedEntityData.defineId(BlackForestSpirit.class, EntityDataSerializers.BOOLEAN);
 
+    private List<ItemEntity> followingItem;
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private int remainingPersistentAngerTime;
     private UUID persistentAngerTarget;
+
 
     public BlackForestSpirit(EntityType<? extends BlackForestSpirit> type, Level level) {
         super(type, level);
@@ -61,10 +68,11 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new RangedAttackGoal(this, 1.25D, 20, 10.0F));
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
+        this.goalSelector.addGoal(4, new FollowItemGoal(this, 12, 2F));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(5, new TemptGoal(this, 1F, Ingredient.of(Items.LAPIS_LAZULI), false));
-        this.targetSelector.addGoal(1, (new SpiritTargetGoal(this)));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -99,6 +107,22 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
                 return checkMobSpawnRules(type, world, spawnType, pos, random);
             }
         }
+        return false;
+    }
+
+    @Override
+    protected float getBlockSpeedFactor() {
+        BlockState blockstate = this.level.getBlockState(this.blockPosition());
+        float f = blockstate.getBlock().getSpeedFactor();
+        if (!blockstate.is(Blocks.WATER) && !blockstate.is(Blocks.BUBBLE_COLUMN)) {
+            return (double)f == 1.0D ? this.level.getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getBlock().getSpeedFactor() : f;
+        } else {
+            return f;
+        }
+    }
+
+    @Override
+    protected boolean onSoulSpeedBlock() {
         return false;
     }
 
@@ -206,15 +230,15 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
 
     @Override
     public void performRangedAttack(LivingEntity entity, float index) {
-        Snowball snowball = new Snowball(this.level, this);
+        BFSAttack attack = new BFSAttack(this.level, this);
         double d0 = entity.getEyeY() - (double) 1.1F;
         double d1 = entity.getX() - this.getX();
-        double d2 = d0 - snowball.getY();
+        double d2 = d0 - attack.getY();
         double d3 = entity.getZ() - this.getZ();
         double d4 = Math.sqrt(d1 * d1 + d3 * d3) * (double) 0.2F;
-        snowball.shoot(d1, d2 + d4, d3, 1.6F, 12.0F);
+        attack.shoot(d1, d2 + d4, d3, 1.6F, 12.0F);
         this.playSound(SoundEvents.SNOW_GOLEM_SHOOT, 1.0F, 0.4F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-        this.level.addFreshEntity(snowball);
+        this.level.addFreshEntity(attack);
     }
 
     public static class SpiritTargetGoal extends TargetGoal {
@@ -237,6 +261,54 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
         @Override
         public void stop() {
             super.stop();
+        }
+    }
+
+    public static class FollowItemGoal extends Goal {
+
+        public BlackForestSpirit spirit;
+        public double distance;
+        public float speed;
+
+
+        public FollowItemGoal(BlackForestSpirit spirit, double distance, float speed) {
+            this.spirit = spirit;
+            this.distance = distance;
+            this.speed = speed;
+        }
+
+        @Override
+        public boolean canUse() {
+            return spirit.isAlive();
+        }
+
+        @Override
+        public void start() {
+            super.start();
+        }
+
+        @Override
+        public void stop() {
+            this.spirit.getNavigation().stop();
+            super.stop();
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            this.spirit.followingItem = this.spirit.level.getEntitiesOfClass(ItemEntity.class, new AABB(this.spirit.blockPosition()).inflate(distance));
+            if (this.spirit.followingItem.isEmpty()) return;
+            boolean flag = this.spirit.hasLapis() && !this.spirit.followingItem.get(0).getItem().getItem().getRegistryName().toString().contains("log");
+            boolean flag1 = !this.spirit.followingItem.get(0).getItem().is(Items.LAPIS_LAZULI) && !this.spirit.hasLapis();
+            if (flag || flag1) {
+                this.spirit.followingItem.remove(0);
+                return;
+            }
+            if (this.spirit.distanceToSqr(this.spirit.followingItem.get(0)) < 0.001F) {
+                this.spirit.getNavigation().stop();
+            } else {
+                this.spirit.getNavigation().moveTo(this.spirit.followingItem.get(0), speed);
+            }
         }
     }
 }

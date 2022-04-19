@@ -22,6 +22,7 @@ public class FnCItems {
     };
 
     public static final RegistryObject<Item> MEGA_POTION = REGISTRAR.register("mega_potion", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> BFS_ATTACK_ITEM = REGISTRAR.register("bfs_attack_item", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> TINTED_BOTTLE = REGISTRAR.register("tinted_bottle", () -> new BottleItem(new Item.Properties().tab(TAB)));
 

@@ -25,6 +25,7 @@ import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -38,7 +39,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.UUID;
 
-public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedAttackMob, IAnimatable {
+public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedAttackMob, IAnimatable, FloatingEntity {
 
     private final AnimationFactory factory = new AnimationFactory(this);
 
@@ -91,6 +92,17 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
 
     private void registerAttackGoals() {
         this.goalSelector.addGoal(1, meleeAttackGoal);
+    }
+
+    @Override
+    protected float getBlockSpeedFactor() {
+        BlockState blockstate = this.level.getBlockState(this.blockPosition());
+        float f = blockstate.getBlock().getSpeedFactor();
+        if (!blockstate.is(Blocks.WATER) && !blockstate.is(Blocks.BUBBLE_COLUMN)) {
+            return (double)f == 1.0D ? this.level.getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getBlock().getSpeedFactor() : f;
+        } else {
+            return f;
+        }
     }
 
     @Override
