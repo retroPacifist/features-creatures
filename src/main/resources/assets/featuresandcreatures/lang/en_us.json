@@ -12,6 +12,7 @@
   "entity.featuresandcreatures.sabertooth": "Sabertooth",
   "entity.featuresandcreatures.shulkren_youngling": "Shulkren Youngling",
   "entity.featuresandcreatures.spear": "Spear",
+  "entity.featuresandcreatures.tbh": "tbh",
 
   "itemGroup.featuresandcreatures": "Features & Creatures",
   "item.featuresandcreatures.black_forest_spirit_spawn_egg": "Black Forest Spirit Spawn Egg",
@@ -22,6 +23,7 @@
   "item.featuresandcreatures.jockey_spawn_egg": "Jockey Spawn Egg",
   "item.featuresandcreatures.sabertooth_spawn_egg": "Sabertooth Spawn Egg",
   "item.featuresandcreatures.shulkren_youngling_spawn_egg": "Shulkren Youngling Spawn Egg",
+  "item.featuresandcreatures.tbh_spawn_egg": "tbh Spawn Egg",
   "item.featuresandcreatures.antler": "Antler",
   "item.featuresandcreatures.antler_headdress": "Antler Headdress",
   "item.featuresandcreatures.bestiary": "Bestiary",
@@ -116,7 +118,9 @@
   "bestiary.featuresandcreatures.jockey.spawn": "Anywhere in the Overworld",
   "bestiary.featuresandcreatures.sabertooth.description": "This ferocious feline is from times long gone, kept cultivated and domesticated by its savior from extinction.\n\nA powerful attacker, using claws and teeth. The teeth themselves can be fashioned into a deadly weapon, or so I’ve heard. I hope I can witness that one day.",
   "bestiary.featuresandcreatures.sabertooth.spawn": "With the Jockey",
-  "bestiary.featuresandcreatures.shulkren_youngling.description": "One of the few friendly faces in the abyssal dimension of The End. The Shulkren Younglings are childish and curious.\n\nThey are willing to trade with me, and in turn, I protect them from the harsh wilds. They love to garden, it’s a rather cute change of pace in this world.\n",
-  "bestiary.featuresandcreatures.shulkren_youngling": "The End",
-  "bestiary.featuresandcreatures.shulkren_youngling.byg": "The End, especially Shulkren Forests"
+  "bestiary.featuresandcreatures.shulkren_youngling.description": "One of the few friendly faces in the abyssal dimension of The End. The Shulkren Younglings are childish and curious.\n\nThey are willing to trade with me, and in turn, I protect them from the harsh wilds. They love to garden, it’s a rather cute change of pace in this world.",
+  "bestiary.featuresandcreatures.shulkren_youngling.spawn": "The End",
+  "bestiary.featuresandcreatures.shulkren_youngling.spawn.byg": "The End, especially Shulkren Forests",
+  "bestiary.featuresandcreatures.tbh.description": "I… don’t know what to say about this one. I observe them from a distance, watching them frolick throughout the flowers. They don’t do anything else.\n\nI ventured too close, once. Looked it right in those vacant eyes. This thing has knowledge no creature should have.",
+  "bestiary.featuresandcreatures.tbh.spawn": "Flower Forest, Meadows, Plains, and Sunflower Plains at daytime."
 }

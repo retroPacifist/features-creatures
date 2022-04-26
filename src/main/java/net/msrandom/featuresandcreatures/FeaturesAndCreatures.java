@@ -77,6 +77,7 @@ public class FeaturesAndCreatures {
         renderer.registerEntityRenderer(FnCEntities.BRIMSTONE_GOLEM.get(), BrimstoneGolemRenderer::new);
         renderer.registerEntityRenderer(FnCEntities.SHULKREN_YOUNGLING.get(), ShulkrenYounglingRenderer::new);
         renderer.registerEntityRenderer(FnCEntities.BFS_ATTACK.get(), BFSAttackRenderer::new);
+        renderer.registerEntityRenderer(FnCEntities.TBH.get(), TbhRenderer::new);
 
         ItemProperties.register(
                 FnCItems.SPEAR.get(),
@@ -107,6 +108,7 @@ public class FeaturesAndCreatures {
         event.put(FnCEntities.GUP.get(), Gup.createAttributes().build());
         event.put(FnCEntities.BRIMSTONE_GOLEM.get(), BrimstoneGolem.createAttributes().build());
         event.put(FnCEntities.SHULKREN_YOUNGLING.get(), ShulkrenYoungling.createAttributes().build());
+        event.put(FnCEntities.TBH.get(), Tbh.createAttributes().build());
 
     }
 
