@@ -26,7 +26,7 @@ public class MobWorldSpawner {
         }
         if (event.getCategory() == Biome.BiomeCategory.FOREST) {
             event.getSpawns().addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(FnCEntities.BLACK_FOREST_SPIRIT.get(), 100, 1, 1));
-            event.getSpawns().addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(FnCEntities.TBH.get(), 1000, 3, 6));
+            event.getSpawns().addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(FnCEntities.TBH.get(), 10, 3, 6));
         }
         if (event.getCategory() == Biome.BiomeCategory.NETHER) {
             event.getSpawns().addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(FnCEntities.BRIMSTONE_GOLEM.get(), 1000, 1, 1));
@@ -38,7 +38,7 @@ public class MobWorldSpawner {
             event.getSpawns().addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(FnCEntities.GUP.get(), 11, 1, 4));
         }
         if (event.getCategory() == Biome.BiomeCategory.PLAINS) {
-            event.getSpawns().addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(FnCEntities.TBH.get(), 1000, 3, 6));
+            event.getSpawns().addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(FnCEntities.TBH.get(), 10, 3, 6));
         }
     }
 }
