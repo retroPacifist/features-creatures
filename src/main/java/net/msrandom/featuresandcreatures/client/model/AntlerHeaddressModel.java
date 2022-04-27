@@ -2,7 +2,7 @@ package net.msrandom.featuresandcreatures.client.model;
 
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
+import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class AntlerHeaddressModel extends AnimatedGeoModel<AntlerHeaddressItem> {

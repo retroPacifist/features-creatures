@@ -1,7 +1,7 @@
 package net.msrandom.featuresandcreatures.client.model;
 
 import net.minecraft.resources.ResourceLocation;
-import net.msrandom.featuresandcreatures.entity.mount.AbstractMountEntity;
+import net.msrandom.featuresandcreatures.common.entity.mount.AbstractMountEntity;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 

@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.client.model.ShulkrenYounglingModel;
-import net.msrandom.featuresandcreatures.entity.ShulkrenYoungling;
+import net.msrandom.featuresandcreatures.common.entity.ShulkrenYoungling;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 

@@ -1,7 +1,7 @@
 package net.msrandom.featuresandcreatures.mixin;
 
 import net.minecraft.world.level.storage.LevelData;
-import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
+import net.msrandom.featuresandcreatures.common.entity.spawner.FnCSpawnerLevelContext;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(LevelData.class)

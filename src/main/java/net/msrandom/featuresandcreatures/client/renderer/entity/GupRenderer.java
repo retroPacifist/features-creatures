@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.client.model.GupModel;
-import net.msrandom.featuresandcreatures.entity.Gup;
+import net.msrandom.featuresandcreatures.common.entity.Gup;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class GupRenderer extends GeoEntityRenderer<Gup> {

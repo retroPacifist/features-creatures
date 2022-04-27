@@ -9,10 +9,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.entity.*;
-import net.msrandom.featuresandcreatures.entity.mount.Boar;
-import net.msrandom.featuresandcreatures.entity.mount.Jackalope;
-import net.msrandom.featuresandcreatures.entity.mount.Sabertooth;
+import net.msrandom.featuresandcreatures.common.entity.*;
+import net.msrandom.featuresandcreatures.common.entity.mount.Boar;
+import net.msrandom.featuresandcreatures.common.entity.mount.Jackalope;
+import net.msrandom.featuresandcreatures.common.entity.mount.Sabertooth;
 
 public class FnCEntities {
     public static final DeferredRegister<EntityType<?>> REGISTRAR = DeferredRegister.create(ForgeRegistries.ENTITIES, FeaturesAndCreatures.MOD_ID);

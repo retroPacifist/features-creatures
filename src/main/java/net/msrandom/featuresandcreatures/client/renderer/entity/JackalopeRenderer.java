@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.client.model.JackalopeModel;
-import net.msrandom.featuresandcreatures.entity.mount.Jackalope;
+import net.msrandom.featuresandcreatures.common.entity.mount.Jackalope;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class JackalopeRenderer extends GeoEntityRenderer<Jackalope> {

@@ -1,8 +1,8 @@
 package net.msrandom.featuresandcreatures.mixin.client;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.msrandom.featuresandcreatures.entity.spawner.FnCSpawnerLevelContext;
-import net.msrandom.featuresandcreatures.entity.spawner.JockeySpawner;
+import net.msrandom.featuresandcreatures.common.entity.spawner.FnCSpawnerLevelContext;
+import net.msrandom.featuresandcreatures.common.entity.spawner.JockeySpawner;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 

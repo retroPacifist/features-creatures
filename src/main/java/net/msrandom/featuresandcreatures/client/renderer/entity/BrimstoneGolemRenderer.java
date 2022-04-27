@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.client.model.BrimstoneGolemModel;
-import net.msrandom.featuresandcreatures.entity.BrimstoneGolem;
+import net.msrandom.featuresandcreatures.common.entity.BrimstoneGolem;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 

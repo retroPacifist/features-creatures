@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.msrandom.featuresandcreatures.core.FnCItems;
-import net.msrandom.featuresandcreatures.item.DowsingRodItem;
+import net.msrandom.featuresandcreatures.common.item.DowsingRodItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

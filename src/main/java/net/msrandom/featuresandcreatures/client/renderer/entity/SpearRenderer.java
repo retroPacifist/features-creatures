@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.client.model.SpearModel;
-import net.msrandom.featuresandcreatures.entity.Spear;
+import net.msrandom.featuresandcreatures.common.entity.Spear;
 
 public class SpearRenderer extends EntityRenderer<Spear> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/entity/spear_entity.png");

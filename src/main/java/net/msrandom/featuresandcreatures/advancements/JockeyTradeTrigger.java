@@ -12,7 +12,7 @@ import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.entity.Jockey;
+import net.msrandom.featuresandcreatures.common.entity.Jockey;
 
 public class JockeyTradeTrigger extends SimpleCriterionTrigger<JockeyTradeTrigger.Instance> {
     private static final ResourceLocation ID = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "jockey_trade");
