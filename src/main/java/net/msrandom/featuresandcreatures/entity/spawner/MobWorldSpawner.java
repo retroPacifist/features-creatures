@@ -36,5 +36,11 @@ public class MobWorldSpawner {
         if (event.getCategory() != Biome.BiomeCategory.THEEND && event.getCategory() != Biome.BiomeCategory.NETHER) {
             event.getSpawns().addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(FnCEntities.GUP.get(), 11, 1, 4));
         }
+        if (event.getCategory() == Biome.BiomeCategory.PLAINS) {
+            event.getSpawns().addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(FnCEntities.TBH.get(), 10, 3, 6));
+        }
+        if (event.getCategory() == Biome.BiomeCategory.FOREST) {
+            event.getSpawns().addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(FnCEntities.TBH.get(), 10, 3, 6));
+        }
     }
 }

@@ -39,5 +39,6 @@ public class FnCEntities {
         SpawnPlacements.register(FnCEntities.SHULKREN_YOUNGLING.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, ShulkrenYoungling::checkSpawnRules);
         SpawnPlacements.register(FnCEntities.BRIMSTONE_GOLEM.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BrimstoneGolem::checkSpawnRules);
         SpawnPlacements.register(FnCEntities.GUP.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Gup::checkSpawnRules);
+        SpawnPlacements.register(FnCEntities.TBH.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Tbh::checkSpawnRules);
     }
 }

@@ -1,6 +1,7 @@
 package net.msrandom.featuresandcreatures.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -15,6 +16,8 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -38,6 +41,22 @@ public class Tbh extends PathfinderMob implements IAnimatable {
 
     public static boolean checkSpawnRules(EntityType<Tbh> type, LevelAccessor world, MobSpawnType spawnType, BlockPos pos, Random random) {
         if (world.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK)) {
+            Holder<Biome> biome = world.getBiome(pos);
+            if (biome.is(Biomes.PLAINS)) {
+                return true;
+            }
+            if (biome.is(Biomes.SUNFLOWER_PLAINS)) {
+                return true;
+            }
+            if (biome.is(Biomes.MEADOW)) {
+                return true;
+            }
+            if (biome.is(Biomes.MEADOW)) {
+                return true;
+            }
+            if (biome.is(Biomes.FLOWER_FOREST)) {
+                return true;
+            }
             return checkMobSpawnRules(type, world, spawnType, pos, random);
         }
         return false;
@@ -75,7 +94,7 @@ public class Tbh extends PathfinderMob implements IAnimatable {
         }
         if (this.isOnGround() && event.isMoving()) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.tbh.walk", true));
-            if (getSpeed() > 0.2F) {
+            if (this.getSpeed() > 0.2F) {
                 controller.setAnimation(new AnimationBuilder().addAnimation("animation.tbh.run", true));
                 return PlayState.CONTINUE;
             }
