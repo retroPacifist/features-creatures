@@ -27,6 +27,7 @@ public class FnCEntities {
     public static final RegistryObject<EntityType<BrimstoneGolem>> BRIMSTONE_GOLEM = createEntity("brimstone_golem", EntityType.Builder.of(BrimstoneGolem::new, MobCategory.CREATURE).sized(2.6F, 4f));
     public static final RegistryObject<EntityType<ShulkrenYoungling>> SHULKREN_YOUNGLING = createEntity("shulkren_youngling", EntityType.Builder.of(ShulkrenYoungling::new, MobCategory.CREATURE).sized(0.8F, 1.65f));
     public static final RegistryObject<EntityType<BFSAttack>> BFS_ATTACK = createEntity("bfs_attack", EntityType.Builder.<BFSAttack>of((p_37391_, p_37392_) -> new BFSAttack(p_37392_), MobCategory.MISC).sized(0.4F, 0.4f));
+    public static final RegistryObject<EntityType<Tbh>> TBH = createEntity("tbh", EntityType.Builder.of(Tbh::new, MobCategory.CREATURE).sized(0.4F, 0.6f));
 
     public static final RegistryObject<EntityType<Spear>> SPEAR = createEntity("spear", EntityType.Builder.<Spear>of(Spear::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20));
 
@@ -39,5 +40,6 @@ public class FnCEntities {
         SpawnPlacements.register(FnCEntities.SHULKREN_YOUNGLING.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, ShulkrenYoungling::checkSpawnRules);
         SpawnPlacements.register(FnCEntities.BRIMSTONE_GOLEM.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BrimstoneGolem::checkSpawnRules);
         SpawnPlacements.register(FnCEntities.GUP.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Gup::checkSpawnRules);
+        SpawnPlacements.register(FnCEntities.TBH.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Tbh::checkSpawnRules);
     }
 }

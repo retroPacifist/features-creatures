@@ -43,6 +43,7 @@ public class FnCItems {
     public static final RegistryObject<Item> GUP_SPAWN_EGG = REGISTRAR.register("gup_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.GUP,0xDC793D, 0xFFD764, new Item.Properties().tab(FnCItems.TAB)));
     public static final RegistryObject<Item> BRIMSTONE_GOLEM_SPAWN_EGG = REGISTRAR.register("brimstone_golem_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.BRIMSTONE_GOLEM,0x52491E, 0x5DF662, new Item.Properties().tab(FnCItems.TAB)));
     public static final RegistryObject<Item> SHULKREN_YOUNGLING_SPAWN_EGG = REGISTRAR.register("shulkren_youngling_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.SHULKREN_YOUNGLING,0xE6E6E6, 0xA42CB4, new Item.Properties().tab(FnCItems.TAB)));
+    public static final RegistryObject<Item> TBH_SPAWN_EGG = REGISTRAR.register("tbh_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.TBH,0xFFFFFF, 0x000000, new Item.Properties().tab(FnCItems.TAB)));
 
     public static final RegistryObject<Item> DAWN_ORE = createBlockItem(FnCBlocks.DAWN_ORE);
     public static final RegistryObject<Item> DEEPSLATE_DAWN_ORE = createBlockItem(FnCBlocks.DEEPSLATE_DAWN_ORE);
