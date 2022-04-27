@@ -17,7 +17,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
+import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
 
 import java.util.ArrayList;
 import java.util.List;

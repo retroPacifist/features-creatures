@@ -2,7 +2,7 @@ package net.msrandom.featuresandcreatures.client.renderer.entity;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.msrandom.featuresandcreatures.client.model.BoarEntityModel;
-import net.msrandom.featuresandcreatures.entity.mount.Boar;
+import net.msrandom.featuresandcreatures.common.entity.mount.Boar;
 
 public final class BoarEntityRenderer extends AbstractMountRenderer<Boar> {
 

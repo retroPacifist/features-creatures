@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
-import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
+import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
 
 import java.util.Optional;
 import java.util.function.Supplier;

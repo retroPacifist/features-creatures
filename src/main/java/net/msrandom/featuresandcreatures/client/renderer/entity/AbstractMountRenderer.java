@@ -3,7 +3,7 @@ package net.msrandom.featuresandcreatures.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.msrandom.featuresandcreatures.entity.mount.AbstractMountEntity;
+import net.msrandom.featuresandcreatures.common.entity.mount.AbstractMountEntity;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 

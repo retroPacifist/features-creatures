@@ -2,7 +2,7 @@ package net.msrandom.featuresandcreatures.client.model;
 
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.entity.BrimstoneGolem;
+import net.msrandom.featuresandcreatures.common.entity.BrimstoneGolem;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 import static net.msrandom.featuresandcreatures.FeaturesAndCreatures.createResourceLocation;

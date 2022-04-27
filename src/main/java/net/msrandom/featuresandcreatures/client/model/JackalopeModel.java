@@ -3,7 +3,7 @@ package net.msrandom.featuresandcreatures.client.model;
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.client.renderer.entity.JackalopeRenderer;
-import net.msrandom.featuresandcreatures.entity.mount.Jackalope;
+import net.msrandom.featuresandcreatures.common.entity.mount.Jackalope;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;

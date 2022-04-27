@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.client.model.BlackForestSpiritModel;
 import net.msrandom.featuresandcreatures.client.renderer.entity.layers.BFSEyeLayer;
-import net.msrandom.featuresandcreatures.entity.BlackForestSpirit;
+import net.msrandom.featuresandcreatures.common.entity.BlackForestSpirit;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class BlackForestSpiritRenderer extends GeoEntityRenderer<BlackForestSpirit> {

@@ -8,9 +8,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.item.AntlerHeaddressItem;
-import net.msrandom.featuresandcreatures.item.DowsingRodItem;
-import net.msrandom.featuresandcreatures.item.SpearItem;
+import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
+import net.msrandom.featuresandcreatures.common.item.DowsingRodItem;
+import net.msrandom.featuresandcreatures.common.item.SpearItem;
 
 public class FnCItems {
     public static final DeferredRegister<Item> REGISTRAR = DeferredRegister.create(ForgeRegistries.ITEMS, FeaturesAndCreatures.MOD_ID);
