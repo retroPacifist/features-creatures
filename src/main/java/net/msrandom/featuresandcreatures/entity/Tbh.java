@@ -2,9 +2,6 @@ package net.msrandom.featuresandcreatures.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
@@ -32,9 +29,6 @@ import java.util.Random;
 public class Tbh extends PathfinderMob implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
 
-    private static final EntityDataAccessor<Integer> tradeTimer = SynchedEntityData.defineId(BlackForestSpirit.class, EntityDataSerializers.INT);
-
-
     public Tbh(EntityType<? extends Tbh> p_21368_, Level p_21369_) {
         super(p_21368_, p_21369_);
     }
@@ -42,19 +36,7 @@ public class Tbh extends PathfinderMob implements IAnimatable {
     public static boolean checkSpawnRules(EntityType<Tbh> type, LevelAccessor world, MobSpawnType spawnType, BlockPos pos, Random random) {
         if (world.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK)) {
             Holder<Biome> biome = world.getBiome(pos);
-            if (biome.is(Biomes.PLAINS)) {
-                return true;
-            }
-            if (biome.is(Biomes.SUNFLOWER_PLAINS)) {
-                return true;
-            }
-            if (biome.is(Biomes.MEADOW)) {
-                return true;
-            }
-            if (biome.is(Biomes.MEADOW)) {
-                return true;
-            }
-            if (biome.is(Biomes.FLOWER_FOREST)) {
+            if (biome.is(Biomes.PLAINS) || biome.is(Biomes.SUNFLOWER_PLAINS) || biome.is(Biomes.MEADOW) || biome.is(Biomes.FLOWER_FOREST)) {
                 return true;
             }
             return checkMobSpawnRules(type, world, spawnType, pos, random);
@@ -94,7 +76,7 @@ public class Tbh extends PathfinderMob implements IAnimatable {
         }
         if (this.isOnGround() && event.isMoving()) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.tbh.walk", true));
-            if (this.getSpeed() > 0.2F) {
+            if (this.getAttributeBaseValue(Attributes.MOVEMENT_SPEED) > 0.2F) {
                 controller.setAnimation(new AnimationBuilder().addAnimation("animation.tbh.run", true));
                 return PlayState.CONTINUE;
             }
