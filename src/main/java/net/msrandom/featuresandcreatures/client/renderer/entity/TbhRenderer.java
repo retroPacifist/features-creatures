@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.client.model.TbhModel;
-import net.msrandom.featuresandcreatures.entity.Tbh;
+import net.msrandom.featuresandcreatures.common.entity.Tbh;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class TbhRenderer extends GeoEntityRenderer<Tbh> {

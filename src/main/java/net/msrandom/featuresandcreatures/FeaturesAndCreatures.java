@@ -20,7 +20,6 @@ import net.msrandom.featuresandcreatures.client.model.SpearModel;
 import net.msrandom.featuresandcreatures.client.renderer.entity.*;
 import net.msrandom.featuresandcreatures.common.entity.*;
 import net.msrandom.featuresandcreatures.core.*;
-import net.msrandom.featuresandcreatures.entity.*;
 import net.msrandom.featuresandcreatures.common.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.common.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.common.entity.mount.Sabertooth;

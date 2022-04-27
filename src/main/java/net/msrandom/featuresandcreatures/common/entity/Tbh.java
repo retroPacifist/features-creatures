@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.entity;
+package net.msrandom.featuresandcreatures.common.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
