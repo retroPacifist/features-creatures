@@ -20,6 +20,7 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -74,6 +75,8 @@ public class Gup extends PathfinderMob implements IAnimatable {
         this.goalSelector.addGoal(2, new GupLeapGoal(this, 1F));
         this.goalSelector.addGoal(1, new GupLookAtTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, IronGolem.class, false));
+
     }
 
     @Override
@@ -452,7 +455,6 @@ public class Gup extends PathfinderMob implements IAnimatable {
             LivingEntity livingentity = this.gup.getTarget();
             if (livingentity != null) {
                 this.gup.lookAt(livingentity, 10.0F, 10.0F);
-                System.out.println(gup.getAttackTimer());
                 gup.setAttacking(true);
                 if (gup.getAttackTimer() <= 1) {
                     gup.doDamage();

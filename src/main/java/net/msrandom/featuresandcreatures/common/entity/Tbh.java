@@ -2,12 +2,18 @@ package net.msrandom.featuresandcreatures.common.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -29,6 +35,8 @@ import java.util.Random;
 public class Tbh extends PathfinderMob implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
 
+    protected static final EntityDataAccessor<Boolean> RUNNING = SynchedEntityData.defineId(Tbh.class, EntityDataSerializers.BOOLEAN);
+
     public Tbh(EntityType<? extends Tbh> p_21368_, Level p_21369_) {
         super(p_21368_, p_21369_);
     }
@@ -45,12 +53,34 @@ public class Tbh extends PathfinderMob implements IAnimatable {
     }
 
     @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(RUNNING, false);
+    }
+
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(1, new PanicGoal(this, 2D));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 2D) {
+            @Override
+            public void start() {
+                super.start();
+                if (this.mob instanceof Tbh tbh) {
+                    tbh.setRunning(true);
+                }
+            }
+            @Override
+            public void stop() {
+                super.stop();
+                if (this.mob instanceof Tbh tbh) {
+                    tbh.setRunning(false);
+                }
+            }
+        });
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -74,16 +104,23 @@ public class Tbh extends PathfinderMob implements IAnimatable {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.tbh.idle", true));
             return PlayState.CONTINUE;
         }
-        if (this.isOnGround() && event.isMoving()) {
+        if (this.isOnGround() && event.isMoving() && !this.isRunning()) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.tbh.walk", true));
-            if (this.getAttributeBaseValue(Attributes.MOVEMENT_SPEED) > 0.2F) {
-                controller.setAnimation(new AnimationBuilder().addAnimation("animation.tbh.run", true));
-                return PlayState.CONTINUE;
-            }
             return PlayState.CONTINUE;
         }
-        else{
+        if (this.isRunning()) {
+            controller.setAnimation(new AnimationBuilder().addAnimation("animation.tbh.run", true));
+            return PlayState.CONTINUE;
+        } else {
             return PlayState.STOP;
         }
+    }
+
+    public void setRunning(boolean running) {
+        this.entityData.set(RUNNING, running);
+    }
+
+    public boolean isRunning() {
+        return this.entityData.get(RUNNING);
     }
 }

@@ -1,8 +1,8 @@
 package net.msrandom.featuresandcreatures.core;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.msrandom.featuresandcreatures.advancements.AntlerHeaddressTrigger;
-import net.msrandom.featuresandcreatures.advancements.JockeyTradeTrigger;
+import net.msrandom.featuresandcreatures.common.advancements.AntlerHeaddressTrigger;
+import net.msrandom.featuresandcreatures.common.advancements.JockeyTradeTrigger;
 
 public class FnCTriggers {
 
