@@ -42,15 +42,15 @@
   "item.featuresandcreatures.tinted_potion.effect": "Tinted Potion",
   // TODO i know this doesnt work its for someone else. just as a reminder LOL
 
-  "block.featuresandcreatures.dawn_crystal_block": "Dawn Crystal Block",
+  "block.featuresandcreatures.dawn_block": "Dawn Crystal Block",
   "block.featuresandcreatures.dawn_ore": "Dawn Ore",
   "block.featuresandcreatures.deepslate_dawn_ore": "Dawn Ore",
   "block.featuresandcreatures.stone_dawn_ore": "Dawn Ore",
-  "block.featuresandcreatures.midnight_crystal_block": "Midnight Crystal Block",
+  "block.featuresandcreatures.midnight_block": "Midnight Crystal Block",
   "block.featuresandcreatures.midnight_ore": "Midnight Ore",
   "block.featuresandcreatures.deepslate_midnight_ore": "Midnight Ore",
   "block.featuresandcreatures.stone_midnight_ore": "Midnight Ore",
-  "block.featuresandcreatures.sunset_crystal_block": "Sunset Crystal Block",
+  "block.featuresandcreatures.sunset_block": "Sunset Crystal Block",
   "block.featuresandcreatures.sunset_ore": "Sunset Ore",
   "block.featuresandcreatures.deepslate_sunset_ore": "Sunset Ore",
   "block.featuresandcreatures.stone_sunset_ore": "Sunset Ore",
