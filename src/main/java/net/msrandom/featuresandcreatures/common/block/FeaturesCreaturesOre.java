@@ -1,6 +1,5 @@
 package net.msrandom.featuresandcreatures.common.block;
 
-import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -46,20 +45,24 @@ public final class FeaturesCreaturesOre extends Block implements EntityBlock {
     }
 
     private static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T entity) {
-        Duration duration = ((FeaturesCreaturesOre) state.getBlock()).duration;
+        if (!level.isClientSide) {
+            Duration duration = ((FeaturesCreaturesOre) state.getBlock()).duration;
 
-        boolean revealed = state.getValue(REVEALED);
+            boolean revealed = state.getValue(REVEALED);
 
-        BooleanConsumer consumer = b -> level.setBlock(pos, state.setValue(REVEALED, b), UPDATE_ALL);
+            long time = level.getDayTime() % 24000L;
 
-        long time = level.getDayTime();
+            if (time >= duration.start && time <= duration.end) {
+                if (!revealed)
+                    setBlock(level, pos, state, true);
 
-        if (time >= duration.start && time <= duration.end) {
-            if (!revealed)
-                consumer.accept(true);
+            } else if (revealed)
+                setBlock(level, pos, state, false);
+        }
+    }
 
-        } else if (revealed)
-            consumer.accept(false);
+    private static void setBlock(Level level, BlockPos pos, BlockState state, boolean revealed) {
+        level.setBlock(pos, state.setValue(REVEALED, revealed), UPDATE_ALL);
     }
 
     public record Duration(long start, long end) {

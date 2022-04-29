@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:andesite"
+          "name": "minecraft:deepslate"
         }
       ],
       "conditions": [
@@ -16,7 +16,7 @@
         },
         {
           "condition": "minecraft:block_state_property",
-          "block": "featuresandcreatures:dawn_ore",
+          "block": "featuresandcreatures:deepslate_sunset_ore",
           "properties": {
             "revealed": "false"
           }
@@ -47,7 +47,7 @@
                   }
                 }
               ],
-              "name": "featuresandcreatures:dawn_ore"
+              "name": "featuresandcreatures:deepslate_sunset_ore"
             },
             {
               "type": "minecraft:item",
@@ -64,13 +64,13 @@
               "conditions": [
                 {
                   "condition": "minecraft:block_state_property",
-                  "block": "featuresandcreatures:dawn_ore",
+                  "block": "featuresandcreatures:deepslate_sunset_ore",
                   "properties": {
                     "revealed": "true"
                   }
                 }
               ],
-              "name": "featuresandcreatures:dawn_crystal"
+              "name": "featuresandcreatures:sunset_crystal"
             }
           ]
         }
