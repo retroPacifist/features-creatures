@@ -25,7 +25,7 @@ import net.msrandom.featuresandcreatures.common.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.common.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
 import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressRenderer;
-import net.msrandom.featuresandcreatures.network.NetworkHandler;
+import net.msrandom.featuresandcreatures.common.network.NetworkHandler;
 import net.msrandom.featuresandcreatures.util.FnCConfig;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.GeckoLib;

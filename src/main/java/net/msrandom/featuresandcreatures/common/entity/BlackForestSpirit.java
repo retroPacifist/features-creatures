@@ -10,10 +10,8 @@ import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
@@ -121,15 +119,15 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
     }
 
     @Override
-    protected void dropEquipment() {
-        this.spawnAtLocation(this.getMainHandItem());
-        super.dropEquipment();
-    }
-
-
-    @Override
     protected boolean onSoulSpeedBlock() {
         return false;
+    }
+
+    @Override
+    public void die(DamageSource p_21014_) {
+        ItemEntity itementity = new ItemEntity(this.level, this.getX(), this.getY(), this.getZ(), this.getMainHandItem());
+        this.level.addFreshEntity(itementity);
+        super.die(p_21014_);
     }
 
     @Override
