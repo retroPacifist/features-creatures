@@ -1,4 +1,4 @@
-package net.msrandom.featuresandcreatures.network;
+package net.msrandom.featuresandcreatures.common.network;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

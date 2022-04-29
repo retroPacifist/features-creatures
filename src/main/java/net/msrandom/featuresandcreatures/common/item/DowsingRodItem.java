@@ -32,8 +32,7 @@ public class DowsingRodItem extends Item {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, level, entity, slot, selected);
-        if (level.isClientSide && selected && entity instanceof Player && entity.tickCount % 20 == 0) {
-            Player player = (Player) entity;
+        if (level.isClientSide && selected && entity instanceof Player player && entity.tickCount % 20 == 0) {
             if (!player.getOffhandItem().isEmpty()) return;
             JockeySpawner.Context context = ((FnCSpawnerLevelContext) level.getLevelData()).jockeyContext();
             if (context != null) {

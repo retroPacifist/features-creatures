@@ -26,8 +26,8 @@ import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCKeybinds;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
-import net.msrandom.featuresandcreatures.network.AntlerHeaddressChargePacket;
-import net.msrandom.featuresandcreatures.network.NetworkHandler;
+import net.msrandom.featuresandcreatures.common.network.AntlerHeaddressChargePacket;
+import net.msrandom.featuresandcreatures.common.network.NetworkHandler;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -53,6 +53,10 @@ public class AntlerHeaddressItem extends GeoArmorItem implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
 
     public AntlerHeaddressItem(EquipmentSlot slot, Properties builder) {
+        super(MATERIAL, slot, builder);
+    }
+
+    public AntlerHeaddressItem(ArmorMaterial material, EquipmentSlot slot, Properties builder) {
         super(MATERIAL, slot, builder);
     }
 
