@@ -6,7 +6,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.common.block.FeaturesCreaturesBlocks;
+import net.msrandom.featuresandcreatures.common.block.FnCBlocks;
 
 @SuppressWarnings("ConstantConditions")
 @UtilityClass
@@ -14,11 +14,11 @@ public class FeaturesCreaturesBlockEntities {
     public final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, FeaturesAndCreatures.MOD_ID);
 
     public final RegistryObject<BlockEntityType<FeaturesCreaturesOreBlockEntity>> ORE = REGISTER.register("ore", () -> BlockEntityType.Builder.of(FeaturesCreaturesOreBlockEntity::new,
-            FeaturesCreaturesBlocks.DAWN_ORE.get(),
-            FeaturesCreaturesBlocks.SUNSET_ORE.get(),
-            FeaturesCreaturesBlocks.MIDNIGHT_ORE.get(),
-            FeaturesCreaturesBlocks.DEEPSLATE_DAWN_ORE.get(),
-            FeaturesCreaturesBlocks.DEEPSLATE_MIDNIGHT_ORE.get(),
-            FeaturesCreaturesBlocks.DEEPSLATE_SUNSET_ORE.get()
+            FnCBlocks.DAWN_ORE.get(),
+            FnCBlocks.SUNSET_ORE.get(),
+            FnCBlocks.MIDNIGHT_ORE.get(),
+            FnCBlocks.DEEPSLATE_DAWN_ORE.get(),
+            FnCBlocks.DEEPSLATE_MIDNIGHT_ORE.get(),
+            FnCBlocks.DEEPSLATE_SUNSET_ORE.get()
     ).build(null));
 }

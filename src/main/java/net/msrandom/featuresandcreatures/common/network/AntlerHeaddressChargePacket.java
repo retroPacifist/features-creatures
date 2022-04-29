@@ -33,8 +33,8 @@ public class AntlerHeaddressChargePacket {
             if (player != null) {
                 Item item = player.getItemBySlot(EquipmentSlot.HEAD).getItem();
                 // Check cooldown again, in case the player is cheating
-                if (item instanceof AntlerHeaddressItem && !player.getCooldowns().isOnCooldown(item)) {
-                    ((AntlerHeaddressItem) item).handleCharge(player, charge);
+                if (item instanceof AntlerHeaddressItem headdress && !player.getCooldowns().isOnCooldown(item)) {
+                    headdress.handleCharge(player, charge);
                 }
             }
         });

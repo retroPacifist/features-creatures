@@ -2,6 +2,7 @@ package net.msrandom.featuresandcreatures.common.entity.mount.goal;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.player.Player;
 import net.msrandom.featuresandcreatures.common.entity.mount.AbstractAngryMountEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +17,7 @@ public final class MountAttackGoal<T extends AbstractAngryMountEntity> extends M
     @Override
     protected void checkAndPerformAttack(@NotNull LivingEntity livingEntity, double entityDistance) {
         double attackRange = getAttackReachSqr(livingEntity);
+        if (livingEntity instanceof Player player && player.getAbilities().instabuild) return;
         if (entityDistance <= attackRange && isTimeToAttack()) {
             resetAttackCooldown();
             entity.setAttacking(true);

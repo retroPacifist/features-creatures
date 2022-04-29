@@ -1,6 +1,7 @@
 package net.msrandom.featuresandcreatures.client.renderer.entity.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -20,10 +21,9 @@ public class BFSEyeLayer extends GeoLayerRenderer<BlackForestSpirit> {
 
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, BlackForestSpirit entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        RenderType cameo = RenderType.eyes(LAYER);
-        this.getRenderer().render(this.getEntityModel().getModel(MODEL), entityLivingBaseIn, 15728640, cameo, matrixStackIn, bufferIn, bufferIn.getBuffer(cameo), packedLightIn, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.eyes(LAYER));
+        this.getRenderer().renderEarly(entityLivingBaseIn, matrixStackIn, 15728640, bufferIn, vertexConsumer, OverlayTexture.NO_OVERLAY, packedLightIn, 1f, 1f, 1f, 0f);
     }
-
 
     @Override
     public RenderType getRenderType(ResourceLocation textureLocation) {

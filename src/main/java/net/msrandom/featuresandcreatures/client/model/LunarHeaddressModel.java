@@ -6,6 +6,8 @@ import net.msrandom.featuresandcreatures.common.item.LunarHeaddressItem;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class LunarHeaddressModel extends AnimatedGeoModel<LunarHeaddressItem> {
+    public static ResourceLocation TEXTURE = new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/models/armor/lunar_headdress.png");
+
     @Override
     public ResourceLocation getModelLocation(LunarHeaddressItem object) {
         return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "geo/lunar_headdress.geo.json");
@@ -13,7 +15,7 @@ public class LunarHeaddressModel extends AnimatedGeoModel<LunarHeaddressItem> {
 
     @Override
     public ResourceLocation getTextureLocation(LunarHeaddressItem object) {
-        return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/models/armor/lunar_headdress.png");
+        return TEXTURE;
     }
 
     @Override

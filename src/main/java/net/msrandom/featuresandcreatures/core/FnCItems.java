@@ -8,11 +8,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.common.block.FeaturesCreaturesBlocks;
-import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
-import net.msrandom.featuresandcreatures.common.item.DowsingRodItem;
-import net.msrandom.featuresandcreatures.common.item.LunarHeaddressItem;
-import net.msrandom.featuresandcreatures.common.item.SpearItem;
+import net.msrandom.featuresandcreatures.common.block.FnCBlocks;
+import net.msrandom.featuresandcreatures.common.item.*;
 
 public class FnCItems {
     public static final DeferredRegister<Item> REGISTRAR = DeferredRegister.create(ForgeRegistries.ITEMS, FeaturesAndCreatures.MOD_ID);
@@ -29,8 +26,8 @@ public class FnCItems {
     public static final RegistryObject<Item> TINTED_BOTTLE = REGISTRAR.register("tinted_bottle", () -> new BottleItem(new Item.Properties().tab(TAB)));
 
     public static final RegistryObject<Item> ANTLER = REGISTRAR.register("antler", () -> new Item(new Item.Properties().tab(TAB)));
-    public static final RegistryObject<Item> ANTLER_HEADDRESS = REGISTRAR.register("antler_headdress", () -> new AntlerHeaddressItem(EquipmentSlot.HEAD, new Item.Properties().tab(TAB).durability(-1)));
-    public static final RegistryObject<Item> LUNAR_HEADDRESS = REGISTRAR.register("lunar_headdress", () -> new LunarHeaddressItem(new Item.Properties().tab(TAB).durability(-1)));
+    public static final RegistryObject<Item> ANTLER_HEADDRESS = REGISTRAR.register("antler_headdress", () -> new AntlerHeaddressItem(FnCArmorMaterial.ANTLER, EquipmentSlot.HEAD, new Item.Properties().tab(TAB).durability(-1)));
+    public static final RegistryObject<Item> LUNAR_HEADDRESS = REGISTRAR.register("lunar_headdress", () -> new LunarHeaddressItem(FnCArmorMaterial.LUNAR, EquipmentSlot.HEAD, new Item.Properties().tab(TAB).durability(-1)));
     public static final RegistryObject<Item> SABERTOOTH_FANG = REGISTRAR.register("sabertooth_fang", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> DAWN_CRYSTAL = REGISTRAR.register("dawn_crystal", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> MIDNIGHT_CRYSTAL = REGISTRAR.register("midnight_crystal", () -> new Item(new Item.Properties().tab(TAB)));
@@ -48,17 +45,17 @@ public class FnCItems {
     public static final RegistryObject<Item> SHULKREN_YOUNGLING_SPAWN_EGG = REGISTRAR.register("shulkren_youngling_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.SHULKREN_YOUNGLING,0xE6E6E6, 0xA42CB4, new Item.Properties().tab(FnCItems.TAB)));
     public static final RegistryObject<Item> TBH_SPAWN_EGG = REGISTRAR.register("tbh_spawn_egg", () -> new ForgeSpawnEggItem(FnCEntities.TBH,0xFFFFFF, 0x000000, new Item.Properties().tab(FnCItems.TAB)));
 
-    public static final RegistryObject<Item> DAWN_ORE = createBlockItem(FeaturesCreaturesBlocks.DAWN_ORE);
-    public static final RegistryObject<Item> SUNSET_ORE = createBlockItem(FeaturesCreaturesBlocks.SUNSET_ORE);
-    public static final RegistryObject<Item> MIDNIGHT_ORE = createBlockItem(FeaturesCreaturesBlocks.MIDNIGHT_ORE);
+    public static final RegistryObject<Item> DAWN_ORE = createBlockItem(FnCBlocks.DAWN_ORE);
+    public static final RegistryObject<Item> SUNSET_ORE = createBlockItem(FnCBlocks.SUNSET_ORE);
+    public static final RegistryObject<Item> MIDNIGHT_ORE = createBlockItem(FnCBlocks.MIDNIGHT_ORE);
 
-    public static final RegistryObject<Item> DEEPSLATE_DAWN_ORE = createBlockItem(FeaturesCreaturesBlocks.DEEPSLATE_DAWN_ORE);
-    public static final RegistryObject<Item> DEEPSLATE_SUNSET_ORE = createBlockItem(FeaturesCreaturesBlocks.DEEPSLATE_SUNSET_ORE);
-    public static final RegistryObject<Item> DEEPSLATE_MIDNIGHT_ORE = createBlockItem(FeaturesCreaturesBlocks.DEEPSLATE_MIDNIGHT_ORE);
+    public static final RegistryObject<Item> DEEPSLATE_DAWN_ORE = createBlockItem(FnCBlocks.DEEPSLATE_DAWN_ORE);
+    public static final RegistryObject<Item> DEEPSLATE_SUNSET_ORE = createBlockItem(FnCBlocks.DEEPSLATE_SUNSET_ORE);
+    public static final RegistryObject<Item> DEEPSLATE_MIDNIGHT_ORE = createBlockItem(FnCBlocks.DEEPSLATE_MIDNIGHT_ORE);
 
-    public static final RegistryObject<Item> DAWN_BLOCK = createBlockItem(FeaturesCreaturesBlocks.DAWN_BLOCK);
-    public static final RegistryObject<Item> SUNSET_BLOCK = createBlockItem(FeaturesCreaturesBlocks.SUNSET_BLOCK);
-    public static final RegistryObject<Item> MIDNIGHT_BLOCK = createBlockItem(FeaturesCreaturesBlocks.MIDNIGHT_BLOCK);
+    public static final RegistryObject<Item> DAWN_BLOCK = createBlockItem(FnCBlocks.DAWN_BLOCK);
+    public static final RegistryObject<Item> SUNSET_BLOCK = createBlockItem(FnCBlocks.SUNSET_BLOCK);
+    public static final RegistryObject<Item> MIDNIGHT_BLOCK = createBlockItem(FnCBlocks.MIDNIGHT_BLOCK);
 
     public static RegistryObject<Item> createBlockItem(RegistryObject<Block> block){
         return REGISTRAR.register(block.getId().getPath(), ()-> new BlockItem(block.get(), new Item.Properties().tab(TAB)));

@@ -2,8 +2,10 @@ package net.msrandom.featuresandcreatures.common.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.client.model.LunarHeaddressModel;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +26,13 @@ public class LunarHeaddressRenderer extends GeoArmorRenderer<LunarHeaddressItem>
 
     @Override
     public RenderType getRenderType(LunarHeaddressItem animatable, float partialTicks, PoseStack stack, @Nullable MultiBufferSource renderTypeBuffer, @Nullable VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
-        return RenderType.translucent();
+        return RenderType.entityTranslucent(LunarHeaddressModel.TEXTURE);
+    }
+
+    @Override
+    public void render(float partialTicks, PoseStack stack, VertexConsumer bufferIn, int packedLightIn) {
+        bufferIn =  Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.entityTranslucent(LunarHeaddressModel.TEXTURE));
+        this.renderToBuffer(stack, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+        super.render(partialTicks, stack, bufferIn, packedLightIn);
     }
 }

@@ -46,7 +46,7 @@ import java.util.Random;
 public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
 
-    private static final EntityDataAccessor<Integer> tradeTimer = SynchedEntityData.defineId(BlackForestSpirit.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> tradeTimer = SynchedEntityData.defineId(ShulkrenYoungling.class, EntityDataSerializers.INT);
 
 
     public ShulkrenYoungling(EntityType<? extends ShulkrenYoungling> p_21368_, Level p_21369_) {
