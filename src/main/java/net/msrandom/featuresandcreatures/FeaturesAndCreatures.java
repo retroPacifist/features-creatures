@@ -21,13 +21,15 @@ import net.msrandom.featuresandcreatures.client.renderer.entity.*;
 import net.msrandom.featuresandcreatures.common.block.FeaturesCreaturesBlocks;
 import net.msrandom.featuresandcreatures.common.block.entity.FeaturesCreaturesBlockEntities;
 import net.msrandom.featuresandcreatures.common.entity.*;
-import net.msrandom.featuresandcreatures.core.*;
 import net.msrandom.featuresandcreatures.common.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.common.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.common.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
 import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressRenderer;
+import net.msrandom.featuresandcreatures.common.item.LunarHeaddressItem;
+import net.msrandom.featuresandcreatures.common.item.LunarHeaddressRenderer;
 import net.msrandom.featuresandcreatures.common.network.NetworkHandler;
+import net.msrandom.featuresandcreatures.core.*;
 import net.msrandom.featuresandcreatures.util.FnCConfig;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.GeckoLib;
@@ -100,6 +102,8 @@ public class FeaturesAndCreatures {
 
     public void registerArmor(final EntityRenderersEvent.AddLayers event){
         GeoArmorRenderer.registerArmorRenderer(AntlerHeaddressItem.class, new AntlerHeaddressRenderer());
+        GeoArmorRenderer.registerArmorRenderer(LunarHeaddressItem.class, new LunarHeaddressRenderer());
+
     }
 
     private void registerModels(ModelRegistryEvent event) {

@@ -11,6 +11,7 @@ import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.common.block.FeaturesCreaturesBlocks;
 import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
 import net.msrandom.featuresandcreatures.common.item.DowsingRodItem;
+import net.msrandom.featuresandcreatures.common.item.LunarHeaddressItem;
 import net.msrandom.featuresandcreatures.common.item.SpearItem;
 
 public class FnCItems {
@@ -29,6 +30,7 @@ public class FnCItems {
 
     public static final RegistryObject<Item> ANTLER = REGISTRAR.register("antler", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> ANTLER_HEADDRESS = REGISTRAR.register("antler_headdress", () -> new AntlerHeaddressItem(EquipmentSlot.HEAD, new Item.Properties().tab(TAB).durability(-1)));
+    public static final RegistryObject<Item> LUNAR_HEADDRESS = REGISTRAR.register("lunar_headdress", () -> new LunarHeaddressItem(new Item.Properties().tab(TAB).durability(-1)));
     public static final RegistryObject<Item> SABERTOOTH_FANG = REGISTRAR.register("sabertooth_fang", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> DAWN_CRYSTAL = REGISTRAR.register("dawn_crystal", () -> new Item(new Item.Properties().tab(TAB)));
     public static final RegistryObject<Item> MIDNIGHT_CRYSTAL = REGISTRAR.register("midnight_crystal", () -> new Item(new Item.Properties().tab(TAB)));
