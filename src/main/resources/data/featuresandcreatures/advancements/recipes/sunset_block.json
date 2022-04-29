@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "featuresandcreatures:midnight_crystal_block"
+      "featuresandcreatures:sunset_block"
     ]
   },
   "criteria": {
@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "item": "featuresandcreatures:midnight_crystal"
+            "item": "featuresandcreatures:sunset_crystal"
           }
         ]
       }
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "featuresandcreatures:midnight_crystal_block"
+        "recipe": "featuresandcreatures:sunset_block"
       }
     }
   },

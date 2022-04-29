@@ -6,10 +6,10 @@
   ],
   "key": {
     "A": {
-      "item": "featuresandcreatures:midnight_crystal"
+      "item": "featuresandcreatures:dawn_crystal"
     }
   },
   "result": {
-    "item": "featuresandcreatures:midnight_crystal_block"
+    "item": "featuresandcreatures:dawn_block"
   }
 }

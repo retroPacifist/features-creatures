@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "featuresandcreatures:sunset_crystal_block"
+      "item": "featuresandcreatures:sunset_block"
     }
   ],
   "result": {

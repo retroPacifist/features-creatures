@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "featuresandcreatures:dawn_crystal_block"
+      "featuresandcreatures:dawn_block"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "featuresandcreatures:dawn_crystal_block"
+        "recipe": "featuresandcreatures:dawn_block"
       }
     }
   },
