@@ -21,8 +21,12 @@ public class BFSEyeLayer extends GeoLayerRenderer<BlackForestSpirit> {
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, BlackForestSpirit entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         RenderType cameo = RenderType.eyes(LAYER);
-        matrixStackIn.pushPose();
-        this.getRenderer().render(this.getEntityModel().getModel(MODEL), entityLivingBaseIn, partialTicks, cameo, matrixStackIn, bufferIn, bufferIn.getBuffer(cameo), packedLightIn, OverlayTexture.NO_OVERLAY, 1f, 1f, 0f, 1f);
-        matrixStackIn.popPose();
+        this.getRenderer().render(this.getEntityModel().getModel(MODEL), entityLivingBaseIn, 15728640, cameo, matrixStackIn, bufferIn, bufferIn.getBuffer(cameo), packedLightIn, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+    }
+
+    @Override
+    public RenderType getRenderType(ResourceLocation textureLocation) {
+        return RenderType.eyes(LAYER);
+
     }
 }

@@ -33,4 +33,5 @@ public class JackalopeRenderer extends GeoEntityRenderer<Jackalope> {
         }
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
+
 }

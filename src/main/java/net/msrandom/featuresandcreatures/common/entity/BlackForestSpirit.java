@@ -10,13 +10,15 @@ import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
@@ -29,8 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -87,9 +87,9 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
     @Override
     public boolean canHoldItem(ItemStack stack) {
         if (this.hasLapis()) {
-            return stack.getCount() == 1 && stack.getItem().getRegistryName().toString().contains("log");
+            return stack.getItem().getRegistryName().toString().contains("log");
         } else {
-            return stack.getCount() == 1 && stack.is(Items.LAPIS_LAZULI);
+            return stack.is(Items.LAPIS_LAZULI);
         }
     }
 
@@ -112,14 +112,20 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
 
     @Override
     protected float getBlockSpeedFactor() {
-        BlockState blockstate = this.level.getBlockState(this.blockPosition());
-        float f = blockstate.getBlock().getSpeedFactor();
-        if (!blockstate.is(Blocks.WATER) && !blockstate.is(Blocks.BUBBLE_COLUMN)) {
-            return (double)f == 1.0D ? this.level.getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getBlock().getSpeedFactor() : f;
-        } else {
-            return f;
-        }
+        return 1.0F;
     }
+
+    @Override
+    public float getBlockJumpFactor() {
+        return 1.0F;
+    }
+
+    @Override
+    protected void dropEquipment() {
+        this.spawnAtLocation(this.getMainHandItem());
+        super.dropEquipment();
+    }
+
 
     @Override
     protected boolean onSoulSpeedBlock() {
@@ -131,11 +137,20 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
         Item pickup = this.getItemInHand(this.getUsedItemHand()).getItem();
         if (!hasLapis() && pickup == Items.LAPIS_LAZULI) {
             int i = random.nextInt(10);
-            this.setItemInHand(this.getUsedItemHand(), ItemStack.EMPTY);
+            this.getMainHandItem().shrink(1);
             if (i == 4) {
                 setLapis(true);
             }
         }
+
+        if ((hasLapis() && this.getMainHandItem().getCount() > 0) || (!hasLapis() && pickup.getRegistryName().toString().contains("log"))) {
+            System.out.println(this.getMainHandItem().getCount());
+            this.getMainHandItem().shrink(1);
+            Player nearestPlayer = this.level.getNearestPlayer(this, 50);
+            throwItemsTowardPos(this, this.getMainHandItem().getItem().getDefaultInstance(), Objects.requireNonNullElse(nearestPlayer, this).position());
+        }
+
+
         if (hasLapis() && pickup.getRegistryName().toString().contains("log")) {
             setLapis(false);
             String sapling = pickup.getRegistryName().toString().replace("log", "sapling");
@@ -143,7 +158,7 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
                 if (item.getRegistryName().toString().equals(sapling)) {
                     Player nearestPlayer = this.level.getNearestPlayer(this, 50);
                     throwItemsTowardPos(this, item.getDefaultInstance(), Objects.requireNonNullElse(nearestPlayer, this).position());
-                    this.setItemInHand(this.getUsedItemHand(), ItemStack.EMPTY);
+                    this.getMainHandItem().shrink(1);
                 }
             }
         }
@@ -239,29 +254,7 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
         attack.shoot(d1, d2 + d4, d3, 1.6F, 12.0F);
         this.playSound(SoundEvents.SNOW_GOLEM_SHOOT, 1.0F, 0.4F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
         this.level.addFreshEntity(attack);
-    }
 
-    public static class SpiritTargetGoal extends TargetGoal {
-
-        public SpiritTargetGoal(Mob p_26140_) {
-            super(p_26140_, true);
-        }
-
-        @Override
-        public boolean canUse() {
-            return false;
-        }
-
-        @Override
-        public void start() {
-            this.targetMob = this.mob.getTarget();
-            super.start();
-        }
-
-        @Override
-        public void stop() {
-            super.stop();
-        }
     }
 
     public static class FollowItemGoal extends Goal {

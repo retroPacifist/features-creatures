@@ -2,7 +2,6 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-
         mavenCentral()
     }
     dependencies {
@@ -16,7 +15,7 @@ apply plugin: 'org.spongepowered.mixin'
 
 version = '1.18.2-0.0.2'
 group = 'net.msrandom.featuresandcreatures'
-archivesBaseName = 'FeaturesAndCreatures'
+archivesBaseName = 'featuresandcreatures'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -75,15 +74,11 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
-
-    flatDir {
-        dir 'F:\\Max\\Minecraft\\Modding\\features-creatures\\libs'
-    }
 }
 
 dependencies {
     compileOnly 'org.jetbrains:annotations:23.0.0'
-    minecraft 'net.minecraftforge:forge:1.18.2-40.0.15'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
     implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.12')
 }
 
@@ -101,4 +96,4 @@ jar {
     }
 }
 
-jar.finalizedBy('reobfJar') 
+jar.finalizedBy('reobfJar')

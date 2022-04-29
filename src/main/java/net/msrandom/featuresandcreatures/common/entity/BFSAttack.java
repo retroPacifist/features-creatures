@@ -1,8 +1,5 @@
 package net.msrandom.featuresandcreatures.common.entity;
 
-import net.minecraft.core.particles.ItemParticleOption;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -10,7 +7,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -26,21 +22,6 @@ public class BFSAttack extends ThrowableItemProjectile {
         super(FnCEntities.BFS_ATTACK.get(), p_37400_, p_37399_);
     }
 
-    private ParticleOptions getParticle() {
-        ItemStack itemstack = this.getItemRaw();
-        return itemstack.isEmpty() ? ParticleTypes.ITEM_SLIME : new ItemParticleOption(ParticleTypes.ITEM, itemstack);
-    }
-
-    public void handleEntityEvent(byte p_37402_) {
-        if (p_37402_ == 3) {
-            ParticleOptions particleoptions = this.getParticle();
-
-            for(int i = 0; i < 8; ++i) {
-                this.level.addParticle(particleoptions, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
-            }
-        }
-    }
-
     @Override
     protected Item getDefaultItem() {
         return FnCItems.BFS_ATTACK_ITEM.get();
@@ -49,9 +30,9 @@ public class BFSAttack extends ThrowableItemProjectile {
     protected void onHitEntity(EntityHitResult hitResult) {
         super.onHitEntity(hitResult);
         Entity entity = hitResult.getEntity();
-        entity.hurt(DamageSource.thrown(this, this.getOwner()), (float)3);
+        entity.hurt(DamageSource.thrown(this, this.getOwner()), 3.5F);
         if (entity instanceof LivingEntity le){
-            le.addEffect(new MobEffectInstance(MobEffects.GLOWING, 0, 100));
+            le.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100, 100));
         }
     }
 

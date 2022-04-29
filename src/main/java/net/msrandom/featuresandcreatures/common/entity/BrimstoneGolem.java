@@ -101,8 +101,13 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
         if (!blockstate.is(Blocks.WATER) && !blockstate.is(Blocks.BUBBLE_COLUMN)) {
             return (double)f == 1.0D ? this.level.getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getBlock().getSpeedFactor() : f;
         } else {
-            return f;
+            return 1.0F;
         }
+    }
+
+    @Override
+    public float getBlockJumpFactor() {
+        return 1.0F;
     }
 
     @Override
