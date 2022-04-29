@@ -1,9 +1,9 @@
 {
   "variants": {
-    "active=false": {
+    "revealed=false": {
       "model": "minecraft:block/granite"
     },
-    "active=true": {
+    "revealed=true": {
       "model": "featuresandcreatures:block/midnight_ore"
     }
   }

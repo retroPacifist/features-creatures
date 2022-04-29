@@ -1,9 +1,9 @@
 {
   "variants": {
-    "active=false": {
+    "revealed=false": {
       "model": "minecraft:block/diorite"
     },
-    "active=true": {
+    "revealed=true": {
       "model": "featuresandcreatures:block/diorite_ore"
     }
   }

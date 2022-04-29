@@ -18,6 +18,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
 import net.msrandom.featuresandcreatures.client.model.SpearModel;
 import net.msrandom.featuresandcreatures.client.renderer.entity.*;
+import net.msrandom.featuresandcreatures.common.block.FeaturesCreaturesBlocks;
+import net.msrandom.featuresandcreatures.common.block.entity.FeaturesCreaturesBlockEntities;
 import net.msrandom.featuresandcreatures.common.entity.*;
 import net.msrandom.featuresandcreatures.core.*;
 import net.msrandom.featuresandcreatures.common.entity.mount.Boar;
@@ -46,9 +48,14 @@ public class FeaturesAndCreatures {
         bus.addListener(this::registerRenderers);
         bus.addListener(this::registerArmor);
         bus.addListener(this::bakeLayers);
-        FnCItems.REGISTRAR.register(bus);
+
+        FeaturesCreaturesBlocks.REGISTER.register(bus);
+        FeaturesCreaturesBlockEntities.REGISTER.register(bus);
+
+
         FnCEntities.REGISTRAR.register(bus);
-        FnCBlocks.REGISTRAR.register(bus);
+        FnCItems.REGISTRAR.register(bus);
+
         FnCSounds.REGISTRAR.initialize();
         FnCTriggers.register();
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, FnCConfig.getConfigSpec());
