@@ -17,19 +17,19 @@ import net.msrandom.featuresandcreatures.core.FnCEntities;
 
 import java.util.function.Supplier;
 
-// Please do not rename to "FnCItems", Ethan :pensive:
+// Please do not rename to "FnCItems"
 @SuppressWarnings("unused")
 @UtilityClass
 public class FeaturesCreaturesItems {
     public final DeferredRegister<Item> REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, FeaturesAndCreatures.MOD_ID);
 
     // Block Items
+    public final RegistryObject<Item> STONE_DAWN_ORE = REGISTER.register("stone_dawn_ore", createBlockItem(FeaturesCreaturesBlocks.STONE_DAWN_ORE));
+    public final RegistryObject<Item> STONE_SUNSET_ORE = REGISTER.register("stone_sunset_ore", createBlockItem(FeaturesCreaturesBlocks.STONE_SUNSET_ORE));
+    public final RegistryObject<Item> STONE_MIDNIGHT_ORE = REGISTER.register("stone_midnight_ore", createBlockItem(FeaturesCreaturesBlocks.STONE_MIDNIGHT_ORE));
     public final RegistryObject<Item> DAWN_ORE = REGISTER.register("dawn_ore", createBlockItem(FeaturesCreaturesBlocks.DAWN_ORE));
     public final RegistryObject<Item> SUNSET_ORE = REGISTER.register("sunset_ore", createBlockItem(FeaturesCreaturesBlocks.SUNSET_ORE));
     public final RegistryObject<Item> MIDNIGHT_ORE = REGISTER.register("midnight_ore", createBlockItem(FeaturesCreaturesBlocks.MIDNIGHT_ORE));
-    public final RegistryObject<Item> ANDESITE_DAWN_ORE = REGISTER.register("andesite_dawn_ore", createBlockItem(FeaturesCreaturesBlocks.ANDESITE_DAWN_ORE));
-    public final RegistryObject<Item> DIORITE_SUNSET_ORE = REGISTER.register("diorite_sunset_ore", createBlockItem(FeaturesCreaturesBlocks.DIORITE_SUNSET_ORE));
-    public final RegistryObject<Item> GRANITE_MIDNIGHT_ORE = REGISTER.register("granite_midnight_ore", createBlockItem(FeaturesCreaturesBlocks.GRANITE_MIDNIGHT_ORE));
     public final RegistryObject<Item> DEEPSLATE_DAWN_ORE = REGISTER.register("deepslate_dawn_ore", createBlockItem(FeaturesCreaturesBlocks.DEEPSLATE_DAWN_ORE));
     public final RegistryObject<Item> DEEPSLATE_SUNSET_ORE = REGISTER.register("deepslate_sunset_ore", createBlockItem(FeaturesCreaturesBlocks.DEEPSLATE_SUNSET_ORE));
     public final RegistryObject<Item> DEEPSLATE_MIDNIGHT_ORE = REGISTER.register("deepslate_midnight_ore", createBlockItem(FeaturesCreaturesBlocks.DEEPSLATE_MIDNIGHT_ORE));

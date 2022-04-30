@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:cobblestone"
+          "name": "minecraft:granite"
         }
       ],
       "conditions": [

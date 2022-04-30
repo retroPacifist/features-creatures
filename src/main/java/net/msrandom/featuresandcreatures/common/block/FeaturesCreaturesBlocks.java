@@ -11,18 +11,18 @@ import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 
 import java.util.function.Supplier;
 
-// Please do not rename to "FnCBlocks", Ethan :pensive:
+// Please do not rename to "FnCBlocks"
 @UtilityClass
 public class FeaturesCreaturesBlocks {
     public final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, FeaturesAndCreatures.MOD_ID);
 
+    public final RegistryObject<Block> STONE_DAWN_ORE = REGISTER.register("stone_dawn_ore", createOre(FeaturesCreaturesOre.Duration.DAWN));
+    public final RegistryObject<Block> STONE_SUNSET_ORE = REGISTER.register("stone_sunset_ore", createOre(FeaturesCreaturesOre.Duration.SUNSET));
+    public final RegistryObject<Block> STONE_MIDNIGHT_ORE = REGISTER.register("stone_midnight_ore", createOre(FeaturesCreaturesOre.Duration.MIDNIGHT));
+
     public final RegistryObject<Block> DAWN_ORE = REGISTER.register("dawn_ore", createOre(FeaturesCreaturesOre.Duration.DAWN));
     public final RegistryObject<Block> SUNSET_ORE = REGISTER.register("sunset_ore", createOre(FeaturesCreaturesOre.Duration.SUNSET));
     public final RegistryObject<Block> MIDNIGHT_ORE = REGISTER.register("midnight_ore", createOre(FeaturesCreaturesOre.Duration.MIDNIGHT));
-
-    public final RegistryObject<Block> ANDESITE_DAWN_ORE = REGISTER.register("andesite_dawn_ore", createOre(FeaturesCreaturesOre.Duration.DAWN));
-    public final RegistryObject<Block> DIORITE_SUNSET_ORE = REGISTER.register("diorite_sunset_ore", createOre(FeaturesCreaturesOre.Duration.SUNSET));
-    public final RegistryObject<Block> GRANITE_MIDNIGHT_ORE = REGISTER.register("granite_midnight_ore", createOre(FeaturesCreaturesOre.Duration.MIDNIGHT));
 
     public final RegistryObject<Block> DEEPSLATE_DAWN_ORE = REGISTER.register("deepslate_dawn_ore", createOre(FeaturesCreaturesOre.Duration.DAWN));
     public final RegistryObject<Block> DEEPSLATE_SUNSET_ORE = REGISTER.register("deepslate_sunset_ore", createOre(FeaturesCreaturesOre.Duration.SUNSET));

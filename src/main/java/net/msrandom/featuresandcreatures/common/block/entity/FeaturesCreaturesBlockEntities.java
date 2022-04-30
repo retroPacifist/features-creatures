@@ -14,12 +14,12 @@ public class FeaturesCreaturesBlockEntities {
     public final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, FeaturesAndCreatures.MOD_ID);
 
     public final RegistryObject<BlockEntityType<FeaturesCreaturesOreBlockEntity>> ORE = REGISTER.register("ore", () -> BlockEntityType.Builder.of(FeaturesCreaturesOreBlockEntity::new,
+            FeaturesCreaturesBlocks.STONE_DAWN_ORE.get(),
+            FeaturesCreaturesBlocks.STONE_SUNSET_ORE.get(),
+            FeaturesCreaturesBlocks.STONE_MIDNIGHT_ORE.get(),
             FeaturesCreaturesBlocks.DAWN_ORE.get(),
             FeaturesCreaturesBlocks.SUNSET_ORE.get(),
             FeaturesCreaturesBlocks.MIDNIGHT_ORE.get(),
-            FeaturesCreaturesBlocks.ANDESITE_DAWN_ORE.get(),
-            FeaturesCreaturesBlocks.DIORITE_SUNSET_ORE.get(),
-            FeaturesCreaturesBlocks.GRANITE_MIDNIGHT_ORE.get(),
             FeaturesCreaturesBlocks.DEEPSLATE_DAWN_ORE.get(),
             FeaturesCreaturesBlocks.DEEPSLATE_MIDNIGHT_ORE.get(),
             FeaturesCreaturesBlocks.DEEPSLATE_SUNSET_ORE.get()

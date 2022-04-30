@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:granite"
+          "name": "minecraft:cobblestone"
         }
       ],
       "conditions": [
@@ -16,7 +16,7 @@
         },
         {
           "condition": "minecraft:block_state_property",
-          "block": "featuresandcreatures:granite_midnight_ore",
+          "block": "featuresandcreatures:stone_sunset_ore",
           "properties": {
             "revealed": "false"
           }
@@ -45,13 +45,13 @@
               "conditions": [
                 {
                   "condition": "minecraft:block_state_property",
-                  "block": "featuresandcreatures:granite_midnight_ore",
+                  "block": "featuresandcreatures:stone_sunset_ore",
                   "properties": {
                     "revealed": "true"
                   }
                 }
               ],
-              "name": "featuresandcreatures:midnight_crystal"
+              "name": "featuresandcreatures:sunset_crystal"
             }
           ]
         }
