@@ -15,8 +15,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
+import net.msrandom.featuresandcreatures.common.item.FeaturesCreaturesItems;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
-import net.msrandom.featuresandcreatures.core.FnCItems;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 
 import javax.annotation.Nonnull;
@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 public class Spear extends AbstractArrow {
     private boolean dealtDamage;
-    private ItemStack thrownStack = new ItemStack(FnCItems.SPEAR.get());
+    private ItemStack thrownStack = new ItemStack(FeaturesCreaturesItems.SPEAR.get());
 
     public Spear(EntityType<? extends AbstractArrow> type, Level worldIn) {
         super(type, worldIn);

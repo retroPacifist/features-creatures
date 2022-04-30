@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:cobblestone"
+          "name": "minecraft:andesite"
         }
       ],
       "conditions": [
@@ -16,7 +16,7 @@
         },
         {
           "condition": "minecraft:block_state_property",
-          "block": "featuresandcreatures:sunset_ore",
+          "block": "featuresandcreatures:andesite_dawn_ore",
           "properties": {
             "revealed": "false"
           }
@@ -45,13 +45,13 @@
               "conditions": [
                 {
                   "condition": "minecraft:block_state_property",
-                  "block": "featuresandcreatures:sunset_ore",
+                  "block": "featuresandcreatures:andesite_dawn_ore",
                   "properties": {
                     "revealed": "true"
                   }
                 }
               ],
-              "name": "featuresandcreatures:sunset_crystal"
+              "name": "featuresandcreatures:dawn_crystal"
             }
           ]
         }

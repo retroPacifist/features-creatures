@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "revealed=false": {
+      "model": "minecraft:block/diorite"
+    },
+    "revealed=true": {
+      "model": "featuresandcreatures:block/diorite_sunset_ore"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 package net.msrandom.featuresandcreatures.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -30,6 +31,11 @@ public final class FeaturesCreaturesOre extends Block implements EntityBlock {
     }
 
     @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState().setValue(REVEALED, isWithinDuration(duration, context.getLevel()));
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder.add(REVEALED));
     }
@@ -46,23 +52,26 @@ public final class FeaturesCreaturesOre extends Block implements EntityBlock {
 
     private static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T entity) {
         if (!level.isClientSide) {
-            Duration duration = ((FeaturesCreaturesOre) state.getBlock()).duration;
-
             boolean revealed = state.getValue(REVEALED);
 
-            long time = level.getDayTime() % 24000L;
-
-            if (time >= duration.start && time <= duration.end) {
-                if (!revealed)
+            if (isWithinDuration(((FeaturesCreaturesOre) state.getBlock()).duration, level)) {
+                if (!revealed) {
                     setBlock(level, pos, state, true);
-
-            } else if (revealed)
+                }
+            } else if (revealed) {
                 setBlock(level, pos, state, false);
+            }
         }
     }
 
     private static void setBlock(Level level, BlockPos pos, BlockState state, boolean revealed) {
         level.setBlock(pos, state.setValue(REVEALED, revealed), UPDATE_ALL);
+    }
+
+    private static boolean isWithinDuration(Duration duration, Level level) {
+        long time = level.getDayTime() % 24000L;
+
+        return  time >= duration.start && time <= duration.end;
     }
 
     public record Duration(long start, long end) {

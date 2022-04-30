@@ -2,12 +2,15 @@
   "replace": false,
   "values": [
     "featuresandcreatures:dawn_ore",
+    "featuresandcreatures:andesite_dawn_ore",
     "featuresandcreatures:deepslate_dawn_ore",
     "featuresandcreatures:dawn_block",
     "featuresandcreatures:midnight_ore",
+    "featuresandcreatures:granite_midnight_ore",
     "featuresandcreatures:deepslate_midnight_ore",
     "featuresandcreatures:midnight_crystal_block",
     "featuresandcreatures:sunset_ore",
+    "featuresandcreatures:diorite_sunset_ore",
     "featuresandcreatures:deepslate_sunset_ore",
     "featuresandcreatures:sunset_crystal_block"
   ]

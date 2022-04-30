@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "revealed=false": {
+      "model": "minecraft:block/granite"
+    },
+    "revealed=true": {
+      "model": "featuresandcreatures:block/granite_midnight_ore"
+    }
+  }
+}

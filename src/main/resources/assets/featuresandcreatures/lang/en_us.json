@@ -44,12 +44,15 @@
 
   "block.featuresandcreatures.dawn_block": "Dawn Block",
   "block.featuresandcreatures.dawn_ore": "Dawn Ore",
+  "block.featuresandcreatures.andesite_dawn_ore": "Andesite Dawn Ore",
   "block.featuresandcreatures.deepslate_dawn_ore": "Deepslate Dawn Ore",
   "block.featuresandcreatures.midnight_block": "Midnight Block",
+  "block.featuresandcreatures.granite_midnight_ore": "Granite Midnight Ore",
   "block.featuresandcreatures.midnight_ore": "Midnight Ore",
   "block.featuresandcreatures.deepslate_midnight_ore": "Deepslate Midnight Ore",
   "block.featuresandcreatures.sunset_block": "Sunset Block",
   "block.featuresandcreatures.sunset_ore": "Sunset Ore",
+  "block.featuresandcreatures.diorite_sunset_ore": "Diorite Sunset Ore",
   "block.featuresandcreatures.deepslate_sunset_ore": "Deepslate Sunset Ore",
 
   "subtitles.entity.featuresandcreatures.desaddle": "Entity Desaddles",

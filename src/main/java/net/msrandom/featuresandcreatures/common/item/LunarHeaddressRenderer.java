@@ -31,8 +31,8 @@ public class LunarHeaddressRenderer extends GeoArmorRenderer<LunarHeaddressItem>
 
     @Override
     public void render(float partialTicks, PoseStack stack, VertexConsumer bufferIn, int packedLightIn) {
-        bufferIn =  Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.entityTranslucent(LunarHeaddressModel.TEXTURE));
-        this.renderToBuffer(stack, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+        // ufferIn =  Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.entityTranslucent(LunarHeaddressModel.TEXTURE));
+        // this.renderToBuffer(stack, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
         super.render(partialTicks, stack, bufferIn, packedLightIn);
     }
 }

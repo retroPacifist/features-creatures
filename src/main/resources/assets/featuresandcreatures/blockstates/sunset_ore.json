@@ -1,7 +1,7 @@
 {
   "variants": {
     "revealed=false": {
-      "model": "minecraft:block/diorite"
+      "model": "minecraft:block/stone"
     },
     "revealed=true": {
       "model": "featuresandcreatures:block/sunset_ore"

@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:cobblestone"
+          "name": "minecraft:diorite"
         }
       ],
       "conditions": [
@@ -16,7 +16,7 @@
         },
         {
           "condition": "minecraft:block_state_property",
-          "block": "featuresandcreatures:sunset_ore",
+          "block": "featuresandcreatures:diorite_sunset_ore",
           "properties": {
             "revealed": "false"
           }
@@ -45,7 +45,7 @@
               "conditions": [
                 {
                   "condition": "minecraft:block_state_property",
-                  "block": "featuresandcreatures:sunset_ore",
+                  "block": "featuresandcreatures:diorite_sunset_ore",
                   "properties": {
                     "revealed": "true"
                   }

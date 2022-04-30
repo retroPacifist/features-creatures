@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "revealed=false": {
+      "model": "minecraft:block/andesite"
+    },
+    "revealed=true": {
+      "model": "featuresandcreatures:block/andesite_dawn_ore"
+    }
+  }
+}

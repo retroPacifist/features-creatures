@@ -10,8 +10,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.msrandom.featuresandcreatures.common.item.FeaturesCreaturesItems;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
-import net.msrandom.featuresandcreatures.core.FnCItems;
 
 public class BFSAttack extends ThrowableItemProjectile {
     public BFSAttack(Level p_37392_) {
@@ -24,7 +24,7 @@ public class BFSAttack extends ThrowableItemProjectile {
 
     @Override
     protected Item getDefaultItem() {
-        return FnCItems.BFS_ATTACK_ITEM.get();
+        return FeaturesCreaturesItems.BFS_ATTACK_ITEM.get();
     }
 
     protected void onHitEntity(EntityHitResult hitResult) {
