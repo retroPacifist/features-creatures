@@ -47,10 +47,9 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
 
     private static final EntityDataAccessor<Integer> tradeTimer = SynchedEntityData.defineId(ShulkrenYoungling.class, EntityDataSerializers.INT);
-
-
-    public ShulkrenYoungling(EntityType<? extends ShulkrenYoungling> p_21368_, Level p_21369_) {
-        super(p_21368_, p_21369_);
+    
+    public ShulkrenYoungling(EntityType<? extends ShulkrenYoungling> type, Level level) {
+        super(type, level);
     }
 
     public static boolean checkSpawnRules(EntityType<ShulkrenYoungling> type, LevelAccessor world, MobSpawnType spawnType, BlockPos pos, Random random) {
@@ -99,8 +98,10 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
             this.setDeltaMovement(this.getDeltaMovement());
             this.setItemInHand(this.getUsedItemHand(), ItemStack.EMPTY);
             Player nearestPlayer = this.level.getNearestPlayer(this, 50);
-            throwItemsTowardPos(this, getBarterResponseItems(this), Objects.requireNonNullElse(nearestPlayer, this).position());
-            this.setTradeTimer(100);
+            if (this.getTarget() != null &&this.getTarget().is(Objects.requireNonNull(nearestPlayer))) {
+                throwItemsTowardPos(this, getBarterResponseItems(this), Objects.requireNonNullElse(nearestPlayer, this).position());
+                this.setTradeTimer(100);
+            }
         }
     }
 
@@ -114,7 +115,6 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     private static void throwItemsTowardPos(ShulkrenYoungling youngling, List<ItemStack> items, Vec3 vec3) {
         if (!items.isEmpty()) {
             youngling.swing(InteractionHand.OFF_HAND);
-
             for(ItemStack itemstack : items) {
                 BehaviorUtils.throwItem(youngling, itemstack, vec3.add(0.0D, 1.0D, 0.0D));
             }
