@@ -18,18 +18,18 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
 import net.msrandom.featuresandcreatures.client.model.SpearModel;
 import net.msrandom.featuresandcreatures.client.renderer.entity.*;
-import net.msrandom.featuresandcreatures.common.block.FnCBlocks;
+import net.msrandom.featuresandcreatures.common.block.FeaturesCreaturesBlocks;
 import net.msrandom.featuresandcreatures.common.block.entity.FeaturesCreaturesBlockEntities;
 import net.msrandom.featuresandcreatures.common.entity.*;
 import net.msrandom.featuresandcreatures.common.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.common.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.common.entity.mount.Sabertooth;
-import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
-import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressRenderer;
-import net.msrandom.featuresandcreatures.common.item.LunarHeaddressItem;
-import net.msrandom.featuresandcreatures.common.item.LunarHeaddressRenderer;
+import net.msrandom.featuresandcreatures.common.item.*;
 import net.msrandom.featuresandcreatures.common.network.NetworkHandler;
-import net.msrandom.featuresandcreatures.core.*;
+import net.msrandom.featuresandcreatures.core.FnCEntities;
+import net.msrandom.featuresandcreatures.core.FnCKeybinds;
+import net.msrandom.featuresandcreatures.core.FnCSounds;
+import net.msrandom.featuresandcreatures.core.FnCTriggers;
 import net.msrandom.featuresandcreatures.util.FnCConfig;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.GeckoLib;
@@ -51,12 +51,11 @@ public class FeaturesAndCreatures {
         bus.addListener(this::registerArmor);
         bus.addListener(this::bakeLayers);
 
-        FnCBlocks.REGISTER.register(bus);
+        FeaturesCreaturesBlocks.REGISTER.register(bus);
         FeaturesCreaturesBlockEntities.REGISTER.register(bus);
 
-
         FnCEntities.REGISTRAR.register(bus);
-        FnCItems.REGISTRAR.register(bus);
+        FeaturesCreaturesItems.REGISTER.register(bus);
 
         FnCSounds.REGISTRAR.initialize();
         FnCTriggers.register();
@@ -89,7 +88,7 @@ public class FeaturesAndCreatures {
         renderer.registerEntityRenderer(FnCEntities.TBH.get(), TbhRenderer::new);
 
         ItemProperties.register(
-                FnCItems.SPEAR.get(),
+                FeaturesCreaturesItems.SPEAR.get(),
                 new ResourceLocation(MOD_ID, "throwing"),
                 (stack, world, entity, level) -> {
                     return entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
@@ -107,7 +106,7 @@ public class FeaturesAndCreatures {
     }
 
     private void registerModels(ModelRegistryEvent event) {
-        BuiltInGuiTextureRenderer.register(FnCItems.SPEAR.get());
+        BuiltInGuiTextureRenderer.register(FeaturesCreaturesItems.SPEAR.get());
     }
 
     private void registerAttributes(EntityAttributeCreationEvent event) {

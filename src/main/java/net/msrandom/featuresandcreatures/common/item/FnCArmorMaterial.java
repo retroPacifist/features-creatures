@@ -8,7 +8,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.core.FnCItems;
 
 import java.util.function.Supplier;
 
@@ -16,12 +15,12 @@ public enum FnCArmorMaterial implements ArmorMaterial {
 
     ANTLER(new ResourceLocation(FeaturesAndCreatures.MOD_ID, "headdress"), 15, new int[]{0, 0, 0, 0},
             420, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F,
-            () -> Ingredient.of(FnCItems.ANTLER.get())
+            () -> Ingredient.of(FeaturesCreaturesItems.ANTLER.get())
     ),
 
     LUNAR(new ResourceLocation(FeaturesAndCreatures.MOD_ID, "lunar_headdress"), 15, new int[]{6, 6, 6, 6},
             11, SoundEvents.ARMOR_EQUIP_LEATHER, 1.0F, 0.0F,
-            () -> Ingredient.of(FnCItems.ANTLER.get()));
+            () -> Ingredient.of(FeaturesCreaturesItems.ANTLER.get()));
 
     private final ResourceLocation name;
     private final int durabilityAmount;
