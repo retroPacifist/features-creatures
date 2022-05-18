@@ -1,0 +1,28 @@
+{
+  "required": false,
+  "package": "retropacifist.featuresandcreatures.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "featuresandcreatures.refmap.json",
+  "client": [
+    "access.FirstPersonRendererAccess",
+    "client.ItemRendererMixin",
+    "client.MixinClientWorldInfo",
+    "client.MixinFirstPersonRenderer"
+  ],
+  "minVersion": "0.8",
+  "mixins": [
+    "MixinIWorldInfo",
+    "SlimeSizeInvoker",
+    "access.SpawnPlacementsAccess",
+    "access.TargetingConditionsAccess",
+    "block.MixinBasePressurePlateBlock",
+    "block.MixinMagmaBlock",
+    "entity.MixinWolfEntity",
+    "server.MixinPlayerList",
+    "server.MixinServerLevel",
+    "server.MixinServerWorldInfo"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

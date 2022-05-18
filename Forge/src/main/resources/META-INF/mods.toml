@@ -1,0 +1,37 @@
+modLoader="javafml"
+loaderVersion="[440,)"
+license="CC-2.0"
+issueTrackerURL="https://www.curseforge.com/minecraft/mc-mods/features-creatures/"
+[[mods]]
+modId="featuresandcreatures"
+version="0.2"
+displayName="Features & Creatures"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/features-creatures/"
+logoFile="fc_logo.png"
+credits="retroPacifist, computerCorvidae, Chaottic, MsRandom, YaBoiChips, Cibernet83, Dweblenod"
+authors="retroPacifist"
+description='''
+Features & Creatures is a mod which focuses on adding unique and exciting mobs to your worlds!
+'''
+
+[[dependencies.featuresandcreatures]]
+modId="forge"
+mandatory=true
+versionRange="[39,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.featuresandcreatures]]
+modId="geckolib3"
+mandatory=true
+versionRange="[3.0.9,)"
+ordering="NONE"
+side="BOTH"
+
+
+[[dependencies.featuresandcreatures]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.18.2,)"
+ordering = "NONE"
+side = "BOTH"
