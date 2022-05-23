@@ -21,4 +21,9 @@ public class TbhRenderer extends GeoEntityRenderer<Tbh> {
         shadowRadius = 0.3f;
         super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
+
+    @Override
+    public ResourceLocation _getTextureLocation(Tbh entity) {
+        return TEXTURE;
+    }
 }

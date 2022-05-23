@@ -6,8 +6,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.msrandom.featuresandcreatures.common.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.common.entity.spawner.JockeySpawner;
-import net.msrandom.featuresandcreatures.common.network.JockeyPosPacket;
-import net.msrandom.featuresandcreatures.common.network.NetworkHandler;
+import net.msrandom.featuresandcreatures.network.JockeyPosPacket;
+import net.msrandom.featuresandcreatures.platform.ModPlatform;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,7 +20,7 @@ public abstract class MixinPlayerList {
     private void sendContext(ServerPlayer playerIn, ServerLevel worldIn, CallbackInfo ci) {
         JockeySpawner.Context jockeyContext = ((FnCSpawnerLevelContext) worldIn.getLevelData()).jockeyContext();
         if (jockeyContext != null && jockeyContext.getPos() != null) {
-            NetworkHandler.sendToClient(playerIn, new JockeyPosPacket(jockeyContext.getPos()));
+            ModPlatform.INSTANCE.sendToClient(playerIn, new JockeyPosPacket(jockeyContext.getPos()));
         }
     }
 }

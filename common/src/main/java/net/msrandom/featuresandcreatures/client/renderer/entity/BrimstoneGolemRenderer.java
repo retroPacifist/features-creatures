@@ -20,7 +20,7 @@ public class BrimstoneGolemRenderer extends GeoEntityRenderer<BrimstoneGolem> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BrimstoneGolem p_110775_1_) {
+    public ResourceLocation _getTextureLocation(BrimstoneGolem p_110775_1_) {
         return BrimstoneGolemModel.TEXTURE;
     }
 

@@ -23,7 +23,7 @@ public class BlackForestSpiritModel extends AnimatedGeoModel<BlackForestSpirit> 
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BlackForestSpirit object) {
+    public ResourceLocation _getTextureLocation(BlackForestSpirit object) {
         return object.hasLapis() ? GLOW_TEXTURE : TEXTURE;
     }
 

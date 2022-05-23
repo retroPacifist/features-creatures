@@ -17,7 +17,7 @@ public class ShulkrenYounglingModel extends AnimatedGeoModel<ShulkrenYoungling> 
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ShulkrenYoungling object) {
+    public ResourceLocation _getTextureLocation(ShulkrenYoungling object) {
         return TEXTURE;
     }
 

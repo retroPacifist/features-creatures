@@ -16,7 +16,7 @@ public class GupRenderer extends GeoEntityRenderer<Gup> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Gup p_110775_1_) {
+    public ResourceLocation _getTextureLocation(Gup p_110775_1_) {
         return GupModel.TEXTURE;
     }
 

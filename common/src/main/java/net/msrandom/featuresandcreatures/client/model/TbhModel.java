@@ -22,7 +22,7 @@ public class TbhModel extends AnimatedGeoModel<Tbh> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Tbh object) {
+    public ResourceLocation _getTextureLocation(Tbh object) {
         return TEXTURE;
     }
 

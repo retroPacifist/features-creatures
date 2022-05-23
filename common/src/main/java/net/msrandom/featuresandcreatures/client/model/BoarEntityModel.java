@@ -20,6 +20,11 @@ public final class BoarEntityModel extends AbstractMountModel<Boar> {
     private static final ResourceLocation ANIMATION = createResourceLocation("animations/boar.animation.json");
 
     @Override
+    public ResourceLocation _getTextureLocation(Boar object) {
+        return super._getTextureLocation(object);
+    }
+
+    @Override
     public void setLivingAnimations(Boar entity, Integer uniqueID, @Nullable AnimationEvent customPredicate) {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
         IBone head = this.getAnimationProcessor().getBone("head");
@@ -46,6 +51,11 @@ public final class BoarEntityModel extends AbstractMountModel<Boar> {
     @Override
     public ResourceLocation getModelLocation(Boar object) {
         return MODEL;
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(Boar object) {
+        return null;
     }
 
     @Override

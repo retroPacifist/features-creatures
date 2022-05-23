@@ -24,4 +24,8 @@ public class FeaturesCreaturesBlockEntities {
             FeaturesCreaturesBlocks.DEEPSLATE_MIDNIGHT_ORE.get(),
             FeaturesCreaturesBlocks.DEEPSLATE_SUNSET_ORE.get()
     ).build(null));
+
+    public static void init() {
+
+    }
 }

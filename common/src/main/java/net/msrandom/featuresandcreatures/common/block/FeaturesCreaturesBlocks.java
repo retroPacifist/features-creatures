@@ -44,4 +44,8 @@ public class FeaturesCreaturesBlocks {
         final var ro = REGISTER.<B>register(id, block);
         return BlockRegistryObject.wrap(ro);
     }
+
+    public static void init() {
+
+    }
 }

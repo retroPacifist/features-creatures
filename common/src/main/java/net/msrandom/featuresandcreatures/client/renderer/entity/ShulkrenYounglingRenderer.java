@@ -21,7 +21,7 @@ public class ShulkrenYounglingRenderer extends GeoEntityRenderer<ShulkrenYoungli
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ShulkrenYoungling p_110775_1_) {
+    public ResourceLocation _getTextureLocation(ShulkrenYoungling p_110775_1_) {
         return ShulkrenYounglingModel.TEXTURE;
     }
 

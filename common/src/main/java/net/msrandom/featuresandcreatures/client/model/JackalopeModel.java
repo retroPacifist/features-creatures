@@ -19,7 +19,7 @@ public class JackalopeModel extends AnimatedGeoModel<Jackalope> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Jackalope object) {
+    public ResourceLocation _getTextureLocation(Jackalope object) {
         return object.isSaddled() ? JackalopeRenderer.SADDLED : JackalopeRenderer.TEXTURE;
     }
 

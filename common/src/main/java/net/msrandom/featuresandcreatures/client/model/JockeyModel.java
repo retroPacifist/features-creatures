@@ -19,7 +19,7 @@ public class JockeyModel extends AnimatedGeoModel<Jockey> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Jockey object) {
+    public ResourceLocation _getTextureLocation(Jockey object) {
         return JackalopeRenderer.TEXTURE;
     }
 

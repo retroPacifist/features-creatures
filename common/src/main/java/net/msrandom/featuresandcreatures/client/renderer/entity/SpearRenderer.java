@@ -29,13 +29,13 @@ public class SpearRenderer extends EntityRenderer<Spear> {
         poseStack.pushPose();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) + 90.0F));
-        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(bufferIn, model.renderType(this.getTextureLocation(entity)), false, false);
+        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(bufferIn, model.renderType(this._getTextureLocation(entity)), false, false);
         model.renderToBuffer(poseStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         poseStack.popPose();
         super.render(entity, entityYaw, partialTicks, poseStack, bufferIn, packedLightIn);
     }
 
-    public ResourceLocation getTextureLocation(Spear entity) {
+    public ResourceLocation _getTextureLocation(Spear entity) {
         return TEXTURE;
     }
 }

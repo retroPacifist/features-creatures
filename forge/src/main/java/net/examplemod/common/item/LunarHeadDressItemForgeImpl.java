@@ -1,11 +1,10 @@
-package net.msrandom.featuresandcreatures.common.item;
+package net.examplemod.common.item;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 
-public class LunarHeaddressItem extends AntlerHeaddressItem{
-
-    public LunarHeaddressItem(ArmorMaterial material, EquipmentSlot slot, Properties builder) {
+public class LunarHeadDressItemForgeImpl extends AntlerHeaddressItemForgeImpl {
+    public LunarHeadDressItemForgeImpl(ArmorMaterial material, EquipmentSlot slot, Properties builder) {
         super(material, slot, builder);
     }
 

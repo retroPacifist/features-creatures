@@ -47,7 +47,7 @@ public class BFSAttackRenderer<T extends Entity & ItemSupplier> extends EntityRe
         }
     }
 
-    public ResourceLocation getTextureLocation(Entity p_116083_) {
+    public ResourceLocation _getTextureLocation(Entity p_116083_) {
         return new ResourceLocation(FeaturesAndCreatures.MOD_ID, "textures/item/bfs_attack.png");
     }
 }

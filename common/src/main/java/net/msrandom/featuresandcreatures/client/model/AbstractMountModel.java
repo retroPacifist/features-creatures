@@ -8,7 +8,7 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 public abstract class AbstractMountModel<T extends AbstractMountEntity> extends AnimatedGeoModel<T> {
 
     @Override
-    public ResourceLocation getTextureLocation(T object) {
+    public ResourceLocation _getTextureLocation(T object) {
         return object.isSaddled() ? getSaddledTexture(object) : getRegularTexture(object);
     }
 

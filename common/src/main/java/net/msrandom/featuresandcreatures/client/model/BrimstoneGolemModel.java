@@ -17,7 +17,7 @@ public class BrimstoneGolemModel extends AnimatedGeoModel<BrimstoneGolem> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BrimstoneGolem object) {
+    public ResourceLocation _getTextureLocation(BrimstoneGolem object) {
         return TEXTURE;
     }
 

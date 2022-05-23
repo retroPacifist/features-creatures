@@ -29,8 +29,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -196,25 +194,24 @@ public class Jackalope extends Animal implements IAnimatable {
     }
 
     protected SoundEvent getJumpSound() {
-        return FnCSounds.JACKALOPE_STEP;
+        return FnCSounds.JACKALOPE_STEP.get();
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return FnCSounds.JACKALOPE_AMBIENT;
+        return FnCSounds.JACKALOPE_AMBIENT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource p_184601_1_) {
-        return FnCSounds.JACKALOPE_HURT;
+        return FnCSounds.JACKALOPE_HURT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return FnCSounds.JACKALOPE_DEATH;
+        return FnCSounds.JACKALOPE_DEATH.get();
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void handleEntityEvent(byte p_70103_1_) {
         if (p_70103_1_ == 1) {
             this.spawnSprintParticle();
@@ -260,7 +257,7 @@ public class Jackalope extends Animal implements IAnimatable {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         super.mobInteract(player, hand);
         if (player.isHolding(Items.SADDLE)) {
-            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.JACKALOPE_SADDLE, SoundSource.AMBIENT, 1, 1);
+            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.JACKALOPE_SADDLE.get(), SoundSource.AMBIENT, 1, 1);
             this.setSaddled(true);
             if (!player.isCreative()) {
                 player.getItemInHand(hand).shrink(1);
@@ -269,7 +266,7 @@ public class Jackalope extends Animal implements IAnimatable {
         if (player.isCrouching() && player.getItemInHand(hand).getItem() != Items.SADDLE && this.isSaddled()) {
             this.setSaddled(false);
             player.level.addFreshEntity(new ItemEntity(player.level, this.getX(), this.getY() + 0.3f, this.getZ(), Items.SADDLE.getDefaultInstance()));
-            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.ENTITY_DESADDLE, SoundSource.AMBIENT, 1, 1);
+            player.level.playSound(null, this.getX(), this.getY() + 0.33f, this.getZ(), FnCSounds.ENTITY_DESADDLE.get(), SoundSource.AMBIENT, 1, 1);
         }
         return InteractionResult.SUCCESS;
     }

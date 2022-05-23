@@ -19,7 +19,7 @@ public class JackalopeRenderer extends GeoEntityRenderer<Jackalope> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Jackalope instance) {
+    public ResourceLocation _getTextureLocation(Jackalope instance) {
         return instance.isSaddled() ? SADDLED : TEXTURE;
     }
 

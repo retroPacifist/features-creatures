@@ -19,7 +19,7 @@ public class SabertoothModel extends AnimatedGeoModel<Sabertooth> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Sabertooth object) {
+    public ResourceLocation _getTextureLocation(Sabertooth object) {
         return object.isSaddled() ? SabertoothRenderer.SADDLED : SabertoothRenderer.TEXTURE;
     }
 

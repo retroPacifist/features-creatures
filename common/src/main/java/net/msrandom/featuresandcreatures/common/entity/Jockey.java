@@ -1,6 +1,7 @@
 package net.msrandom.featuresandcreatures.common.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -43,15 +44,12 @@ import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.common.entity.mount.Boar;
 import net.msrandom.featuresandcreatures.common.entity.mount.Jackalope;
 import net.msrandom.featuresandcreatures.common.entity.mount.Sabertooth;
 import net.msrandom.featuresandcreatures.common.entity.spawner.FnCSpawnerLevelContext;
 import net.msrandom.featuresandcreatures.common.entity.spawner.JockeySpawner;
-import net.msrandom.featuresandcreatures.common.network.JockeyPosPacket;
-import net.msrandom.featuresandcreatures.common.network.NetworkHandler;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
@@ -231,7 +229,7 @@ public class Jockey extends PathfinderMob implements Npc, Merchant, IAnimatable,
 
                 Predicate<MobEffect> blacklisted = FnCConfig.getInstance().getJockeyEffectBlacklist()::contains;
 
-                Set<MobEffect> effectsSet = ForgeRegistries.MOB_EFFECTS.getValues()
+                Set<MobEffect> effectsSet = Registry.MOB_EFFECT
                         .stream()
                         .filter(blacklisted.negate())
                         .collect(Collectors.toSet());

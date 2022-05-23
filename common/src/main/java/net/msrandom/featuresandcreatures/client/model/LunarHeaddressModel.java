@@ -2,7 +2,6 @@ package net.msrandom.featuresandcreatures.client.model;
 
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.common.item.LunarHeaddressItem;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class LunarHeaddressModel extends AnimatedGeoModel<LunarHeaddressItem> {
@@ -14,7 +13,7 @@ public class LunarHeaddressModel extends AnimatedGeoModel<LunarHeaddressItem> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(LunarHeaddressItem object) {
+    public ResourceLocation _getTextureLocation(LunarHeaddressItem object) {
         return TEXTURE;
     }
 

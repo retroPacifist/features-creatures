@@ -51,4 +51,8 @@ public class FnCSounds {
                 () -> new SoundEvent(new ResourceLocation(FeaturesAndCreatures.MOD_ID, location))
         );
     }
+
+    public static void init() {
+
+    }
 }

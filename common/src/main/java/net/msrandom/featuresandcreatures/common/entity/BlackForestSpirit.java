@@ -1,11 +1,13 @@
 package net.msrandom.featuresandcreatures.common.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
@@ -34,7 +36,6 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -88,7 +89,7 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
     @Override
     public boolean canHoldItem(ItemStack stack) {
         if (this.hasLapis()) {
-            return stack.getItem().getRegistryName().toString().contains("log");
+            return stack.is(ItemTags.LOGS_THAT_BURN);
         } else {
             return stack.is(Items.LAPIS_LAZULI);
         }
@@ -135,7 +136,8 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
 
     @Override
     public void tick() {
-        Item pickup = this.getItemInHand(this.getUsedItemHand()).getItem();
+        ItemStack itemInHand = this.getItemInHand(this.getUsedItemHand());
+        Item pickup = itemInHand.getItem();
         if (!hasLapis() && pickup == Items.LAPIS_LAZULI) {
             int i = random.nextInt(10);
             this.getMainHandItem().shrink(1);
@@ -144,7 +146,7 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
             }
         }
 
-        if ((hasLapis() && this.getMainHandItem().getCount() > 0) || (!hasLapis() && pickup.getRegistryName().toString().contains("log"))) {
+        if ((hasLapis() && this.getMainHandItem().getCount() > 0) || (!hasLapis() && itemInHand.is(ItemTags.LOGS_THAT_BURN))) {
             System.out.println(this.getMainHandItem().getCount());
             this.getMainHandItem().shrink(1);
             Player nearestPlayer = this.level.getNearestPlayer(this, 50);
@@ -152,11 +154,11 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
         }
 
 
-        if (hasLapis() && pickup.getRegistryName().toString().contains("log")) {
+        if (hasLapis() && itemInHand.is(ItemTags.LOGS_THAT_BURN)) {
             setLapis(false);
-            String sapling = pickup.getRegistryName().toString().replace("log", "sapling");
-            for (Item item : ForgeRegistries.ITEMS) {
-                if (item.getRegistryName().toString().equals(sapling)) {
+            String sapling = Registry.ITEM.getKey(pickup).toString().replace("log", "sapling");
+            for (Item item : Registry.ITEM) {
+                if (Registry.ITEM.getKey(item).toString().equals(sapling)) {
                     Player nearestPlayer = this.level.getNearestPlayer(this, 50);
                     throwItemsTowardPos(this, item.getDefaultInstance(), Objects.requireNonNullElse(nearestPlayer, this).position());
                     this.getMainHandItem().shrink(1);
@@ -292,7 +294,7 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
             super.tick();
             this.spirit.followingItem = this.spirit.level.getEntitiesOfClass(ItemEntity.class, new AABB(this.spirit.blockPosition()).inflate(distance));
             if (this.spirit.followingItem.isEmpty()) return;
-            boolean flag = this.spirit.hasLapis() && !this.spirit.followingItem.get(0).getItem().getItem().getRegistryName().toString().contains("log");
+            boolean flag = this.spirit.hasLapis() && !this.spirit.followingItem.get(0).getItem().is(ItemTags.LOGS_THAT_BURN);
             boolean flag1 = !this.spirit.followingItem.get(0).getItem().is(Items.LAPIS_LAZULI) && !this.spirit.hasLapis();
             if (flag || flag1) {
                 this.spirit.followingItem.remove(0);

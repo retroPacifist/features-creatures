@@ -1,5 +1,6 @@
 package net.msrandom.featuresandcreatures.mixin.server;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -32,9 +33,9 @@ public class MixinServerLevel {
     private List<CustomSpawner> customSpawners;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void addFnCSpawners(MinecraftServer p_i241885_1_, Executor p_i241885_2_, LevelStorageSource.LevelStorageAccess p_i241885_3_, ServerLevelData serverWorldInfo, ResourceKey<Level> worldRegistryKey, DimensionType p_i241885_6_, ChunkProgressListener p_i241885_7_, ChunkGenerator p_i241885_8_, boolean p_i241885_9_, long p_i241885_10_, List<CustomSpawner> spawners, boolean p_i241885_13_, CallbackInfo ci) {
+    private void addFnCSpawners(MinecraftServer minecraftServer, Executor executor, LevelStorageSource.LevelStorageAccess levelStorageAccess, ServerLevelData serverLevelData, ResourceKey<Level> resourceKey, Holder holder, ChunkProgressListener chunkProgressListener, ChunkGenerator chunkGenerator, boolean bl, long l, List list, boolean bl2, CallbackInfo ci) {
         this.customSpawners = new ArrayList<>(this.customSpawners);
-        if (worldRegistryKey == Level.OVERWORLD) {
+        if (resourceKey == Level.OVERWORLD) { // TODO: Tag
             this.customSpawners.add(new JockeySpawner());
         }
     }

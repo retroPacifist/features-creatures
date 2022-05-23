@@ -23,7 +23,7 @@ public class JockeyRenderer extends GeoEntityRenderer<Jockey> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Jockey p_110775_1_) {
+    public ResourceLocation _getTextureLocation(Jockey p_110775_1_) {
         return TEXTURE;
     }
 

@@ -5,10 +5,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import net.msrandom.featuresandcreatures.common.block.FeaturesCreaturesBlocks;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
@@ -39,8 +39,8 @@ public class FeaturesCreaturesItems {
     public final RegistryObject<Item> SABERTOOTH_FANG = REGISTER.register("sabertooth_fang", createItem());
 
     // Armor, Weapons, and Tools
-    public final RegistryObject<Item> ANTLER_HEADDRESS = REGISTER.register("antler_headdress", () -> new AntlerHeaddressItem(FnCArmorMaterial.ANTLER, EquipmentSlot.HEAD, createProperties()));
-    public final RegistryObject<Item> LUNAR_HEADDRESS = REGISTER.register("lunar_headdress", () -> new LunarHeaddressItem(FnCArmorMaterial.LUNAR, EquipmentSlot.HEAD, createProperties()));
+    public final RegistryObject<? extends ArmorItem> ANTLER_HEADDRESS = REGISTER.register("antler_headdress", () -> PlatformItemHandler.INSTANCE.getAntlerHeaddressItem(FnCArmorMaterial.ANTLER, EquipmentSlot.HEAD, createProperties()));
+    public final RegistryObject<? extends ArmorItem> LUNAR_HEADDRESS = REGISTER.register("lunar_headdress", () -> PlatformItemHandler.INSTANCE.getLunarHeaddressItem(FnCArmorMaterial.LUNAR, EquipmentSlot.HEAD, createProperties()));
     public final RegistryObject<Item> SPEAR = REGISTER.register("spear", () -> new SpearItem(createProperties()));
     //dawn spear goes here
     public final RegistryObject<Item> DOWSING_ROD = REGISTER.register("dowsing_rod", () -> new DowsingRodItem(createProperties()));
@@ -85,6 +85,10 @@ public class FeaturesCreaturesItems {
     }
 
     private <T extends Mob> Supplier<Item> createSpawnEgg(RegistryObject<EntityType<T>> object, int base, int spots) {
-        return () -> new ForgeSpawnEggItem(object, base, spots, createProperties());
+        return () -> PlatformItemHandler.INSTANCE.getSpawnEggItem(object, base, spots, createProperties());
+    }
+
+    public static void init() {
+
     }
 }

@@ -41,4 +41,8 @@ public class FnCEntities {
         SpawnPlacements.register(FnCEntities.GUP.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Gup::checkSpawnRules);
         SpawnPlacements.register(FnCEntities.TBH.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Tbh::checkSpawnRules);
     }
+
+    public static void init() {
+
+    }
 }

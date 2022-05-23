@@ -14,7 +14,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 import net.msrandom.featuresandcreatures.common.item.FeaturesCreaturesItems;
 import net.msrandom.featuresandcreatures.core.FnCEntities;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
@@ -45,12 +44,6 @@ public class Spear extends AbstractArrow {
     }
 
     @Override
-    @Nonnull
-    public Packet getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
     protected void onHitEntity(EntityHitResult result) {
         Entity entity = result.getEntity();
         float f = 12.0F;
@@ -62,7 +55,7 @@ public class Spear extends AbstractArrow {
         Entity entity1 = this.getOwner();
         DamageSource damagesource = DamageSource.trident(this, (Entity) (entity1 == null ? this : entity1));
         this.dealtDamage = true;
-        SoundEvent soundevent = FnCSounds.SPEAR_ATTACK;
+        SoundEvent soundevent = FnCSounds.SPEAR_ATTACK.get();
         if (entity.hurt(damagesource, f)) {
             if (entity.getType() == EntityType.ENDERMAN) {
                 return;

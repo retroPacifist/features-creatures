@@ -11,8 +11,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.RenderProperties;
+
 import net.msrandom.featuresandcreatures.client.BuiltInGuiTextureRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

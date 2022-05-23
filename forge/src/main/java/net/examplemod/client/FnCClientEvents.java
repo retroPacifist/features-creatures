@@ -1,7 +1,8 @@
-package net.msrandom.featuresandcreatures.client;
+package net.examplemod.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.player.LocalPlayer;
@@ -17,13 +18,12 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
-import net.msrandom.featuresandcreatures.common.item.AntlerHeaddressItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(value = {Dist.CLIENT}, modid = FeaturesAndCreatures.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class FnCRenderEvents {
+public class FnCClientEvents {
     @SubscribeEvent
     public static void renderHotbar(RenderGameOverlayEvent.Pre event) {
         Minecraft client = Minecraft.getInstance();
