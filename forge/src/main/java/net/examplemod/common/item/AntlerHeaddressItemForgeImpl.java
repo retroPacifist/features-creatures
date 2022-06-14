@@ -22,7 +22,6 @@ import net.msrandom.featuresandcreatures.core.FnCKeybinds;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
 import net.msrandom.featuresandcreatures.network.AntlerHeaddressChargePacket;
 import net.msrandom.featuresandcreatures.platform.ModPlatform;
-import software.bernie.geckolib3.item.GeoArmorItem;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 import javax.annotation.Nullable;

@@ -2,6 +2,7 @@ package net.msrandom.featuresandcreatures.common.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.msrandom.featuresandcreatures.core.FnCTriggers;
+import net.msrandom.featuresandcreatures.network.IChargeHandler;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -41,7 +43,6 @@ public class AntlerHeaddressItem extends ArmorItem implements IAnimatable {
         return factory;
     }
 
-
     public float knockbackValue() {
         return 0.3F;
     }
@@ -64,17 +65,18 @@ public class AntlerHeaddressItem extends ArmorItem implements IAnimatable {
     public void handleCharge(Player player, int charge) {
         player.getCooldowns().addCooldown(this, 40);
         Vec3 look = player.getLookAngle();
+        CompoundTag persistentData = ((IChargeHandler) player).getPersistentData();
         if (charge > Math.round(getMaxCharge() * 0.37f)) {
             double amount = charge / (getMaxCharge() * 0.37);
             player.push(look.x * amount, 0.1, look.z * amount);
             if (!player.level.isClientSide) {
-                player.getPersistentData().putBoolean(IS_DAMAGING, true);
-                player.getPersistentData().putInt(LAST_CHARGE, charge);
+                persistentData.putBoolean(IS_DAMAGING, true);
+                persistentData.putInt(LAST_CHARGE, charge);
             }
         } else if (charge >= 1) {
             player.push(look.x * (0.5), 0.1, look.z * (0.5));
             if (!player.level.isClientSide)
-                player.getPersistentData().putInt(LAST_CHARGE, charge);
+                persistentData.putInt(LAST_CHARGE, charge);
         }
     }
 

@@ -12,11 +12,13 @@
   "minVersion": "0.8",
   "mixins": [
     "MixinIWorldInfo",
+    "PlayerMixin",
     "SlimeSizeInvoker",
     "access.TargetingConditionsAccess",
     "block.MixinBasePressurePlateBlock",
     "block.MixinMagmaBlock",
     "entity.MixinWolfEntity",
+    "net.msrandom.featuresandcreatures.network.IChargeHandler",
     "server.MixinPlayerList",
     "server.MixinServerLevel",
     "server.MixinServerWorldInfo"

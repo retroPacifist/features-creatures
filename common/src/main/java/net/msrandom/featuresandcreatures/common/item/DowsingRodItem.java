@@ -56,7 +56,7 @@ public class DowsingRodItem extends Item {
 
                     if (playerForward.dot(playerToJockey.normalize()) > 0.99) {
                         // Pointing at jockey
-                        player.playNotifySound(FnCSounds.DOWSING_ROD_LOCATES, SoundSource.PLAYERS, 1f, 1f);
+                        player.playNotifySound(FnCSounds.DOWSING_ROD_LOCATES.get(), SoundSource.PLAYERS, 1f, 1f);
                     }
                 }
             }

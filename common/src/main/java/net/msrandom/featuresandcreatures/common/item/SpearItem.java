@@ -17,15 +17,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.Vanishable;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.msrandom.featuresandcreatures.common.entity.Spear;
 import net.msrandom.featuresandcreatures.core.FnCSounds;
-
-import java.util.Map;
 
 public class SpearItem extends Item implements Vanishable {
     private final Multimap<Attribute, AttributeModifier> spearAttributes = ImmutableMultimap.of();
@@ -46,17 +41,17 @@ public class SpearItem extends Item implements Vanishable {
         return 72000;
     }
 
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(book);
-        return enchantments.containsKey(Enchantments.FIRE_ASPECT) || enchantments.containsKey(Enchantments.MENDING)
-                || enchantments.containsKey(Enchantments.UNBREAKING);
-    }
-
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.UNBREAKING || enchantment == Enchantments.FIRE_ASPECT;
-    }
+//    @Override
+//    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+//        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(book);
+//        return enchantments.containsKey(Enchantments.FIRE_ASPECT) || enchantments.containsKey(Enchantments.MENDING)
+//                || enchantments.containsKey(Enchantments.UNBREAKING);
+//    }
+//
+//    @Override
+//    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+//        return enchantment == Enchantments.UNBREAKING || enchantment == Enchantments.FIRE_ASPECT;
+//    }
 
     public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int timeLeft) {
         if (entity instanceof Player) {
@@ -73,7 +68,7 @@ public class SpearItem extends Item implements Vanishable {
                         spear.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                     }
                     world.addFreshEntity(spear);
-                    world.playSound(null, spear, FnCSounds.SPEAR_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    world.playSound(null, spear, FnCSounds.SPEAR_THROW.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                     if (!playerentity.getAbilities().instabuild) {
                         playerentity.getInventory().removeItem(stack);
                     }

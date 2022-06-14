@@ -43,6 +43,5 @@ public class FnCEntities {
     }
 
     public static void init() {
-
     }
 }
