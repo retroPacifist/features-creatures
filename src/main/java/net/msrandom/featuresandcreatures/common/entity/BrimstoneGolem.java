@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -61,10 +62,13 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 64.0D).add(Attributes.MOVEMENT_SPEED, 0.2D).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.ATTACK_DAMAGE, 14.0D);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 64.0D).add(Attributes.MOVEMENT_SPEED, 0.2D).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.ATTACK_DAMAGE, 22.0D);
     }
 
     public static boolean checkSpawnRules(EntityType<BrimstoneGolem> type, LevelAccessor world, MobSpawnType spawnType, BlockPos pos, Random random) {
+        if (world.getBiome(pos).is(new ResourceLocation("byg", "brimstone_caverns"))){
+            return checkMobSpawnRules(type, world, spawnType, pos, random);
+        }
         if (world.getBlockState(pos.below()).is(Blocks.POLISHED_BLACKSTONE_BRICKS)) {
             return checkMobSpawnRules(type, world, spawnType, pos, random);
         }
@@ -74,7 +78,7 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        meleeAttackGoal = new MeleeAttackGoal(this, 1.0D, true);
+        meleeAttackGoal = new MeleeAttackGoal(this, 1.25D, true);
         rangedAttackGoal = new RangedAttackGoal(this, 1.25D, 20, 10.0F);
         this.goalSelector.addGoal(3, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 6.0F));
@@ -82,9 +86,7 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
         this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (p_28879_) -> {
-            return p_28879_ instanceof Enemy && !(p_28879_ instanceof AbstractPiglin);
-        }));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (entity) -> entity instanceof Enemy && !(entity instanceof AbstractPiglin)));
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
         registerAttackGoals();
     }
@@ -114,7 +116,7 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
     public void tick() {
         super.tick();
         if (this.getTarget() != null) {
-            if (this.getTarget().distanceToSqr(this.getX(), this.getY(), this.getZ()) > 100) {
+            if (this.getTarget().distanceToSqr(this.getX(), this.getY(), this.getZ()) > 120 || (this.getTarget().position().y - this.position().y) > 4) {
                 if (this.goalSelector.getRunningGoals().anyMatch(goal -> goal.getGoal().getClass() == MeleeAttackGoal.class)) {
                     this.goalSelector.removeGoal(meleeAttackGoal);
                     this.goalSelector.addGoal(1, rangedAttackGoal);
@@ -169,8 +171,8 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
         if (flag) {
             entity.setDeltaMovement(entity.getDeltaMovement().add(0.0D, (double) 0.4F, 0.0D));
             this.doEnchantDamageEffects(this, entity);
+            entity.setSecondsOnFire(10);
         }
-
         this.playSound(SoundEvents.ZOMBIE_BREAK_WOODEN_DOOR, 1.0F, 1.0F);
         if (getAttackAnimationTick() <= 1) {
             return flag;
@@ -184,7 +186,6 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
         this.entityData.define(DATA_FLAGS_ID, (byte) 0);
         this.entityData.define(ATTACK_TIME, 0);
         this.entityData.define(RANGE_ATTACK_TIME, 0);
-
     }
 
     public void startPersistentAngerTimer() {
