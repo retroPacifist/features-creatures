@@ -1,103 +1,131 @@
+import net.fabricmc.loom.api.mappings.layered.MappingContext
+import net.fabricmc.loom.api.mappings.layered.MappingLayer
+import net.fabricmc.loom.api.mappings.layered.MappingsNamespace
+import net.fabricmc.loom.api.mappings.layered.spec.MappingsSpec
+import net.fabricmc.loom.configuration.providers.mappings.intermediary.IntermediaryMappingLayer
+import net.fabricmc.mappingio.MappingVisitor
+import net.fabricmc.mappingio.tree.MemoryMappingTree
+
+
 buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'net.fabricmc', name: 'mapping-io', version: '0.3.0', changing: true
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
 
-version = '1.18.2-0.0.2'
-group = 'net.msrandom.featuresandcreatures'
-archivesBaseName = 'featuresandcreatures'
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-mixin {
-    add sourceSets.main, "featuresandcreatures.refmap.json"
+plugins {
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "0.11.0-SNAPSHOT" apply false
+    id 'java'
+    id 'com.matyrobbrt.mc.registrationutils' version '0.2.3'
 }
 
-minecraft {
-    mappings channel: 'official', version: '1.18.2'
-
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'info'
-
-            arg "-mixin.config=featuresandcreatures.mixins.json"
-
-            mods {
-                featuresandcreatures {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'info'
-
-            arg "-mixin.config=featuresandcreatures.mixins.json"
-
-            mods {
-                featuresandcreatures {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'info'
-
-            args '--mod', 'featuresandcreatures', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                featuresandcreatures {
-                    source sourceSets.main
-                }
-            }
-        }
+registrationUtils {
+    group 'retropacifist.featuresandcreatures.reg'
+    projects {
+        Common { type 'common'; project ':common' }
+        Fabric { type 'fabric'; project ':fabric' }
+        Forge { type 'forge'; project ':forge' }
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-repositories {
-    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+architectury {
+    minecraft = rootProject.minecraft_version
 }
 
-dependencies {
-    compileOnly 'org.jetbrains:annotations:23.0.0'
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
+subprojects {
+    apply plugin: "dev.architectury.loom"
 
-    implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.12')
+    loom {
+        silentMojangMappingsLicense()
+    }
 
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
-}
+    dependencies {
+        compileOnly 'org.jetbrains:annotations:23.0.0'
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
+        compileOnly group:'com.google.auto.service', name:'auto-service', version:'1.0.1'
+        annotationProcessor group:'com.google.auto.service', name:'auto-service', version:'1.0.1'
 
-jar {
-    manifest {
-        attributes([
-            "Specification-Title": "featuresandcreatures",
-            "Specification-Vendor": "featuresandcreatures",
-            "Specification-Version": "1",
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${archiveVersion.get()}",
-            "Implementation-Vendor" : "retropacifist",
-            "MixinConfigs": "featuresandcreatures.mixins.json"
-        ])
+        compileOnly 'com.github.CorgiTaco:geckolib-core:1.0.12'
+
+
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        // The following line declares the mojmap mappings, you may use other mappings as well
+        mappings loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-1.18.2:${parchment_version}@zip")
+            // https://gist.github.com/CorgiTaco/e4b5f7c968988e8c65bcf9f0093fd602
+            // don't convert this to a dynamic instantiation, otherwise java won't see the overridden hashCode
+            addLayer(new MappingsSpec<MappingLayer>() {
+                final Map<String, String> METHOD_NAME_MAP = Map.of(
+                        "getTextureLocation", "_getTextureLocation"
+                )
+
+                @Override
+                MappingLayer createLayer(MappingContext mappingContext) {
+                    return new MappingLayer() {
+                        @Override
+                        void visit(MappingVisitor mappingVisitor) throws IOException {
+                            MemoryMappingTree memoryMappingTree = mappingVisitor as MemoryMappingTree
+                            memoryMappingTree.getClasses().forEach(classEntry -> {
+                                classEntry.methods.forEach(methodEntry -> {
+                                    String newMethodName = METHOD_NAME_MAP.get(methodEntry.getName(MappingsNamespace.NAMED.toString()))
+                                    if (newMethodName != null) {
+                                        //noinspection GroovyAccessibility
+                                        methodEntry.srcName = newMethodName
+                                    }
+                                })
+                            })
+                        }
+
+                        @Override
+                        MappingsNamespace getSourceNamespace() {
+                            return MappingsNamespace.NAMED
+                        }
+
+                        @Override
+                        List<Class<? extends MappingLayer>> dependsOn() {
+                            return List.of(IntermediaryMappingLayer.class)
+                        }
+                    }
+                }
+
+                @Override
+                int hashCode() {
+                    // used to make sure caches stay consistent
+                    return METHOD_NAME_MAP.hashCode()
+                }
+            })
+        }
+
+        // The following line declares the yarn mappings you may select this one as well.
+        // mappings "net.fabricmc:yarn:1.18.2+build.3:v2"
     }
 }
 
-jar.finalizedBy('reobfJar')
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
+
+    archivesBaseName = rootProject.archives_base_name
+    version = rootProject.mod_version
+    group = rootProject.maven_group
+
+    repositories {
+        maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+        maven { url = "https://maven.parchmentmc.org/" }
+        maven { url 'https://jitpack.io' }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release = 17
+    }
+
+    java {
+        withSourcesJar()
+    }
+}
