@@ -4,24 +4,26 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "featuresandcreatures.refmap.json",
   "client": [
-    "access.FirstPersonRendererAccess",
-    "client.ItemRendererMixin",
-    "client.MixinClientWorldInfo",
-    "client.MixinFirstPersonRenderer"
+    "retropacifist.featuresandcreatures.mixin.access.FirstPersonRendererAccess",
+    "retropacifist.featuresandcreatures.mixin.client.ItemRendererMixin",
+    "retropacifist.featuresandcreatures.mixin.client.MixinClientWorldInfo",
+    "retropacifist.featuresandcreatures.mixin.client.MixinFirstPersonRenderer"
   ],
   "minVersion": "0.8",
   "mixins": [
-    "MixinIWorldInfo",
-    "PlayerMixin",
-    "SlimeSizeInvoker",
-    "access.TargetingConditionsAccess",
-    "block.MixinBasePressurePlateBlock",
-    "block.MixinMagmaBlock",
-    "entity.MixinWolfEntity",
     "net.msrandom.featuresandcreatures.network.IChargeHandler",
-    "server.MixinPlayerList",
-    "server.MixinServerLevel",
-    "server.MixinServerWorldInfo"
+    "retropacifist.featuresandcreatures.mixin.MixinIWorldInfo",
+    "retropacifist.featuresandcreatures.mixin.PlayerMixin",
+    "retropacifist.featuresandcreatures.mixin.SlimeSizeInvoker",
+    "retropacifist.featuresandcreatures.mixin.access.CriteriaTriggersAccess",
+    "retropacifist.featuresandcreatures.mixin.access.SpawnPlacementsAccess",
+    "retropacifist.featuresandcreatures.mixin.access.TargetingConditionsAccess",
+    "retropacifist.featuresandcreatures.mixin.block.MixinBasePressurePlateBlock",
+    "retropacifist.featuresandcreatures.mixin.block.MixinMagmaBlock",
+    "retropacifist.featuresandcreatures.mixin.entity.MixinWolfEntity",
+    "retropacifist.featuresandcreatures.mixin.server.MixinPlayerList",
+    "retropacifist.featuresandcreatures.mixin.server.MixinServerLevel",
+    "retropacifist.featuresandcreatures.mixin.server.MixinServerWorldInfo"
   ],
   "injectors": {
     "defaultRequire": 1

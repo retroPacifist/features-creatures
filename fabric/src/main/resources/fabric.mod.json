@@ -1,11 +1,14 @@
 {
   "schemaVersion": 1,
-  "id": "examplemod",
+  "id": "featuresandcreatures",
   "version": "${version}",
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Features and Creatures",
+  "description": "Features & Creatures is a mod which focuses on adding unique and exciting mobs to your worlds!",
   "authors": [
-    "Me!"
+    "retroPacifist"
+  ],
+  "credits": [
+    "retroPacifist, computerCorvidae, Chaottic, MsRandom, YaBoiChips, Cibernet83, Dweblenod"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
@@ -16,12 +19,12 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.examplemod.FeaturesAndCreaturesFabric"
+      "retropacifist.featuresandcreatures.FeaturesAndCreaturesFabric"
     ]
   },
   "mixins": [
-    "examplemod.mixins.json",
-    "examplemod-common.mixins.json"
+    "featuresandcreatures_fabric.mixins.json",
+    "featuresandcreatures.mixins.json"
   ],
   "depends": {
     "fabric": "*",
