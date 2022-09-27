@@ -15,6 +15,7 @@
     "SlimeSizeInvoker",
     "access.TargetingConditionsAccess",
     "block.MixinBasePressurePlateBlock",
+    "block.MixinHoneyBlock",
     "block.MixinMagmaBlock",
     "entity.MixinWolfEntity",
     "server.MixinPlayerList",

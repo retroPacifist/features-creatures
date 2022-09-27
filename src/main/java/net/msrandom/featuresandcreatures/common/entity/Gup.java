@@ -19,8 +19,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -30,6 +32,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -70,12 +73,14 @@ public class Gup extends PathfinderMob implements IAnimatable {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new Gup.GupFloatGoal(this));
-        this.goalSelector.addGoal(3, new Gup.GupRandomDirectionGoal(this));
+        this.goalSelector.addGoal(4, new Gup.GupRandomDirectionGoal(this));
         this.goalSelector.addGoal(5, new Gup.GupKeepOnJumpingGoal(this));
-        this.goalSelector.addGoal(2, new GupLeapGoal(this, 1F));
-        this.goalSelector.addGoal(1, new GupLookAtTargetGoal(this));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, IronGolem.class, false));
+        this.goalSelector.addGoal(3, new GupLeapGoal(this, 1F));
+//        this.goalSelector.addGoal(2, new GupLookAtTargetGoal(this));
+        this.goalSelector.addGoal(1, new GupAnimatedAttackGoal(this, 1, true));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, false));
 
     }
 
@@ -283,12 +288,11 @@ public class Gup extends PathfinderMob implements IAnimatable {
     @Override
     public void tick() {
         super.tick();
+        System.out.println(isAttacking());
         if (this.isAttacking()) {
-            this.setAttackTimer(this.getAttackTimer() - 1);
-        }
-        if (this.getAttackTimer() <= 0) {
-            this.setAttackTimer(32);
-            this.setAttacking(false);
+            this.setAttackTimer(this.getAttackTimer() + 1);
+        } else{
+            this.setAttackTimer(0);
         }
     }
 
@@ -513,9 +517,47 @@ public class Gup extends PathfinderMob implements IAnimatable {
     }
 
     static class GupAnimatedAttackGoal extends MeleeAttackGoal {
-        public GupAnimatedAttackGoal(PathfinderMob p_25552_, double p_25553_, boolean p_25554_) {
-            super(p_25552_, p_25553_, p_25554_);
+        public Gup gup;
+
+        public GupAnimatedAttackGoal(PathfinderMob mob, double p_25553_, boolean p_25554_) {
+            super(mob, p_25553_, p_25554_);
+            gup = (Gup) mob;
         }
 
+        @Override
+        protected void checkAndPerformAttack(@NotNull LivingEntity livingEntity, double entityDistance) {
+            double attackRange = getAttackReachSqr(livingEntity);
+            if (livingEntity instanceof Player player && player.getAbilities().instabuild) return;
+            if (entityDistance <= attackRange && isTimeToAttack()) {
+                resetAttackCooldown();
+                gup.setAttacking(true);
+                if (this.gup.getAttackTimer() <= 30) {
+                    gup.doHurtTarget(livingEntity);
+                    gup.setAttacking(false);
+                }
+            }
+        }
+
+        @Override
+        public void stop() {
+            gup.setAttacking(false);
+            super.stop();
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            LivingEntity livingentity = this.gup.getTarget();
+            if (livingentity != null) {
+                this.gup.lookAt(livingentity, 10.0F, 10.0F);
+            }
+
+            ((Gup.GupMoveControl)this.gup.getMoveControl()).setDirection(this.gup.getYRot(), true);
+        }
+
+        @Override
+        protected double getAttackReachSqr(LivingEntity entity) {
+            return 4F + entity.getBbWidth();
+        }
     }
 }

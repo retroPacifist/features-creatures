@@ -17,9 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BasePressurePlateBlock.class)
 public abstract class MixinBasePressurePlateBlock extends Block {
 
-    @Shadow
-    protected abstract BlockState setSignalForState(BlockState p_49301_, int p_49302_);
-
     public MixinBasePressurePlateBlock(Properties p_49795_) {
         super(p_49795_);
     }

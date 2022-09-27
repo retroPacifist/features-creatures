@@ -78,6 +78,15 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
     }
 
     @Override
+    public void aiStep() {
+        super.aiStep();
+        Vec3 vec3 = this.getDeltaMovement();
+        if (!this.onGround && vec3.y < 0.0D) {
+            this.setDeltaMovement(vec3.multiply(1.0D, 0.6D, 1.0D));
+        }
+    }
+
+    @Override
     public boolean canPickUpLoot() {
         return true;
     }
