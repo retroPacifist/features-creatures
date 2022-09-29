@@ -17,6 +17,7 @@
     "block.MixinBasePressurePlateBlock",
     "block.MixinHoneyBlock",
     "block.MixinMagmaBlock",
+    "block.MixinSlimeBlock",
     "entity.MixinWolfEntity",
     "server.MixinPlayerList",
     "server.MixinServerLevel",

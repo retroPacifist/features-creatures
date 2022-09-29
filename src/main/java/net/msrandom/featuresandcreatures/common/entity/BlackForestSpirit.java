@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -27,6 +28,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.AABB;
@@ -139,8 +141,11 @@ public class BlackForestSpirit extends Monster implements NeutralMob, RangedAtta
         super.die(p_21014_);
     }
 
+
+
     @Override
     public void tick() {
+        this.fallDistance = 0;
         Item pickup = this.getItemInHand(this.getUsedItemHand()).getItem();
         if (!hasLapis() && pickup == Items.LAPIS_LAZULI) {
             int i = random.nextInt(10);
