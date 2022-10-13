@@ -2,9 +2,12 @@ package net.msrandom.featuresandcreatures.common.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
@@ -122,5 +125,14 @@ public class Tbh extends PathfinderMob implements IAnimatable {
 
     public boolean isRunning() {
         return this.entityData.get(RUNNING);
+    }
+
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        if (player.getItemInHand(player.getUsedItemHand()).isEmpty()) { //player.getItemInHand(hand).isEmpty() causes false positives?
+            player.level.addParticle(ParticleTypes.HEART, this.getRandomX(1.0), this.getRandomY() + 0.25, this.getRandomZ(1.0), 0.0, 0.0, 0.0);
+            return InteractionResult.SUCCESS;
+        } else {
+            return InteractionResult.FAIL;
+        }
     }
 }
