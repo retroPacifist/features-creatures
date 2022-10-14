@@ -9,6 +9,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -133,6 +135,22 @@ public class Tbh extends PathfinderMob implements IAnimatable {
             return InteractionResult.SUCCESS;
         } else {
             return InteractionResult.FAIL;
+        }
+    }
+
+    //TODO NOT FINISHED
+    @Override
+    protected void dropExperience() {
+        if (this.shouldDropExperience() && this.level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOMOBLOOT)) {
+            Vec3 pos = this.position();
+            this.level.addFreshEntity(new ExperienceOrb(this.level, pos.x, pos.y, pos.z, -ExperienceOrb.getExperienceValue(this.random.nextInt(1, 3))) {
+                @Override
+                public void playerTouch(Player player) {
+                    if (level.isClientSide()) return;
+                    player.giveExperiencePoints(this.value); // otherwise it doesn't count
+                    super.playerTouch(player);
+                }
+            });
         }
     }
 }
