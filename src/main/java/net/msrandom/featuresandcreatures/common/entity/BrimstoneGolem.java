@@ -24,9 +24,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import net.minecraft.world.level.block.state.pattern.BlockPattern;
+import net.minecraft.world.level.block.state.pattern.BlockPatternBuilder;
+import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.world.BlockEvent;
+import net.msrandom.featuresandcreatures.common.block.FeaturesCreaturesBlocks;
+import net.msrandom.featuresandcreatures.core.FnCEntities;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -53,6 +61,8 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
     private UUID persistentAngerTarget;
     public MeleeAttackGoal meleeAttackGoal;
     public RangedAttackGoal rangedAttackGoal;
+
+    private static BlockPattern brimstoneGolemPattern = null;
 
 
     public BrimstoneGolem(EntityType<? extends AbstractGolem> type, Level world) {
@@ -276,5 +286,36 @@ public class BrimstoneGolem extends AbstractGolem implements NeutralMob, RangedA
         largefireball.setPos(this.getX() + vec3.x * 4.0D, this.getY(0.5D) + 0.5D, largefireball.getZ() + vec3.z * 4.0D);
         level.addFreshEntity(largefireball);
         setRangeAttackAnimationTick(34);
+    }
+
+    public static void trySpawn(BlockEvent.EntityPlaceEvent event){
+        if (event.getWorld().isClientSide() || !(event.getEntity() instanceof Player)) return;
+        BlockState block = event.getPlacedBlock();
+        if (block.is(Blocks.CARVED_PUMPKIN) || block.is(Blocks.JACK_O_LANTERN)) {
+            BlockPos pos = event.getPos();
+            BlockPattern pattern = getOrCreateBrimstoneGolemPattern();
+            if (pattern.find(event.getWorld(), pos) != null) {
+                for (int i = 0; i < pattern.getHeight(); i++) {
+                    event.getWorld().setBlock(new BlockPos(pos.getX(), pos.getY() - i, pos.getZ()), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                }
+                BrimstoneGolem golem = new BrimstoneGolem(FnCEntities.BRIMSTONE_GOLEM.get(), event.getEntity().level);
+                golem.setPos(pos.getX() + 0.5, pos.getY() - 5.0, pos.getZ() + 0.5);
+                golem.setPlayerCreated(true);
+                event.getWorld().addFreshEntity(golem);
+            }
+        }
+    }
+
+    private static BlockPattern getOrCreateBrimstoneGolemPattern() {
+        if (brimstoneGolemPattern == null) {
+            brimstoneGolemPattern = BlockPatternBuilder.start()
+                    .aisle(new String[]{"p","b","b","b","f"})
+                    //.aisle(new String[]{"apa","bbb","afa"})
+                    .where('p', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.CARVED_PUMPKIN).or(BlockStatePredicate.forBlock(Blocks.JACK_O_LANTERN))))
+                    .where('b', BlockInWorld.hasState(BlockStatePredicate.forBlock(FeaturesCreaturesBlocks.BRIMSTONE.get())))
+                    //.where('a', BlockInWorld.hasState(BlockMaterialPredicate.forMaterial(Material.AIR)))
+                    .where('f', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.FURNACE))).build();
+        }
+        return brimstoneGolemPattern;
     }
 }

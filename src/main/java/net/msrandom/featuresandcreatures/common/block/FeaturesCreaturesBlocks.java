@@ -32,6 +32,8 @@ public class FeaturesCreaturesBlocks {
     public final RegistryObject<Block> SUNSET_BLOCK = REGISTER.register("sunset_block", FeaturesCreaturesBlocks::createBlock);
     public final RegistryObject<Block> MIDNIGHT_BLOCK = REGISTER.register("midnight_block", FeaturesCreaturesBlocks::createBlock);
 
+    public final RegistryObject<Block> BRIMSTONE = REGISTER.register("brimstone", FeaturesCreaturesBlocks::createBlock);
+
     private Supplier<Block> createOre(FeaturesCreaturesOre.Duration duration) {
         return () -> new FeaturesCreaturesOre(duration, Properties.copy(Blocks.DIAMOND_ORE));
     }

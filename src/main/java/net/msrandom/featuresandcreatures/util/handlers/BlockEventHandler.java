@@ -6,11 +6,12 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.msrandom.featuresandcreatures.common.entity.BlackForestSpirit;
+import net.msrandom.featuresandcreatures.common.entity.BrimstoneGolem;
 
 import java.util.List;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class BlockBreakHandler {
+public class BlockEventHandler {
 
     @SubscribeEvent
     public static void addTargetOnBlockBreak(BlockEvent.BreakEvent event){
@@ -23,5 +24,10 @@ public class BlockBreakHandler {
                 spirit.setRemainingPersistentAngerTime(500);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void checkSpawnBrimstoneGolem(BlockEvent.EntityPlaceEvent event){
+        BrimstoneGolem.trySpawn(event);
     }
 }

@@ -72,6 +72,8 @@ public class FeaturesCreaturesItems {
     public final RegistryObject<Item> MEGA_POTION = REGISTER.register("mega_potion", () -> new Item(new Item.Properties()));
     public final RegistryObject<Item> BFS_ATTACK_ITEM = REGISTER.register("bfs_attack_item", () -> new Item(new Item.Properties()));
 
+    public final RegistryObject<Item> BRIMSTONE = REGISTER.register("brimstone", createBlockItem(FeaturesCreaturesBlocks.BRIMSTONE));
+
     private Item.Properties createProperties() {
         return new Item.Properties().tab(FeaturesCreaturesTabs.GENERAL);
     }
