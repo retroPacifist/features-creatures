@@ -1,6 +1,9 @@
 package net.msrandom.featuresandcreatures.util.handlers;
 
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,5 +32,14 @@ public class BlockEventHandler {
     @SubscribeEvent
     public static void checkSpawnBrimstoneGolem(BlockEvent.EntityPlaceEvent event){
         BrimstoneGolem.trySpawn(event);
+    }
+
+    @SubscribeEvent
+    public static void onCropGrowEvent(BlockEvent.CropGrowEvent.Post event) {
+        if (event.getWorld().isClientSide() || !event.getState().is(Blocks.NETHER_WART)) return;
+        int age = event.getState().getValue(NetherWartBlock.AGE);
+        if (age < NetherWartBlock.MAX_AGE && !event.getWorld().getEntitiesOfClass(BrimstoneGolem.class, new AABB(event.getPos()).inflate(16)).isEmpty()) {
+            event.getWorld().setBlock(event.getPos(), event.getState().setValue(NetherWartBlock.AGE, age + 1), Block.UPDATE_CLIENTS);
+        }
     }
 }
