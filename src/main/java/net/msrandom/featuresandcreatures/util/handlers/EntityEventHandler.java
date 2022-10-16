@@ -1,9 +1,12 @@
 package net.msrandom.featuresandcreatures.util.handlers;
 
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.msrandom.featuresandcreatures.common.entity.Gup;
 import net.msrandom.featuresandcreatures.common.entity.Jockey;
 
 @Mod.EventBusSubscriber
@@ -26,6 +29,13 @@ public class EntityEventHandler {
                     event.setCanceled(true);
                 }
             });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onStruckByLightning(EntityStruckByLightningEvent event) {
+        if (event.getEntity() instanceof Slime) {
+            Gup.spawnFromStruckSlime((Slime)event.getEntity());
         }
     }
 }

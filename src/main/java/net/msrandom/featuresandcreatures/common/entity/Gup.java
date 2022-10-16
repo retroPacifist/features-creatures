@@ -32,6 +32,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.msrandom.featuresandcreatures.core.FnCEntities;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -104,7 +105,7 @@ public class Gup extends PathfinderMob implements IAnimatable {
     }
 
     public EntityType<? extends Gup> getType() {
-        return (EntityType<? extends Gup>) super.getType();
+        return FnCEntities.GUP.get();
     }
 
 
@@ -299,6 +300,21 @@ public class Gup extends PathfinderMob implements IAnimatable {
     @Override
     protected float getJumpPower() {
         return 0.6F;
+    }
+
+    public static void spawnFromStruckSlime(Slime slime) {
+        int size = slime.getSize();
+        if (size == 1) return; // tiny slimes don't spawn anything
+        Gup gup = new Gup(FnCEntities.GUP.get(), slime.level);
+        gup.setPos(slime.getPosition(0));
+        gup.setYRot(slime.getYRot());
+        gup.setSize(switch (size) {
+            default -> 1;   // gip
+            case 4 -> 2;    // geep
+            case 8 -> 3;    // gup (won't occur naturally)
+            }, true);
+        slime.discard();
+        slime.level.addFreshEntity(gup);
     }
 
     static class GupFloatGoal extends Goal {
