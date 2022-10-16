@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,10 +25,8 @@ public class BlockEventHandler {
     @SubscribeEvent
     public static void addTargetOnBlockBreak(BlockEvent.BreakEvent event){
         Player player = event.getPlayer();
-        if (event.getState().getBlock().getRegistryName().toString().contains("log")){
-            List<BlackForestSpirit> list = player.level.getEntitiesOfClass(BlackForestSpirit.class, new AABB(player.blockPosition()).inflate(30));
-            if (list.isEmpty()) return;
-            for (BlackForestSpirit spirit : list){
+        if (event.getState().getMaterial() == Material.WOOD && event.getState().getBlock().getRegistryName().toString().contains("log")){
+            for (BlackForestSpirit spirit : player.level.getEntitiesOfClass(BlackForestSpirit.class, new AABB(player.blockPosition()).inflate(30))){
                 spirit.setPersistentAngerTarget(player.getUUID());
                 spirit.setRemainingPersistentAngerTime(500);
             }
