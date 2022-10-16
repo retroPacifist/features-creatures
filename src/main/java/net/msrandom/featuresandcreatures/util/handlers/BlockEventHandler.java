@@ -1,9 +1,14 @@
 package net.msrandom.featuresandcreatures.util.handlers;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.NetherWartBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,10 +41,15 @@ public class BlockEventHandler {
 
     @SubscribeEvent
     public static void onCropGrowEvent(BlockEvent.CropGrowEvent.Post event) {
-        if (event.getWorld().isClientSide() || !event.getState().is(Blocks.NETHER_WART)) return;
-        int age = event.getState().getValue(NetherWartBlock.AGE);
-        if (age < NetherWartBlock.MAX_AGE && !event.getWorld().getEntitiesOfClass(BrimstoneGolem.class, new AABB(event.getPos()).inflate(16)).isEmpty()) {
-            event.getWorld().setBlock(event.getPos(), event.getState().setValue(NetherWartBlock.AGE, age + 1), Block.UPDATE_CLIENTS);
+        BlockState state = event.getState();
+        LevelAccessor level = event.getWorld();
+        if (!level.isClientSide() && state.is(Blocks.NETHER_WART)) {
+            BlockPos pos = event.getPos();
+            int age = state.getValue(NetherWartBlock.AGE);
+            if (age < NetherWartBlock.MAX_AGE && !level.getEntitiesOfClass(BrimstoneGolem.class, new AABB(pos).inflate(16)).isEmpty()) {
+                level.setBlock(pos, state.setValue(NetherWartBlock.AGE, age + 1), Block.UPDATE_CLIENTS);
+                ((ServerLevel)level).sendParticles(ParticleTypes.HAPPY_VILLAGER, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 10, 0.25, 0.25, 0.25, 0.01);
+            }
         }
     }
 }
