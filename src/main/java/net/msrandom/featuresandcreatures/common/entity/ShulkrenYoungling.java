@@ -1,6 +1,7 @@
 package net.msrandom.featuresandcreatures.common.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -29,7 +30,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.Vec3;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -40,13 +40,22 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
 
-    private static final EntityDataAccessor<Integer> tradeTimer = SynchedEntityData.defineId(ShulkrenYoungling.class, EntityDataSerializers.INT);
+    private enum Phase {
+        READY, ADMIRING, OFFERING, COOLDOWN, SOUP;
+        public static final List<Phase> list = List.of(READY, ADMIRING, OFFERING, COOLDOWN, SOUP);
+    }
+
+    private static final int TIME_ADMIRE = 200; // 20 seconds
+    private static final int TIME_OFFER = 1200; // 1 minute
+    private static final int TIME_COOLDOWN = 6000; // 5 minutes
+
+    private static final EntityDataAccessor<Byte> tradePhase = SynchedEntityData.defineId(ShulkrenYoungling.class, EntityDataSerializers.BYTE);
+    private long nextPhase = 0;
     
     public ShulkrenYoungling(EntityType<? extends ShulkrenYoungling> type, Level level) {
         super(type, level);
@@ -62,10 +71,28 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
-        if (itemInHand == Items.ENDER_EYE.getDefaultInstance()) {
-            itemInHand.shrink(1);
-            this.setItemInHand(InteractionHand.MAIN_HAND, itemInHand);
+        if (this.getTradePhase() == Phase.READY) {
+            if (itemInHand.is(Items.ENDER_EYE)) {
+                itemInHand.shrink(1);
+                this.setItemInHand(InteractionHand.MAIN_HAND, Items.ENDER_EYE.getDefaultInstance());
+                this.setTradePhase(Phase.ADMIRING);
+                this.nextPhase = this.level.getGameTime() + TIME_ADMIRE;
+                return InteractionResult.SUCCESS;
+            } else if (itemInHand.is(Items.MUSHROOM_STEW)) {
+                itemInHand.shrink(1);
+                //TODO lol
+                return InteractionResult.SUCCESS;
+            }
+        } else if (this.getTradePhase() == Phase.OFFERING) {
+            this.swing(InteractionHand.OFF_HAND);
+            BehaviorUtils.throwItem(this, this.getItemInHand(InteractionHand.MAIN_HAND), player.position().add(0.0D, 1.0D, 0.0D));
+            this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+            this.setTradePhase(Phase.COOLDOWN);
+            this.nextPhase = this.level.getGameTime() + TIME_COOLDOWN;
             return InteractionResult.SUCCESS;
+        }
+        if (itemInHand.is(Items.ENDER_EYE)) {
+            return InteractionResult.CONSUME; // to avoid accidentally wasting eyes
         }
         return InteractionResult.FAIL;
     }
@@ -83,42 +110,48 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        entityData.define(tradeTimer, 100);
+        entityData.define(tradePhase, (byte)0); // READY
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (this.isHolding(Items.ENDER_EYE)){
-            if (!(this.getTarget() instanceof Player)) {
-                this.setTradeTimer(this.getTradeTimer() - 1);
-            }
-        }
-        if (this.getTradeTimer() <= 0){
-            this.setDeltaMovement(this.getDeltaMovement());
-            this.setItemInHand(this.getUsedItemHand(), ItemStack.EMPTY);
-            Player nearestPlayer = this.level.getNearestPlayer(this, 50);
-            if (this.getTarget() != null &&this.getTarget().is(Objects.requireNonNull(nearestPlayer))) {
-                throwItemsTowardPos(this, getBarterResponseItems(this), Objects.requireNonNullElse(nearestPlayer, this).position());
-                this.setTradeTimer(100);
-            }
+        if (this.level.isClientSide()) return;
+        long time = this.level.getGameTime();
+        // intentional fallthrough in case enough time has passed while unloaded
+        switch (this.getTradePhase()) {
+            case READY: break;
+            case ADMIRING:
+                if (this.nextPhase <= time) {
+                    this.setItemInHand(InteractionHand.MAIN_HAND, Items.DIAMOND.getDefaultInstance());
+                    this.setTradePhase(Phase.OFFERING);
+                    this.nextPhase += TIME_OFFER;
+                }
+            case OFFERING:
+                if (this.nextPhase <= time) {
+                    this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                    this.setTradePhase(Phase.COOLDOWN);
+                    this.nextPhase += TIME_COOLDOWN;
+                }
+            case COOLDOWN:
+                if (this.nextPhase <= time) {
+                    this.setTradePhase(Phase.READY);
+                }
+                break;
+            case SOUP:
+                if (this.nextPhase <= time) {
+                    this.setTradePhase(Phase.READY);
+                } else if ((this.nextPhase - time) % 1200 == 0) {
+                    //TODO
+                }
         }
     }
 
-    private static List<ItemStack> getBarterResponseItems(ShulkrenYoungling youngling) {
-        MinecraftServer server = youngling.level.getServer();
+    private List<ItemStack> getBarterResponseItems() {
+        MinecraftServer server = this.level.getServer();
         if (server == null) return List.of(Items.ENDER_PEARL.getDefaultInstance());
         LootTable loottable = server.getLootTables().get(new ResourceLocation(FeaturesAndCreatures.MOD_ID, "gameplay/shulkren_bartering"));
-        return loottable.getRandomItems((new LootContext.Builder((ServerLevel)youngling.level)).withParameter(LootContextParams.THIS_ENTITY, youngling).withRandom(youngling.level.random).create(LootContextParamSets.PIGLIN_BARTER));
-    }
-
-    private static void throwItemsTowardPos(ShulkrenYoungling youngling, List<ItemStack> items, Vec3 vec3) {
-        if (!items.isEmpty()) {
-            youngling.swing(InteractionHand.OFF_HAND);
-            for(ItemStack itemstack : items) {
-                BehaviorUtils.throwItem(youngling, itemstack, vec3.add(0.0D, 1.0D, 0.0D));
-            }
-        }
+        return loottable.getRandomItems((new LootContext.Builder((ServerLevel)this.level)).withParameter(LootContextParams.THIS_ENTITY, this).withRandom(this.level.random).create(LootContextParamSets.PIGLIN_BARTER));
     }
 
     @Override
@@ -148,28 +181,42 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         AnimationController<?> controller = event.getController();
         controller.transitionLengthTicks = 0;
-        if (!this.isHolding(Items.ENDER_EYE) && this.isOnGround() && !event.isMoving()) {
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.shulkren_youngling.idle", true));
-            return PlayState.CONTINUE;
-        }
-        if (!this.isHolding(Items.ENDER_EYE) && this.isOnGround() && event.isMoving()) {
-            controller.setAnimation(new AnimationBuilder().addAnimation("animation.shulkren_youngling.walk", true));
-            return PlayState.CONTINUE;
-        }
-        if (this.isHolding(Items.ENDER_EYE)){
+        Phase phase = this.getTradePhase();
+        if (phase == Phase.ADMIRING || phase == Phase.OFFERING) {
             controller.setAnimation(new AnimationBuilder().addAnimation("animation.shulkren_youngling.hold", true));
             return PlayState.CONTINUE;
         }
-        else{
-            return PlayState.STOP;
+        if (this.isOnGround()) {
+            if (event.isMoving()) {
+                controller.setAnimation(new AnimationBuilder().addAnimation("animation.shulkren_youngling.walk", true));
+                return PlayState.CONTINUE;
+            } else {
+                controller.setAnimation(new AnimationBuilder().addAnimation("animation.shulkren_youngling.idle", true));
+                return PlayState.CONTINUE;
+            }
         }
+        return PlayState.STOP;
     }
 
-    public int getTradeTimer() {
-        return entityData.get(tradeTimer);
+    public Phase getTradePhase() {
+        return Phase.list.get(entityData.get(tradePhase));
     }
 
-    public void setTradeTimer(int timer) {
-        entityData.set(tradeTimer, timer);
+    public void setTradePhase(Phase phase) {
+        entityData.set(tradePhase, (byte)Phase.list.indexOf(phase));
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
+        nbt.putByte("TradePhase", this.entityData.get(tradePhase));
+        nbt.putLong("NextPhase", this.nextPhase);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
+        entityData.set(tradePhase, nbt.getByte("TradePhase"));
+        this.nextPhase = nbt.getLong("NextPhase");
     }
 }
