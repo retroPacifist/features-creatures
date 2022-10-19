@@ -1,6 +1,7 @@
 package net.msrandom.featuresandcreatures.common.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,11 +27,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec2;
 import net.msrandom.featuresandcreatures.FeaturesAndCreatures;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -40,19 +45,27 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.function.Predicate;
 
 public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
 
     private enum Phase {
-        READY, ADMIRING, OFFERING, COOLDOWN, SOUP;
-        public static final List<Phase> list = List.of(READY, ADMIRING, OFFERING, COOLDOWN, SOUP);
+        READY, ADMIRING, OFFERING, SOUP;
+        public static final List<Phase> list = List.of(READY, ADMIRING, OFFERING, SOUP);
     }
+
+    //TODO: mod saplings
+    private static final SaplingBlock[] SAPLINGS = {(SaplingBlock) Blocks.ACACIA_SAPLING, (SaplingBlock) Blocks.BIRCH_SAPLING, (SaplingBlock) Blocks.DARK_OAK_SAPLING, (SaplingBlock) Blocks.JUNGLE_SAPLING, (SaplingBlock) Blocks.OAK_SAPLING};
+    private static final int SAPLING_RADIUS = 4;
+    private static final int SAPLING_TRIES = 25;
 
     private static final int TIME_ADMIRE = 200; // 20 seconds
     private static final int TIME_OFFER = 1200; // 1 minute
-    private static final int TIME_COOLDOWN = 6000; // 5 minutes
+    private static final int TIME_SOUP = 6000; // 5 minutes
+    private static final int TIME_SAPLING_INTERVAL = 1200; // 1 minute
 
     private static final EntityDataAccessor<Byte> tradePhase = SynchedEntityData.defineId(ShulkrenYoungling.class, EntityDataSerializers.BYTE);
     private long nextPhase = 0;
@@ -80,15 +93,17 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
                 return InteractionResult.SUCCESS;
             } else if (itemInHand.is(Items.MUSHROOM_STEW)) {
                 itemInHand.shrink(1);
-                //TODO lol
+                this.setTradePhase(Phase.SOUP);
+                this.nextPhase = this.level.getGameTime() + TIME_SOUP;
+                Vec2 rot = this.getRotationVector();
+                BehaviorUtils.throwItem(this, Items.BOWL.getDefaultInstance(), this.position().add(rot.x, 1.0, rot.y));
                 return InteractionResult.SUCCESS;
             }
         } else if (this.getTradePhase() == Phase.OFFERING) {
             this.swing(InteractionHand.OFF_HAND);
             BehaviorUtils.throwItem(this, this.getItemInHand(InteractionHand.MAIN_HAND), player.position().add(0.0D, 1.0D, 0.0D));
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-            this.setTradePhase(Phase.COOLDOWN);
-            this.nextPhase = this.level.getGameTime() + TIME_COOLDOWN;
+            this.setTradePhase(Phase.READY);
             return InteractionResult.SUCCESS;
         }
         if (itemInHand.is(Items.ENDER_EYE)) {
@@ -130,19 +145,39 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
             case OFFERING:
                 if (this.nextPhase <= time) {
                     this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-                    this.setTradePhase(Phase.COOLDOWN);
-                    this.nextPhase += TIME_COOLDOWN;
-                }
-            case COOLDOWN:
-                if (this.nextPhase <= time) {
                     this.setTradePhase(Phase.READY);
                 }
                 break;
             case SOUP:
                 if (this.nextPhase <= time) {
                     this.setTradePhase(Phase.READY);
-                } else if ((this.nextPhase - time) % 1200 == 0) {
-                    //TODO
+                } else if ((this.nextPhase - time) % TIME_SAPLING_INTERVAL == 0) {
+                    boolean placed = false;
+                    SaplingBlock sapling = SAPLINGS[random.nextInt(SAPLINGS.length)];
+                    //TODO: line-of-sight check?
+                    Predicate<BlockPos> canPlant = (BlockPos pos) -> pos != this.blockPosition() && level.getBlockState(pos).isAir() && level.getBlockState(pos.below()).canSustainPlant(level, pos, Direction.UP, sapling);
+                    // first, try randomly
+                    for (BlockPos pos : BlockPos.randomInCube(random, SAPLING_TRIES, this.blockPosition(), SAPLING_RADIUS)) {
+                        if (canPlant.test(pos)) {
+                            level.setBlock(pos, sapling.defaultBlockState(), Block.UPDATE_CLIENTS);
+                            placed = true;
+                            break;
+                        }
+                    }
+                    // next, try nearest
+                    if (!placed) {
+                        Optional<BlockPos> newpos = BlockPos.findClosestMatch(this.blockPosition(), SAPLING_RADIUS, SAPLING_RADIUS, canPlant);
+                        if (newpos.isPresent()) {
+                            level.setBlock(newpos.get(), sapling.defaultBlockState(), Block.UPDATE_CLIENTS);
+                            placed = true;
+                        }
+                    }
+                    if (placed) {
+                        this.swing(InteractionHand.OFF_HAND);
+                    } else {
+                        Vec2 rot = this.getRotationVector();
+                        BehaviorUtils.throwItem(this, Items.OAK_SAPLING.getDefaultInstance(), this.position().add(rot.x, 1.0, rot.y));
+                    }
                 }
         }
     }
@@ -156,12 +191,21 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
 
     @Override
     public boolean canPickUpLoot() {
-        return true;
+        return this.getTradePhase() == Phase.READY;
     }
 
     @Override
     public boolean canHoldItem(ItemStack stack) {
-        return stack.getCount() == 1 && stack.getItem() == Items.ENDER_EYE;
+        return stack.getCount() == 1 && stack.is(Items.ENDER_EYE);
+    }
+
+    @Override
+    public void pickUpItem(ItemEntity item) {
+        super.pickUpItem(item);
+        // can only be ENDER_EYE so no need to check again
+        this.setItemInHand(InteractionHand.MAIN_HAND, Items.ENDER_EYE.getDefaultInstance());
+        this.setTradePhase(Phase.ADMIRING);
+        this.nextPhase = this.level.getGameTime() + TIME_ADMIRE;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
