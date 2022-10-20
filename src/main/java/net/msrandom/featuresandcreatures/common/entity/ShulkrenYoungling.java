@@ -203,7 +203,6 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
     public void pickUpItem(ItemEntity item) {
         super.pickUpItem(item);
         // can only be ENDER_EYE so no need to check again
-        this.setItemInHand(InteractionHand.MAIN_HAND, Items.ENDER_EYE.getDefaultInstance());
         this.setTradePhase(Phase.ADMIRING);
         this.nextPhase = this.level.getGameTime() + TIME_ADMIRE;
     }

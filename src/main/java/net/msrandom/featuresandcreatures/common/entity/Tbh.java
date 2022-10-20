@@ -1,5 +1,6 @@
 package net.msrandom.featuresandcreatures.common.entity;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -8,6 +9,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.MobSpawnType;
@@ -41,6 +43,9 @@ public class Tbh extends PathfinderMob implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
 
     protected static final EntityDataAccessor<Boolean> RUNNING = SynchedEntityData.defineId(Tbh.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<String> EYE_CONTACT_PLAYER = SynchedEntityData.defineId(Tbh.class, EntityDataSerializers.STRING);
+
+    private LookAtPlayerGoalTbh lookAtPlayerGoal;
 
     public Tbh(EntityType<? extends Tbh> p_21368_, Level p_21369_) {
         super(p_21368_, p_21369_);
@@ -61,12 +66,14 @@ public class Tbh extends PathfinderMob implements IAnimatable {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(RUNNING, false);
+        this.entityData.define(EYE_CONTACT_PLAYER, "");
     }
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
-        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.lookAtPlayerGoal = new LookAtPlayerGoalTbh(this, 8.0F);
+        this.goalSelector.addGoal(3, lookAtPlayerGoal);
+        /*this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 2D) {
             @Override
@@ -84,7 +91,7 @@ public class Tbh extends PathfinderMob implements IAnimatable {
                 }
             }
         });
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));*/
 
     }
 
@@ -129,6 +136,39 @@ public class Tbh extends PathfinderMob implements IAnimatable {
         return this.entityData.get(RUNNING);
     }
 
+    public void setLookingAtPlayer(String playerUUID) {
+        this.entityData.set(EYE_CONTACT_PLAYER, playerUUID);
+    }
+
+    public String getLookingAtPlayer() {
+        return this.entityData.get(EYE_CONTACT_PLAYER);
+    }
+
+    @SuppressWarnings("resource")
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.level.isClientSide()) {
+            Player player = Minecraft.getInstance().player;
+            if (this.getLookingAtPlayer().equals(player.getStringUUID())) {
+                System.out.println("o_o");
+            } else {
+                System.out.println("-_-");
+            }
+        } else {
+            Entity ent = this.lookAtPlayerGoal.getLookAt();
+            // not sure if updating a synched variable to the same value uses the network, so err on side of caution
+            if (this.lookAtPlayerGoal.isReciprocated && ent instanceof Player player) {
+                String uuid = player.getStringUUID();
+                if (this.getLookingAtPlayer() != uuid) {
+                    this.setLookingAtPlayer(uuid);
+                }
+            } else if (!this.getLookingAtPlayer().isEmpty()) {
+                this.setLookingAtPlayer("");
+            }
+        }
+    }
+
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (player.getItemInHand(player.getUsedItemHand()).isEmpty()) { //player.getItemInHand(hand).isEmpty() causes false positives?
             player.level.addParticle(ParticleTypes.HEART, this.getRandomX(1.0), this.getRandomY() + 0.25, this.getRandomZ(1.0), 0.0, 0.0, 0.0);
@@ -151,6 +191,33 @@ public class Tbh extends PathfinderMob implements IAnimatable {
                     super.playerTouch(player);
                 }
             });
+        }
+    }
+
+    private class LookAtPlayerGoalTbh extends LookAtPlayerGoal {
+
+        private boolean isReciprocated = false;
+
+        public LookAtPlayerGoalTbh(Tbh arg, float f) {
+            super(arg, Player.class, f);
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            if (this.isReciprocated) {
+                return true; // maintain eye contact until player breaks it
+            }
+            return super.canContinueToUse();
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            this.isReciprocated = this.lookAt != null && this.lookAt.getViewVector(1.0f).normalize().dot(this.mob.getViewVector(1.0f).normalize()) < -0.975;
+        }
+
+        public Entity getLookAt() {
+            return this.lookAt;
         }
     }
 }
