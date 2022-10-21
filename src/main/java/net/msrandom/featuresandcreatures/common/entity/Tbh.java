@@ -71,9 +71,9 @@ public class Tbh extends PathfinderMob implements IAnimatable {
 
     @Override
     protected void registerGoals() {
-        this.lookAtPlayerGoal = new LookAtPlayerGoalTbh(this, 8.0F);
+        this.lookAtPlayerGoal = new LookAtPlayerGoalTbh(this, 16.0F, 0.8F);
         this.goalSelector.addGoal(3, lookAtPlayerGoal);
-        /*this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
+        this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoalTbh(this, this.lookAtPlayerGoal, 1.0D, 0.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 2D) {
             @Override
@@ -91,7 +91,7 @@ public class Tbh extends PathfinderMob implements IAnimatable {
                 }
             }
         });
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));*/
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
 
     }
 
@@ -160,7 +160,7 @@ public class Tbh extends PathfinderMob implements IAnimatable {
             // not sure if updating a synched variable to the same value uses the network, so err on side of caution
             if (this.lookAtPlayerGoal.isReciprocated && ent instanceof Player player) {
                 String uuid = player.getStringUUID();
-                if (this.getLookingAtPlayer() != uuid) {
+                if (!this.getLookingAtPlayer().equals(uuid)) {
                     this.setLookingAtPlayer(uuid);
                 }
             } else if (!this.getLookingAtPlayer().isEmpty()) {
@@ -198,14 +198,14 @@ public class Tbh extends PathfinderMob implements IAnimatable {
 
         private boolean isReciprocated = false;
 
-        public LookAtPlayerGoalTbh(Tbh arg, float f) {
-            super(arg, Player.class, f);
+        public LookAtPlayerGoalTbh(Tbh arg, float f, float g) {
+            super(arg, Player.class, f, g);
         }
 
         @Override
         public boolean canContinueToUse() {
-            if (this.isReciprocated) {
-                return true; // maintain eye contact until player breaks it
+            if (this.lookAt != null && (this.isReciprocated || this.mob.distanceTo(this.lookAt) < this.lookDistance)) {
+                return true;
             }
             return super.canContinueToUse();
         }
@@ -218,6 +218,28 @@ public class Tbh extends PathfinderMob implements IAnimatable {
 
         public Entity getLookAt() {
             return this.lookAt;
+        }
+    }
+
+    private class WaterAvoidingRandomStrollGoalTbh extends WaterAvoidingRandomStrollGoal {
+
+        private LookAtPlayerGoalTbh lookGoal;
+
+        public WaterAvoidingRandomStrollGoalTbh(Tbh arg, LookAtPlayerGoalTbh goal, double d, float f) {
+            super(arg, d, f);
+            this.lookGoal = goal;
+        }
+
+        @Override
+        public boolean canUse() {
+            if (this.lookGoal.getLookAt() != null) return false;
+            return super.canUse();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            if (this.lookGoal.getLookAt() != null) return false;
+            return super.canContinueToUse();
         }
     }
 }
