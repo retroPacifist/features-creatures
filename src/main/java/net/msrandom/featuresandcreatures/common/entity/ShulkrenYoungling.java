@@ -204,7 +204,7 @@ public class ShulkrenYoungling extends PathfinderMob implements IAnimatable {
                             Vec2 rot = getRotationVector();
                             Item saplingItem = sapling.getBlock().asItem();
                             if (saplingItem != Items.AIR) {
-                                BehaviorUtils.throwItem(this, Items.OAK_SAPLING.getDefaultInstance(), position().add(rot.x, 1.0, rot.y));
+                                BehaviorUtils.throwItem(this, saplingItem.getDefaultInstance(), position().add(rot.x, 1.0, rot.y));
                             }
                         }
                     }
