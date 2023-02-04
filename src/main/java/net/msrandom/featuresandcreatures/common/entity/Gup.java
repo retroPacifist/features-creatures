@@ -179,6 +179,17 @@ public class Gup extends PathfinderMob implements IAnimatable {
         };
     }
 
+    @Override
+    public boolean hurt(DamageSource damageSource, float damage) {
+        // Target the entity that damaged the Gup
+        Entity damagingEntity = damageSource.getEntity();
+        if (damagingEntity instanceof LivingEntity) {
+            this.setTarget((LivingEntity) damagingEntity);
+        }
+
+        return super.hurt(damageSource, damage);
+    }
+
     protected void setSize(int size, boolean adjustHealth) {
         this.entityData.set(SIZE, size);
         this.reapplyPosition();
