@@ -576,13 +576,13 @@ public class Gup extends PathfinderMob implements IAnimatable {
         protected void checkAndPerformAttack(@NotNull LivingEntity livingEntity, double entityDistance) {
             double attackRange = getAttackReachSqr(livingEntity);
             if (livingEntity instanceof Player player && player.getAbilities().instabuild) return;
-            if (entityDistance <= attackRange && isTimeToAttack()) {
+            if (!gup.isAttacking() && entityDistance <= attackRange && isTimeToAttack()) {
                 resetAttackCooldown();
                 gup.setAttacking(true);
-                if (this.gup.getAttackTimer() >= 30) {
-                    gup.doSpikeAttack();
-                    gup.setAttacking(false);
-                }
+            }
+            if (gup.getAttackTimer() >= 30) {
+                gup.doSpikeAttack();
+                gup.setAttacking(false);
             }
         }
 
