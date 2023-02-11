@@ -219,7 +219,27 @@ public class Gup extends PathfinderMob implements IAnimatable {
     }
 
     public EntityDimensions getDimensions(Pose pose) {
-        return super.getDimensions(pose).scale(0.9F * (float) this.getSize());
+        if (pose == Pose.DYING) {
+            return super.getDimensions(pose);
+        }
+
+        float gupModelBlockHeight = 1.75f;
+        float scalingFactor = 1;
+        // Scale the gup's height to 1 block on the server thread only to avoid the hitbox having a different size when rendering
+        if (!this.level.isClientSide) {
+            scalingFactor /= gupModelBlockHeight;
+        }
+        
+        switch (this.getSize()) {
+            case 2 -> {
+                scalingFactor *= 2.5;
+            }
+            case 3 -> {
+                scalingFactor *= 5.0;
+            }
+        }
+
+        return super.getDimensions(pose).scale(scalingFactor);
     }
 
     @Override
