@@ -247,12 +247,13 @@ public class Gup extends PathfinderMob implements IAnimatable {
         data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
     }
 
-    public void doDamage() {
-        AABB axisalignedbb = (new AABB(this.blockPosition())).inflate(1.5F).expandTowards(0.0D, 2.0D, 0.0D);
+    public void doSpikeAttack() {
+        float attackRange = 1.5F;
+        AABB axisalignedbb = this.getDimensions(this.getPose()).makeBoundingBox(0, 0, 0).inflate(attackRange).move(this.position());
         List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, axisalignedbb);
         for (LivingEntity le : list) {
-            if (le instanceof Gup) return;
-            le.hurt(DamageSource.GENERIC, (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+            if (le instanceof Gup) continue;
+            le.hurt(DamageSource.mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
         }
     }
 
@@ -508,7 +509,7 @@ public class Gup extends PathfinderMob implements IAnimatable {
                 this.gup.lookAt(livingentity, 10.0F, 10.0F);
                 gup.setAttacking(true);
                 if (gup.getAttackTimer() <= 1) {
-                    gup.doDamage();
+                    gup.doSpikeAttack();
                 }
             }
             ((Gup.GupMoveControl) this.gup.getMoveControl()).setDirection(this.gup.getYRot(), true);
@@ -578,8 +579,8 @@ public class Gup extends PathfinderMob implements IAnimatable {
             if (entityDistance <= attackRange && isTimeToAttack()) {
                 resetAttackCooldown();
                 gup.setAttacking(true);
-                if (this.gup.getAttackTimer() <= 30) {
-                    gup.doHurtTarget(livingEntity);
+                if (this.gup.getAttackTimer() >= 30) {
+                    gup.doSpikeAttack();
                     gup.setAttacking(false);
                 }
             }
@@ -604,7 +605,7 @@ public class Gup extends PathfinderMob implements IAnimatable {
 
         @Override
         protected double getAttackReachSqr(LivingEntity entity) {
-            return 4F + entity.getBbWidth();
+            return this.gup.getBbWidth() * this.gup.getBbWidth();
         }
     }
 }
