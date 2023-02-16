@@ -219,7 +219,30 @@ public class Gup extends PathfinderMob implements IAnimatable {
     }
 
     public EntityDimensions getDimensions(Pose pose) {
-        return super.getDimensions(pose).scale(0.9F * (float) this.getSize());
+        if (pose == Pose.DYING) {
+            return super.getDimensions(pose);
+        }
+
+        float gupModelBlockHeight = 1.75f;
+        float heightScalingFactor = 1;
+        float widthScalingFactor = 1;
+        // Scale the gup's height to 1 block on the server thread only to avoid the hitbox having a different size when rendering
+        if (!this.level.isClientSide) {
+            heightScalingFactor /= gupModelBlockHeight;
+        }
+        
+        switch (this.getSize()) {
+            case 2 -> {
+                heightScalingFactor *= 2.5;
+                widthScalingFactor *= 2.5;
+            }
+            case 3 -> {
+                heightScalingFactor *= 5.0;
+                widthScalingFactor *= 5.0;
+            }
+        }
+
+        return super.getDimensions(pose).scale(widthScalingFactor, heightScalingFactor);
     }
 
     @Override
@@ -227,12 +250,13 @@ public class Gup extends PathfinderMob implements IAnimatable {
         data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
     }
 
-    public void doDamage() {
-        AABB axisalignedbb = (new AABB(this.blockPosition())).inflate(1.5F).expandTowards(0.0D, 2.0D, 0.0D);
+    public void doSpikeAttack() {
+        float attackRange = 1.5F;
+        AABB axisalignedbb = this.getDimensions(this.getPose()).makeBoundingBox(0, 0, 0).inflate(attackRange).move(this.position());
         List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, axisalignedbb);
         for (LivingEntity le : list) {
-            if (le instanceof Gup) return;
-            le.hurt(DamageSource.GENERIC, (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+            if (le instanceof Gup) continue;
+            le.hurt(DamageSource.mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
         }
     }
 
@@ -488,7 +512,7 @@ public class Gup extends PathfinderMob implements IAnimatable {
                 this.gup.lookAt(livingentity, 10.0F, 10.0F);
                 gup.setAttacking(true);
                 if (gup.getAttackTimer() <= 1) {
-                    gup.doDamage();
+                    gup.doSpikeAttack();
                 }
             }
             ((Gup.GupMoveControl) this.gup.getMoveControl()).setDirection(this.gup.getYRot(), true);
@@ -555,13 +579,13 @@ public class Gup extends PathfinderMob implements IAnimatable {
         protected void checkAndPerformAttack(@NotNull LivingEntity livingEntity, double entityDistance) {
             double attackRange = getAttackReachSqr(livingEntity);
             if (livingEntity instanceof Player player && player.getAbilities().instabuild) return;
-            if (entityDistance <= attackRange && isTimeToAttack()) {
+            if (!gup.isAttacking() && entityDistance <= attackRange && isTimeToAttack()) {
                 resetAttackCooldown();
                 gup.setAttacking(true);
-                if (this.gup.getAttackTimer() <= 30) {
-                    gup.doHurtTarget(livingEntity);
-                    gup.setAttacking(false);
-                }
+            }
+            if (gup.getAttackTimer() >= 30) {
+                gup.doSpikeAttack();
+                gup.setAttacking(false);
             }
         }
 
@@ -584,7 +608,7 @@ public class Gup extends PathfinderMob implements IAnimatable {
 
         @Override
         protected double getAttackReachSqr(LivingEntity entity) {
-            return 4F + entity.getBbWidth();
+            return this.gup.getBbWidth() * this.gup.getBbWidth();
         }
     }
 }
